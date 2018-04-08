@@ -1,0 +1,20 @@
+# Created by .ignore support plugin (hsz.mobi)
+/scripts/build
+### Node template
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Dependency directory
+node_modules
+
+# IDE Settings files
+.idea
+/settings_local.json
+settings_local.json
