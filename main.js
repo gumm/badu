@@ -127,6 +127,12 @@ const isDef = t => t !== undefined;
 
 /**
  * @param {*} n
+ * @return {!boolean}
+ */
+const isString = n => whatType(n) === 'string';
+
+/**
+ * @param {*} n
  * @return {boolean}
  */
 const isNumber = n => whatType(n) === 'number' && !Number.isNaN(n);
@@ -774,6 +780,7 @@ module.exports = {
   maybeBool,
   isDef,
   isNumber,
+  isString,
   isObject,
   isEven,
   isDivisibleBy,

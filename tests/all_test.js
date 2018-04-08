@@ -193,6 +193,18 @@ describe('Some answers questions', () => {
   it('isNumber: handles Number.NEGATIVE_INFINITY',
       () => assert.strictEqual(F.isNumber(Number.NEGATIVE_INFINITY), true));
 
+  it('isString: returns true if given a string',
+      () => assert.strictEqual(F.isString('s'), true));
+
+  it('isString: handles null',
+      () => assert.strictEqual(F.isString(null), false));
+
+  it('isString: handles undefined',
+      () => assert.strictEqual(F.isString(undefined), false));
+
+  it('isString: handles NaN',
+      () => assert.strictEqual(F.isString(NaN), false));
+
   it('isObject: returns true if given an object',
       () => assert.strictEqual(F.isObject({a:1}), true));
 
