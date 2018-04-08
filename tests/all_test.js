@@ -599,7 +599,7 @@ describe('Number and math specific utils', () => {
   });
 
   it('maybeNumber: handles NaN', () => {
-    assert.deepStrictEqual(F.maybeNumber(NaN), NaN)
+    assert.deepStrictEqual(Number.isNaN(F.maybeNumber(NaN)), true)
   });
 
   it('maybeNumber: handles null', () => {
