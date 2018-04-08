@@ -478,8 +478,8 @@ describe('Array specific utils', () => {
       () => assert.strictEqual(F.minInArr([1,2,3,2,1]), 1)
   );
 
-  it('chunks: split an array into set of arrays of size n', () => {
-    const chunkToThree = F.chunks(3);
+  it('chunk: split an array into set of arrays of size n', () => {
+    const chunkToThree = F.chunk(3);
     const testArr = [0,1,2,3,4,5,6,7,8,9];
     assert.deepStrictEqual(
         chunkToThree(testArr),

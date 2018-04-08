@@ -1,15 +1,6 @@
+// noinspection JSUnusedLocalSymbols
 /**
- * @typedef {(
- *    Uint8Array
- *    | Int32Array
- *    | Uint16Array
- *    | Uint32Array
- *    | Float64Array
- *    | Int8Array
- *    | Float32Array
- *    | Uint8ClampedArray
- *    | Int16Array
- *    )}
+ * @typedef {(Uint8Array | Int32Array | Uint16Array | Uint32Array | Float64Array | Int8Array | Float32Array | Uint8ClampedArray | Int16Array)}
  */
 let arrayLike;
 
@@ -17,8 +8,8 @@ let arrayLike;
 /**
  * A variadic compose that accepts any number of pure functions and composes
  * them together.
- * @param fns
- * @returns {function(...[*]): *}
+ * @param {...function(?): ?} fns
+ * @returns {function(?): ?}
  */
 const compose = (...fns) => (...x) => fns.reduce((a, b) => c => a(b(c)))(...x);
 
@@ -35,24 +26,16 @@ const identity = e => e;
  * var g = partial(f, arg1, arg2);
  * g(arg3, arg4);
  *
- * @param {Function} fn A function to partially apply.
- * @param {...*} var_args Additional arguments that are partially applied to fn.
- * @return {!Function} A partially-applied form of the function goog.partial()
- *     was invoked as a method of.
+ * @param {!Function} fn A function to partially apply.
+ * @param {...*} a Additional arguments that are partially applied to fn.
+ * @return {function(...*): *} A partially-applied form of the function.
  */
-const partial = function(fn, var_args) {
-  let args = Array.prototype.slice.call(arguments, 1);
-  return function() {
-    let newArgs = args.slice();
-    newArgs.push.apply(newArgs, arguments);
-    return fn.apply(this, newArgs);
-  };
-};
+const partial = (fn, ...a) => (...b)  => fn(...[...a, ...b]);
 
 
 // noinspection JSUnusedLocalSymbols
 /**
- * @param {*} args
+ * @param {...*} args
  * @return {undefined}
  */
 const alwaysUndef = (...args) => undefined;
@@ -60,7 +43,7 @@ const alwaysUndef = (...args) => undefined;
 
 // noinspection JSUnusedLocalSymbols
 /**
- * @param {*} args
+ * @param {...*} args
  * @returns {boolean}
  */
 const alwaysFalse = (...args) => false;
@@ -68,7 +51,7 @@ const alwaysFalse = (...args) => false;
 
 // noinspection JSUnusedLocalSymbols
 /**
- * @param {*} args
+ * @param {...*} args
  * @returns {boolean}
  */
 const alwaysTrue = (...args) => true;
@@ -91,7 +74,7 @@ const logInline = (tag, x) => {
  * Given a tag return a partial function that will print whatever it was given
  * along with the tag.
  * @param {string} tag
- * @returns {function(*):*}
+ * @returns {function(string, *): *}
  */
 const trace = tag => partial(logInline, tag);
 
@@ -99,10 +82,14 @@ const trace = tag => partial(logInline, tag);
 //---------------------------------------------------------------[ Questions ]--
 /**
  * @param {*} x
- * @return {!string}
+ * @return {string}
  */
 const whatType = x => typeof x;
 
+
+/**
+ * @type {Map<*, boolean>}
+ */
 const boolMap = new Map()
     .set('true', true)
     .set('false', false);
@@ -113,7 +100,7 @@ const boolMap = new Map()
  * @param {*} s
  * @returns {*|boolean}
  */
-const maybeBool = s => isDef(boolMap.get(s)) ?  boolMap.get(s) : s;
+const maybeBool = s => isDef(boolMap.get(s)) ? boolMap.get(s) : s;
 
 
 //--------------------------------------------------------------[ Assertions ]--
@@ -140,7 +127,7 @@ const isDefAndNotNull = t => t != null;
 
 /**
  * @param {*} n
- * @return {!boolean}
+ * @return {boolean}
  */
 const isString = n => whatType(n) === 'string';
 
@@ -148,7 +135,8 @@ const isString = n => whatType(n) === 'string';
  * @param {*} n
  * @return {boolean}
  */
-const isNumber = n => whatType(n) === 'number' && !Number.isNaN(n);
+const isNumber = n => whatType(n) === 'number' &&
+    !Number.isNaN(/** @type number */(n));
 
 /**
  * @param t
@@ -167,20 +155,17 @@ const isObject = t => (
 /**
  * A strict even test that does not coerce values, and results in false if the
  * given element is not a number.
- * Example:
- * [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, -0, 0, 1, '1', 2, '2', -1,
- *    'oddball', NaN, {}, [], true, false].forEach(e => console.log(isEven(e)));
- *
  * @param {*} t
+ * @returns {boolean}
  */
-const isEven = t => isNumber(t) && !(t % 2);
+const isEven = t => isNumber(t) && !(/** @type number */(t) % 2);
 
 
 /**
- * @param {*} n
- * @return {function(*): !boolean}
+ * @param {number} n
+ * @returns {function(*): boolean}
  */
-const isDivisibleBy = n => x => isNumber(x) && x % n === 0;
+const isDivisibleBy = n => x => isNumber(x) && /** @type number */(x) % n === 0;
 
 /**
  * @param {function(*=): *} a
@@ -206,9 +191,9 @@ const hasValue = v => (!(v === undefined || Number.isNaN(v)));
  * towards the second value.
  * It does not matter which of the 2 values are larger, the generator will
  * always step from the first towards the second.
- * @param {!number} b Begin here - First element in array
- * @param {!number} e End here - Last element in array
- * @param {!number=} s Step this size
+ * @param {number} b Begin here - First element in array
+ * @param {number} e End here - Last element in array
+ * @param {number=} s Step this size
  */
 function* rangeGen(b, e, s=1) {
   if (!isNumber(s) || s === 0) {
@@ -238,14 +223,15 @@ const range = (b, e, s) => [...(rangeGen(b, e, s))];
 
 /**
  * Get the first element of an array
- * @type {function((!Array.<*>|!string)): *}
+ * @param {!Array<*>} x
+ * @return {*}
  */
 const head = x => x[0];
 
 
 /**
  * Return the last element of an array, or undefined if the array is empty.
- * @param {!Array<*>} x
+ * @param {Array<*>} x
  * @returns {*}
  */
 const tail = x => x[x.length - 1];
@@ -253,20 +239,18 @@ const tail = x => x[x.length - 1];
 
 /**
  * Reverse either an array or a string
- * @type {function((!Array.<*>|!string)): !Array.<*>}
+ * @param {string|!Array<*>} x
+ * @return {!Array<string|*>}
  */
-const reverse = x => {
-  let y = x.split ? x.split('') : x;
-  return y.reduce((p, c) => [c].concat(p), [])
-};
+const reverse = x => Array.from(x).reduce((p, c) => [c, ...p], []);
 
 
 /**
  * Flatten multi-dimensional array to single dimension.
  * Example:
  * [[1], 2, [[3, 4], 5], [[[]]], [[[6]]], 7, 8, []] -> [1, 2, 3, 4, 5, 6, 7, 8]
- * @param {*} a
- * @return {!Array<*>}
+ * @param {Array<*>} a
+ * @return {Array<*>}
  */
 const flatten = a => a.reduce(
     (p,c) => c.reduce ? flatten([...p, ...c]) : [...p, c], []);
@@ -275,8 +259,8 @@ const flatten = a => a.reduce(
 /**
  * Given an index number, return a function that takes an array and returns the
  * element at the given index
- * @param {!number} i
- * @return {function(!Array): *}
+ * @param {number} i
+ * @return {function(!Array<*>): *}
  */
 const elAt = i => arr => arr[i];
 
@@ -286,51 +270,46 @@ const elAt = i => arr => arr[i];
  * Example:
  * [['a', 'b', 'c'], ['A', 'B', 'C'], [1, 2, 3]] ->
  * [['a', 'A', 1], ['b', 'B', 2], ['c', 'C', 3]]
- * @param {!Array<*>} a
- * @return {!Array<*>}
+ * @param {!Array<!Array<*>>} a
+ * @return {!Array<!Array<*>>}
  */
-const transpose = a => a[0].map((e,i) => {
-  const fun = elAt(i);
-  return a.map(fun);
-});
+const transpose = a => a[0].map(
+    (e,i) => {
+      const fun = elAt(i);
+      return a.map(fun);
+    });
 
 
 /**
  * a → n → [a]
  * Returns a fixed list of size n containing a specified identical value.
  * @param {*} v
- * @param {!number} n
+ * @param {number} n
+ * @return {!Array<*>}
  */
 const repeat = (v, n) => new Array(parseInt(n, 10)).fill(v);
 
 
 /**
  * Counts the occurrence of an element in an array.
- * example:
- *    let countZeros = countOck(0);
- *    let countNaNs = countOck(NaN);
- *    console.log(`Number of zeros: ${countZeros([0,1,0,1,0,0,0,1])}`);
- *    console.log(`Number of NaNs: ${countNaNs([NaN,1,NaN,1,NaN,0,NaN,1])}`);
  * @param {*} t
+ * @return {function(!Array<*>): *}
  */
 const countOck = t => arr =>
     arr.filter(e => Number.isNaN(t) ? Number.isNaN(e) : e === t).length;
 
 
 /**
- * Counts the occurence of something that satisfies the predicate
- * Example:
- *    let countArr = countByFunc(e => Array.isArray(e));
- *    console.log(`Number of Arrays: ${countArr([[],[], NaN, {}, 1, {length:1}])}`);
- * @param f
- * @returns {function(*): number}
+ * Counts the occurrence of something that satisfies the predicate
+ * @param {function(*): * } f
+ * @returns {function(!Array<*>): number}
  */
 const countByFunc = f => arr => arr.filter(f).length;
 
 
 /**
  * Remove every n-th element from the given array
- * @param {!number} n
+ * @param {number} n
  * @return {function(!Array<*>): Array<*>}
  */
 const filterAtInc = n => arr => arr.filter((e, i) => (i + 1) % n);
@@ -340,8 +319,8 @@ const filterAtInc = n => arr => arr.filter((e, i) => (i + 1) % n);
  * Example:
  *    console.log('Same Arrays:', sameArr([1, 2], [1, 2]));
  *    console.log('Same Arrays:', sameArr([2, 1], [1, 2]));
- * @param {!Array.<*>} a
- * @param {!Array.<*>} b
+ * @param {Array<*>} a
+ * @param {Array<*>} b
  * @returns {boolean}
  */
 const sameArr = (a, b) => a.length === b.length && a.every((c, i) => b[i] === c);
@@ -353,8 +332,8 @@ const sameArr = (a, b) => a.length === b.length && a.every((c, i) => b[i] === c)
  *    console.log('Same Elements:', sameEls([1, 2], [1, 2]));
  *    console.log('Same Elements:', sameEls([2, 1], [1, 2]));
  *    console.log('Same Elements:', sameEls([2, 2], [1, 2]));
- * @param {!Array.<*>} a
- * @param {!Array.<*>} b
+ * @param {Array<*>} a
+ * @param {Array<*>} b
  * @returns {boolean}
  */
 const sameEls = (a, b) => a.length === b.length &&
@@ -363,14 +342,14 @@ const sameEls = (a, b) => a.length === b.length &&
 
 /**
  * @param func
- * @returns {function(*): (arrayLike)}
+ * @returns {function(!Array<*>): !Array<*>}
  */
 const map = func => x => x.map(func);
 
 
 /**
  * @param func
- * @returns {function(*): (arrayLike)}
+ * @returns {function(!Array<*>): !Array<*>}
  */
 const filter = func => n => n.filter(func);
 
@@ -379,25 +358,25 @@ const filter = func => n => n.filter(func);
  * Convert the given array into an array of smaller arrays each with the length
  * given by n.
  * @param {number} n
- * @returns {function(Array<*>): Array<Array<*>>}
+ * @returns {function(!Array<*>): !Array<!Array<*>>}
  */
-const chunks = n => a => a.reduce(
+const chunk = n => a => a.reduce(
     (p, c, i) => (!(i % n)) ? p.push([c]) && p : p[p.length - 1].push(c) && p,
     []);
 
 
 /**
  * Find the biggest number in a list of numbers
- * @param {!Array<!number>} arr
- * @returns {!number}
+ * @param {!Array<number>} arr
+ * @returns {number}
  */
 const maxInArr = arr => Math.max(...arr);
 
 
 /**
  * Find the biggest number in a list of numbers
- * @param {!Array<!number>} arr
- * @returns {!number}
+ * @param {!Array<number>} arr
+ * @returns {number}
  */
 const minInArr = arr => Math.min(...arr);
 
@@ -420,7 +399,7 @@ const toString = x => x + '';
  * @param {string} x
  * @return {number}
  */
-const toNumber = x => x * 1;
+const toNumber = x => +x;
 
 
 /**
@@ -428,6 +407,7 @@ const toNumber = x => x * 1;
  * @return {string}
  */
 const toUpperCase = x => x.toUpperCase();
+
 
 /**
  * @param {*=} n
@@ -437,7 +417,7 @@ const negate = n => !n;
 
 
 /**
- * @type {function(...[*]): *}
+ * @type {function(*): string}
  */
 const anyToLowerCase = compose(toLowerCase, toString);
 
@@ -450,7 +430,7 @@ const anyToLowerCase = compose(toLowerCase, toString);
  * @return {function(string): string}
  */
 const leftPadWithTo = (v, n) => {
-  const a = repeat(v[0], parseInt(n, 10));
+  const a = /** @type Array<string> */ (repeat(v[0], parseInt(n, 10)));
   return str => {
     const sArr = reverse(str.split(''));
     return reverse(a.map((e, i) => sArr[i] || e)).join('')
@@ -460,11 +440,13 @@ const leftPadWithTo = (v, n) => {
 /**
  * Given an array of characters, test that a string only contains elements from
  * that array.
- * @param {!Array} a
- * @returns {function(string): (string|boolean)}
+ * @param {!Array<string>} a
+ * @returns {function(string): (boolean|string)}
  */
-const onlyIncludes = a => s =>
-    (isString(s) && Array.from(s).every(e => a.includes(e))) ? s : false;
+const onlyIncludes = a => s => {
+  const allGood = Array.from(/** @type string */(s)).every(e => a.includes(e));
+  return allGood ? s : false;
+};
 
 /**
  * Strip the leading char if it is the same as c
@@ -476,30 +458,30 @@ const stripLeadingChar = c => s => s.startsWith(c) ? s.slice(c.length) : s;
 
 /**
  * @param {string} s
- * @return {function(*): (*|string[])}
+ * @return {function(string): Array<string>}
  */
 const split = s => x => x.split(s);
 
 
 /**
- * @param {string} p
- * @param {RegExp|string} r
- * @return {function(*): *}
+ * @param {!RegExp|string} p
+ * @param {string} r
+ * @return {function(string): string}
  */
 const replace = (p, r) => x => x.replace(p, r);
 
 
 /**
- * @param p
- * @param r
- * @return {function(*): *}
+ * @param {!RegExp|string} p
+ * @param {string} r
+ * @return {function(string): string}
  */
 const replaceAll = (p, r) => x => x.replace(new RegExp(`${p}`, 'g'), r);
 
 
 /**
  * @param {string} s
- * @return {function(*): (*|string)}
+ * @return {function(string): (string)}
  */
 const join = s => x => x.join(s);
 
@@ -512,16 +494,16 @@ const join2 = s => (...x) => [...x].join(s);
 
 
 /**
- * @param {!string} x
- * @param {!string} y
- * @return {!string}
+ * @param {string} x
+ * @param {string} y
+ * @return {string}
  */
 const append = (x, y) => y + x;
 
 
 /**
- * @param {!string} x
- * @return {function(!string): !string}
+ * @param {string} x
+ * @return {function(string): string}
  */
 const alwaysAppend = x => y => y + x;
 
@@ -535,7 +517,7 @@ const prepend = x => y => x + y;
 
 /**
  * Interleave a string (s) with the given joiner (j) - starting with the joiner
- * @param {!string} j The joiner to interleave the string with.
+ * @param {string} j The joiner to interleave the string with.
  * @return {function(string): string}
  */
 const interleave = j => s => s.split('').map(v => `${j}${v}`).join('');
@@ -543,7 +525,7 @@ const interleave = j => s => s.split('').map(v => `${j}${v}`).join('');
 
 /**
  * Interleave a string (s) with the given joiner (j) - starting with the string
- * @param {!string} j The joiner to interleave the string with.
+ * @param {string} j The joiner to interleave the string with.
  * @return {function(string): string}
  */
 const interleave2 = j => s => s.split('').join(j);
@@ -566,9 +548,9 @@ const stringReverse = compose(join(''), reverse);
 
 //------------------------------------------------------------[ Object tools ]--
 /**
- * @param {*} l
- * @param {*} r
- * @returns {*}
+ * @param {!Object} l
+ * @param {!Object} r
+ * @returns {!Object}
  */
 const mergeDeep = (l, r) => {
   const output = Object.assign({}, l);
@@ -596,7 +578,7 @@ const mergeDeep = (l, r) => {
  * object or an array and returns the value at the path, or the fallback
  * value.
  * @param {*} f A fallback value
- * @param {!Array<string|number>} arr
+ * @param {Array<string|number>} arr
  * @returns {function((Object|Array)):(*)}
  */
 const pathOr = (f, arr) => e => {
@@ -613,15 +595,15 @@ const pathOr = (f, arr) => e => {
 
 /**
  * Take an object, and return a clone of that object
- * @param {!Object} o
+ * @param {Object} o
  */
 const cloneObj = o => Object.assign({}, o);
 
 
 //--------------------------------------------------------[ Math and Numbers ]--
 /**
- * @param {!number} precision
- * @returns {function(!number): number}
+ * @param {number} precision
+ * @returns {function(number): number}
  */
 const pRound = precision => {
   const factor = Math.pow(10, precision);
@@ -651,7 +633,7 @@ const numReverse = compose(toNumber, join(''), reverse, toString);
  * of their quotient and remainder when using integer division.
  * The seed number is divided by the subsequent number
  * @param {number} y
- * @returns {function(number): number[]}
+ * @returns {function(number): !Array<number>}
  */
 const divMod = y => x => [Math.floor(y/x), y % x];
 
@@ -662,16 +644,16 @@ const divMod = y => x => [Math.floor(y/x), y % x];
  * of their quotient and remainder when using integer division.
  * The subsequent number is divided by the seed number.
  * @param {number} x
- * @returns {function(number): number[]}
+ * @returns {function(number): !Array<number>}
  */
 const divMod2 = x => y => [Math.floor(y/x), y % x];
 
 
 /**
  * Factorize a function of the form Ax^2 + Bx + C = 0 finding the value of x
- * @param {!number} a
- * @param {!number} b
- * @param {!number} c
+ * @param {number} a
+ * @param {number} b
+ * @param {number} c
  * @return {number} The value of x
  */
 const factorize = (a, b, c) => (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * (-c))) / (2 * a);
@@ -682,8 +664,8 @@ const factorize = (a, b, c) => (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * (-c))) /
  * a boolean (is valid luhn) and the actual check number
  * Example:
  *    luhn(35956805108414) -> [true, 6]
- * @param {!number|!string} n The number to calc and check
- * @return {!Array.<!boolean|!number>} Valid and Luhn number
+ * @param {number|string} n The number to calc and check
+ * @return {Array.<boolean|number>} Valid and Luhn number
  */
 const luhn = n => {
   let result = n.toString()
@@ -724,13 +706,13 @@ const luhn = n => {
  * Example:
  *    console.log(imeisvToImei('3595680510841401'));
  *    console.log(imeisvToImei('86488102222183'));
- * @param {!number|!string} n The IMEIsv number as received from RADIUS.
- * @return {!string}
+ * @param {number|string} n The IMEIsv number as received from RADIUS.
+ * @return {string}
  */
 const imeisvToImei = n => {
-  let t = n.toString().substr(0, 14);
+  let t = toString(n).substr(0, 14);
   let r = luhn(t);
-  return r[0] ? t + r[1] : n;
+  return r[0] ? t + r[1] : toString(n);
 };
 
 
@@ -809,11 +791,9 @@ const englishNumber = value => {
  * Given 2 coordinates, (x1, y1) and (x2, y2) what is the y value
  * of a 3rd coordinate on the same line described by the two initial coordinates
  * and a given x-value.
- * @param {!number} x1 Coord 1 x value
- * @param {!number} y1 Coord 1 y value
- * @param {!number} x2 Coord 2 x value
- * @param {!number} y2 Coord 2 y value
- * @return {function(number): number[]}
+ * @param {!Array<number>} $0
+ * @param {!Array<number>} $1
+ * @return {function(number): (!Array<number>|undefined)}
  */
 const extrapolate = ([x1, y1], [x2, y2]) => x3 => {
   if (y1 === y2) {
@@ -897,7 +877,7 @@ module.exports = {
   shannon,
   englishNumber,
   hasValue,
-  chunks,
+  chunk,
   extrapolate
 };
 

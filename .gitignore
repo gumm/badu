@@ -18,3 +18,4 @@ node_modules
 .idea
 /settings_local.json
 settings_local.json
+/scripts/
