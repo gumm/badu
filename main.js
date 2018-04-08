@@ -614,7 +614,7 @@ const divMod2 = x => y => [Math.floor(y/x), y % x];
  * @param {!number} c
  * @return {number} The value of x
  */
-const factorize = (a, b, c) => (-b + Math.sqrt(b**2 - 4 * a * (-c))) / (2 * a);
+const factorize = (a, b, c) => (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * (-c))) / (2 * a);
 
 
 /**
