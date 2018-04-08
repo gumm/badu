@@ -126,6 +126,20 @@ const isDef = t => t !== undefined;
 
 
 /**
+ * @param {*} t
+ * @return {boolean}
+ */
+const isUndefined = t => t === void 0;
+
+
+/**
+ * @param {*} t
+ * @return {boolean}
+ */
+const isDefAndNotNull = t => t != null;
+
+
+/**
  * @param {*} n
  * @return {!boolean}
  */
@@ -288,7 +302,7 @@ const transpose = a => a[0].map((e,i) => {
  * @param {*} v
  * @param {!number} n
  */
-const repeat = (v, n) => new Array(n).fill(v);
+const repeat = (v, n) => new Array(parseInt(n, 10)).fill(v);
 
 
 /**
@@ -431,6 +445,29 @@ const anyToLowerCase = compose(toLowerCase, toString);
 
 //------------------------------------------------------------[ String Tools ]--
 /**
+ * Pad a string with the given char to a total length of n
+ * @param {string} v
+ * @param {number} n
+ * @return {function(string): string}
+ */
+const leftPadWithTo = (v, n) => {
+  const a = repeat(v[0], parseInt(n, 10));
+  return str => {
+    const sArr = reverse(str.split(''));
+    return reverse(a.map((e, i) => sArr[i] || e)).join('')
+  }
+};
+
+/**
+ * Given an array of characters, test that a string only contains elements from
+ * that array.
+ * @param {!Array} a
+ * @returns {function(string): (string|boolean)}
+ */
+const onlyIncludes = a => s =>
+    (isString(s) && Array.from(s).every(e => a.includes(e))) ? s : false;
+
+/**
  * Strip the leading char if it is the same as c
  * @param {string} c
  * @return {function(string): string}
@@ -454,6 +491,14 @@ const replace = (p, r) => x => x.replace(p, r);
 
 
 /**
+ * @param p
+ * @param r
+ * @return {function(*): *}
+ */
+const replaceAll = (p, r) => x => x.replace(new RegExp(`${p}`, 'g'), r);
+
+
+/**
  * @param {string} s
  * @return {function(*): (*|string)}
  */
@@ -468,10 +513,19 @@ const join2 = s => (...x) => [...x].join(s);
 
 
 /**
- * @param {string} x
- * @return {function(string):string}
+ * @param {!string} x
+ * @param {!string} y
+ * @return {!string}
  */
-const append = x => y => y + x;
+const append = (x, y) => y + x;
+
+
+/**
+ * @param {!string} x
+ * @return {function(!string): !string}
+ */
+const alwaysAppend = x => y => y + x;
+
 
 /**
  * @param {string} x
@@ -556,6 +610,13 @@ const pathOr = (f, arr) => e => {
   }, e);
   return r === undefined ? f : r;
 };
+
+
+/**
+ * Take an object, and return a clone of that object
+ * @param {!Object} o
+ */
+const cloneObj = o => Object.assign({}, o);
 
 
 //--------------------------------------------------------[ Math and Numbers ]--
@@ -767,6 +828,13 @@ const extrapolate = ([x1, y1], [x2, y2]) => x3 => {
 
 
 module.exports = {
+  isUndefined,
+  leftPadWithTo,
+  onlyIncludes,
+  isDefAndNotNull,
+  alwaysAppend,
+  replaceAll,
+  cloneObj,
   compose,
   partial,
   mergeDeep,

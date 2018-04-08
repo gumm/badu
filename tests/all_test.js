@@ -90,6 +90,11 @@ describe('Basic Object utils', () => {
     return assert.deepStrictEqual(findE(obj1), 'here I am');
   });
 
+  it('cloneObj: is a utility around Object.assign', () => {
+    const obj1 = {a:{b:{c:[0,1,[2, {d: 'here I am'}]]}}};
+    const clone = F.cloneObj(obj1);
+    return assert.deepStrictEqual(clone, obj1);
+  });
 
 });
 
@@ -126,6 +131,26 @@ describe('Some functions always return the same thing', () => {
 });
 
 describe('Some answers questions', () => {
+
+  it('isUndefined: returns true if given something that is not defined', () => {
+    let uDef;
+    // noinspection JSUnusedAssignment
+    assert.strictEqual(F.isUndefined(uDef), true);
+    assert.strictEqual(F.isUndefined(undefined), true);
+    assert.strictEqual(F.isUndefined(void 0), true);
+  });
+
+  it('isUndefined: handles null', () => {
+    return assert.strictEqual(F.isUndefined(null), false);
+  });
+
+  it('isUndefined: handles NaN', () => {
+    return assert.strictEqual(F.isUndefined(NaN), false);
+  });
+
+  it('isUndefined: handles the empty string', () => {
+    return assert.strictEqual(F.isUndefined(''), false);
+  });
 
   it('whatType: returns "string" if a string is given',
       () => assert.strictEqual(F.whatType('s'), 'string'));
@@ -177,6 +202,25 @@ describe('Some answers questions', () => {
 
   it('isDef: handles undefined',
       () => assert.strictEqual(F.isDef(undefined), false));
+
+  it('isDefAndNotNull: returns true if it was given something other ' +
+      'than "undefined" or null',
+      () => assert.strictEqual(F.isDefAndNotNull(undefined), false));
+
+  it('isDefAndNotNull: null returns false',
+      () => assert.strictEqual(F.isDefAndNotNull(null), false));
+
+  it('isDefAndNotNull: NaN is considered defined',
+      () => assert.strictEqual(F.isDefAndNotNull(NaN), true));
+
+  it('isDefAndNotNull: false is considered defined',
+      () => assert.strictEqual(F.isDefAndNotNull(false), true));
+
+  it('isDefAndNotNull: zero is considered defined',
+      () => assert.strictEqual(F.isDefAndNotNull(0), true));
+
+  it('isDefAndNotNull: empty string is considered defined',
+      () => assert.strictEqual(F.isDefAndNotNull(''), true));
 
   it('isNumber: returns true if given a number',
       () => assert.strictEqual(F.isNumber(1), true));
@@ -447,6 +491,33 @@ describe('Array specific utils', () => {
 
 describe('String related utils', () => {
 
+  it('leftPadWithTo: left-pad a string with the given ' +
+      'char to a total length of n', () => {
+    const pad = F.leftPadWithTo('-', 10);
+    assert.strictEqual(pad('hello'), '-----hello');
+  });
+
+  it('leftPadWithTo: only uses the first char. The rest are ignored', () => {
+    const pad = F.leftPadWithTo('Multi Char', 10);
+    assert.strictEqual(pad('hello'), 'MMMMMhello');
+  });
+
+  it('leftPadWithTo: is forgiving about the number passed in', () => {
+    const pad = F.leftPadWithTo(' ', 10.2);
+    assert.strictEqual(pad('hello'), '     hello');
+  });
+
+  it('onlyIncludes: checks that a string only contains ' +
+      'elements from a. If it passes it returns the string, else false', () => {
+    const only = F.onlyIncludes(['a', 'b', 'c']);
+    assert.strictEqual(only('abc'), 'abc');
+  });
+
+  it('onlyIncludes: it fails with false', () => {
+    const only = F.onlyIncludes(['a', 'b', 'c']);
+    assert.strictEqual(only('abce'), false);
+  });
+
   it('stripLeadingChar: make function that strips the leading ' +
       'char if it matches', () => {
     const stripSlash = F.stripLeadingChar('/');
@@ -514,6 +585,21 @@ describe('String related utils', () => {
     assert.deepStrictEqual(replaceB('aBc'), 'a -replaced here- c')
   });
 
+  it('replace: only replaces the first occurrence', () => {
+    const replaceB = F.replace('B', '1');
+    assert.deepStrictEqual(replaceB('aBcB'), 'a1cB')
+  });
+
+  it('replaceAll: replaces all occurrences of a substring', () => {
+    const replaceB = F.replaceAll('B', '1');
+    assert.deepStrictEqual(replaceB('aBcB'), 'a1c1')
+  });
+
+  it('replaceAll: can replace multi chars with multi chars', () => {
+    const replaceAAA = F.replaceAll('AAA', 'BCD');
+    assert.deepStrictEqual(replaceAAA('aAAAAbAAAAcAAAA'), 'aBCDAbBCDAcBCDA')
+  });
+
   it('join: joins an array of strings with the given char or substring', () => {
     const joinWithB = F.join('B');
     assert.deepStrictEqual(joinWithB(['a', 'c']), 'aBc')
@@ -525,7 +611,11 @@ describe('String related utils', () => {
   });
 
   it('append: append chart or substring to argument', () => {
-    const appendB = F.append('B');
+    assert.deepStrictEqual(F.append('B', 'a'), 'aB')
+  });
+
+  it('alwaysAppend: append chart or substring to argument', () => {
+    const appendB = F.alwaysAppend('B');
     assert.deepStrictEqual(appendB('a'), 'aB')
   });
 
