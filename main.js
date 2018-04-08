@@ -1,7 +1,6 @@
 /**
  * @typedef {(
  *    Uint8Array
- *    | *[]
  *    | Int32Array
  *    | Uint16Array
  *    | Uint32Array
