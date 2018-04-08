@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gumm/func-tools.git"
+    "url": "git+https://github.com/gumm/badu.git"
   },
   "keywords": [
     "utils"
@@ -19,7 +19,7 @@
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/gumm/func-tools/issues"
+    "url": "https://github.com/gumm/badu/issues"
   },
   "dependencies": {},
   "devDependencies": {
