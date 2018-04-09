@@ -1,5 +1,5 @@
 const assert = require('assert');
-const F = require('../badu.js');
+const F = require('../main.js');
 
 describe('Functional tools', () => {
   it('compose: compose pure functions', () => {
