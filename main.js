@@ -316,9 +316,6 @@ const filterAtInc = n => arr => arr.filter((e, i) => (i + 1) % n);
 
 /**
  * A strict same elements in same order comparison.
- * Example:
- *    console.log('Same Arrays:', sameArr([1, 2], [1, 2]));
- *    console.log('Same Arrays:', sameArr([2, 1], [1, 2]));
  * @param {Array<*>} a
  * @param {Array<*>} b
  * @returns {boolean}
@@ -328,10 +325,6 @@ const sameArr = (a, b) => a.length === b.length && a.every((c, i) => b[i] === c)
 
 /**
  * A loose same elements comparison.
- * Example:
- *    console.log('Same Elements:', sameEls([1, 2], [1, 2]));
- *    console.log('Same Elements:', sameEls([2, 1], [1, 2]));
- *    console.log('Same Elements:', sameEls([2, 2], [1, 2]));
  * @param {Array<*>} a
  * @param {Array<*>} b
  * @returns {boolean}
@@ -810,6 +803,7 @@ module.exports = {
   isUndefined,
   leftPadWithTo,
   onlyIncludes,
+  isDef,
   isDefAndNotNull,
   alwaysAppend,
   replaceAll,
@@ -825,7 +819,6 @@ module.exports = {
   alwaysTrue,
   whatType,
   maybeBool,
-  isDef,
   isNumber,
   isString,
   isObject,
