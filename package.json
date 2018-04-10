@@ -1,10 +1,10 @@
 {
   "name": "badu",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "A set of boilerplate utility functions",
   "main": "main.js",
   "scripts": {
-    "test": "mocha --recursive ./tests/",
+    "test": "mocha --recursive ./test/",
     "build": "npx rollup -c"
   },
   "repository": {

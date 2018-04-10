@@ -3,6 +3,8 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 // noinspection JSUnusedLocalSymbols
+
+
 /**
  * A variadic compose that accepts any number of pure functions and composes
  * them together.

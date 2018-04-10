@@ -2,7 +2,7 @@
 
 export default [
   {
-    input: 'module/badu.jsm',
+    input: 'module/badu.mjs',
     output: {
       file: 'main.js',
       format: 'cjs',
