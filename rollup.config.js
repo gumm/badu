@@ -8,5 +8,13 @@ export default [
       format: 'cjs',
       name: 'badu',
     }
+  },
+  {
+    input: 'module/badu.mjs',
+    output: {
+      file: 'dist/_temp.js',
+      format: 'iife',
+      name: 'badu',
+    },
   }
 ];
