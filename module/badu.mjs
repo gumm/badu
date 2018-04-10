@@ -246,6 +246,14 @@ const reverse = x => Array.from(x).reduce((p, c) => [c, ...p], []);
 
 
 /**
+ * Truncate an array to the number of elements given in n;
+ * @param {number} n
+ * @return {function(!Array<*>): !Array<*>}
+ */
+const truncate = n => arr => arr.filter((_,i) => i < n);
+
+
+/**
  * Flatten multi-dimensional array to single dimension.
  * Example:
  * [[1], 2, [[3, 4], 5], [[[]]], [[[6]]], 7, 8, []] -> [1, 2, 3, 4, 5, 6, 7, 8]
@@ -831,6 +839,7 @@ export {
   reverse,
   tail,
   flatten,
+  truncate,
   elAt,
   transpose,
   repeat,
