@@ -1,8 +1,10 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
 // noinspection JSUnusedLocalSymbols
+/**
+ * @typedef {(Uint8Array | Int32Array | Uint16Array | Uint32Array | Float64Array | Int8Array | Float32Array | Uint8ClampedArray | Int16Array)}
+ */
+let arrayLike;
+
+
 /**
  * A variadic compose that accepts any number of pure functions and composes
  * them together.
@@ -748,15 +750,15 @@ const englishNumber = value => {
     'sext', 'sept', 'oct', 'non', 'dec'].map(e => `${e}illion`)];
 
   if (value < 0) {
-    name = `negative ${englishNumber(-value)}`;
+    name = `negative ${englishNumber(-value)}`
   } else if (value < 20) {
-    name = units[value];
+    name = units[value]
   } else if (value < 100) {
     [quotient, remainder] = dm(10);
     name = `${tens[quotient]} ${units[remainder]}`.replace(' zero', '');
   } else if (value < 1000) {
     [quotient, remainder] = dm(100);
-    name = `${englishNumber(quotient)} hundred and ${englishNumber(remainder)}`.replace(' and zero', '');
+    name = `${englishNumber(quotient)} hundred and ${englishNumber(remainder)}`.replace(' and zero', '')
   } else {
     const chunks = [];
     const text = [];
@@ -796,75 +798,78 @@ const extrapolate = ([x1, y1], [x2, y2]) => x3 => {
   return [x3, x3 * Math.tan(Math.atan((y2 - y1) / (x2 - x1)))];
 };
 
-exports.isUndefined = isUndefined;
-exports.leftPadWithTo = leftPadWithTo;
-exports.onlyIncludes = onlyIncludes;
-exports.isDef = isDef;
-exports.isDefAndNotNull = isDefAndNotNull;
-exports.alwaysAppend = alwaysAppend;
-exports.replaceAll = replaceAll;
-exports.cloneObj = cloneObj;
-exports.compose = compose;
-exports.partial = partial;
-exports.mergeDeep = mergeDeep;
-exports.pathOr = pathOr;
-exports.trace = trace;
-exports.identity = identity;
-exports.alwaysUndef = alwaysUndef;
-exports.alwaysFalse = alwaysFalse;
-exports.alwaysTrue = alwaysTrue;
-exports.whatType = whatType;
-exports.maybeBool = maybeBool;
-exports.isNumber = isNumber;
-exports.isString = isString;
-exports.isObject = isObject;
-exports.isEven = isEven;
-exports.isDivisibleBy = isDivisibleBy;
-exports.both = both;
-exports.sameArr = sameArr;
-exports.sameEls = sameEls;
-exports.range = range;
-exports.head = head;
-exports.reverse = reverse;
-exports.tail = tail;
-exports.flatten = flatten;
-exports.elAt = elAt;
-exports.transpose = transpose;
-exports.repeat = repeat;
-exports.countOck = countOck;
-exports.countByFunc = countByFunc;
-exports.filterAtInc = filterAtInc;
-exports.map = map;
-exports.filter = filter;
-exports.maxInArr = maxInArr;
-exports.minInArr = minInArr;
-exports.stripLeadingChar = stripLeadingChar;
-exports.toLowerCase = toLowerCase;
-exports.toUpperCase = toUpperCase;
-exports.toString = toString;
-exports.toNumber = toNumber;
-exports.anyToLowerCase = anyToLowerCase;
-exports.stringReverse = stringReverse;
-exports.numReverse = numReverse;
-exports.split = split;
-exports.replace = replace;
-exports.join = join;
-exports.join2 = join2;
-exports.append = append;
-exports.prepend = prepend;
-exports.interleave = interleave;
-exports.interleave2 = interleave2;
-exports.countSubString = countSubString;
-exports.pRound = pRound;
-exports.maybeNumber = maybeNumber;
-exports.negate = negate;
-exports.divMod = divMod;
-exports.divMod2 = divMod2;
-exports.factorize = factorize;
-exports.luhn = luhn;
-exports.imeisvToImei = imeisvToImei;
-exports.shannon = shannon;
-exports.englishNumber = englishNumber;
-exports.hasValue = hasValue;
-exports.chunk = chunk;
-exports.extrapolate = extrapolate;
+export {
+  isUndefined,
+  leftPadWithTo,
+  onlyIncludes,
+  isDef,
+  isDefAndNotNull,
+  alwaysAppend,
+  replaceAll,
+  cloneObj,
+  compose,
+  partial,
+  mergeDeep,
+  pathOr,
+  trace,
+  identity,
+  alwaysUndef,
+  alwaysFalse,
+  alwaysTrue,
+  whatType,
+  maybeBool,
+  isNumber,
+  isString,
+  isObject,
+  isEven,
+  isDivisibleBy,
+  both,
+  sameArr,
+  sameEls,
+  range,
+  head,
+  reverse,
+  tail,
+  flatten,
+  elAt,
+  transpose,
+  repeat,
+  countOck,
+  countByFunc,
+  filterAtInc,
+  map,
+  filter,
+  maxInArr,
+  minInArr,
+  stripLeadingChar,
+  toLowerCase,
+  toUpperCase,
+  toString,
+  toNumber,
+  anyToLowerCase,
+  stringReverse,
+  numReverse,
+  split,
+  replace,
+  join,
+  join2,
+  append,
+  prepend,
+  interleave,
+  interleave2,
+  countSubString,
+  pRound,
+  maybeNumber,
+  negate,
+  divMod,
+  divMod2,
+  factorize,
+  luhn,
+  imeisvToImei,
+  shannon,
+  englishNumber,
+  hasValue,
+  chunk,
+  extrapolate
+};
+
