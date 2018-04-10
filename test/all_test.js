@@ -400,6 +400,14 @@ describe('Array specific utils', () => {
     ), true)
   });
 
+  it('truncate: truncate an array to the given length', () => {
+    const truncTo3 = F.truncate(3);
+    assert.strictEqual(F.sameArr(
+        truncTo3([1, 2, 3, 4, 5, 6, 7, 8]),
+        [1,2,3]),
+        true)
+  });
+
   it('elAt: returns the element of an array at the given position', () => {
     const first = F.elAt(0);
     const second = F.elAt(1);
