@@ -426,6 +426,21 @@ const anyToLowerCase = compose(toLowerCase, toString);
 
 //------------------------------------------------------------[ String Tools ]--
 /**
+ * Returns a string with at least 64-bits of randomness.
+ *
+ * Doesn't trust Javascript's random function entirely. Uses a combination of
+ * random and current timestamp, and then encodes the string in base-36 to
+ * make it shorter.
+ *
+ * @return {string} A random string, e.g. sn1s7vb4gcic.
+ */
+const makeRandomString = () => {
+  let x = 2147483648;
+  return Math.floor(Math.random() * x).toString(36) +
+      Math.abs(Math.floor(Math.random() * x) ^ Date.now()).toString(36);
+};
+
+/**
  * Pad a string with the given char to a total length of n
  * @param {string} v
  * @param {number} n
@@ -602,6 +617,16 @@ const pathOr = (f, arr) => e => {
 const cloneObj = o => Object.assign({}, o);
 
 
+//--------------------------------------------------------------[ Time Utils ]--
+/**
+ * This returns now in seconds.
+ * The value returned by the Date.now() method is the number of milliseconds
+ * since 1 January 1970 00:00:00 UTC. Always UTC.
+ * @return {number} The current Epoch timestamp in seconds. Rounding down.
+ */
+const getNowSeconds = () => Math.floor(Date.now() / 1000);
+
+
 //--------------------------------------------------------[ Math and Numbers ]--
 /**
  * A generator function to produce consecutive ids, starting from
@@ -615,6 +640,42 @@ function* idGen(opt_n) {
 }
 
 
+/**
+ * Private function that will return an incremented counter value each time it
+ * is called.
+ * @param {?number=} opt_start
+ * @return {function(): number}
+ */
+const privateCounter = (opt_start) => {
+  let c = opt_start ? opt_start : 0;
+  return () => c++;
+};
+
+
+/**
+ * Private function that will always return the same random string each time
+ * it is called.
+ * @return {string}
+ */
+const privateRandom = () => {
+  const c = randomId();
+  return (() => c)();
+};
+
+
+/**
+ * Returns a pseudo random string. Good for ids.
+ * @param {?number=} opt_length An optional length for the string. Note this
+ *    clearly reduces the randomness, and increases the chances of a collision.
+ * @return {string}
+ */
+const randomId = opt_length => {
+  const s = makeRandomString();
+  return opt_length ? s.substr(0, opt_length) : s;
+};
+
+
+//--------------------------------------------------------[ Math and Numbers ]--
 /**
  * @param {number} precision
  * @returns {function(number): number}
@@ -982,6 +1043,10 @@ export {
   clearBitAt,
   invBitAt,
   hasBitAt,
-  idGen
+  idGen,
+  makeRandomString,
+  randomId,
+  privateRandom,
+  privateCounter
 };
 
