@@ -34,9 +34,8 @@ DEV=(
 #  "--js_output_file=dist/dag-solve.min.js"
   "--hide_warnings_for=node_modules"
   "--dependency_mode=STRICT"
-  "--entry_point=src/badu.mjs"
+  "--entry_point=module/badu.mjs"
   # "node_modules/!(test)**/!(test).js"
-  "node_modules/badu/module/badu.mjs"
   "module/**.mjs"
 )
 

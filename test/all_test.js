@@ -803,3 +803,48 @@ describe('Number and math specific utils', () => {
 
 });
 
+describe('Bit-banging utils', () => {
+
+  it('numToBinString: given a number return a string of 0,1s', () => {
+    assert.deepStrictEqual(F.numToBinString(0), '0');
+    assert.deepStrictEqual(F.numToBinString(1), '1');
+    assert.deepStrictEqual(F.numToBinString(2), '10');
+    assert.deepStrictEqual(F.numToBinString(3), '11');
+    assert.deepStrictEqual(F.numToBinString(255), '11111111');
+    assert.deepStrictEqual(F.numToBinString(9876543210), '1001001100101100000001011011101010');
+  });
+
+  it('binStringToNum: a string of 0 and 1 is converted to a number', () => {
+    assert.deepStrictEqual(F.binStringToNum('0'), 0);
+    assert.deepStrictEqual(F.binStringToNum('1'), 1);
+    assert.deepStrictEqual(F.binStringToNum('10'), 2);
+    assert.deepStrictEqual(F.binStringToNum('11'), 3);
+    assert.deepStrictEqual(F.binStringToNum('11111111'), 255);
+    assert.deepStrictEqual(F.binStringToNum('10101100'), 172);
+    assert.deepStrictEqual(F.binStringToNum('1001001100101100000001011011101010'), 9876543210);
+  });
+
+  it('getBitAt: get either a 0 or a 1 from the position in the number', () => {
+    assert.deepStrictEqual(F.getBitAt(172, 0), 0);
+    assert.deepStrictEqual(F.getBitAt(172, 1), 0);
+    assert.deepStrictEqual(F.getBitAt(172, 2), 1);
+    assert.deepStrictEqual(F.getBitAt(172, 3), 1);
+    assert.deepStrictEqual(F.getBitAt(172, 4), 0);
+    assert.deepStrictEqual(F.getBitAt(172, 5), 1);
+    assert.deepStrictEqual(F.getBitAt(172, 6), 0);
+    assert.deepStrictEqual(F.getBitAt(172, 7), 1);
+  });
+
+  it('getBitAt: Sets the bit in the number and returns the resultant number', () => {
+    assert.deepStrictEqual(F.setBitAt(172, 0), 173);
+    assert.deepStrictEqual(F.setBitAt(172, 1), 174);
+    assert.deepStrictEqual(F.setBitAt(172, 2), 172);
+    assert.deepStrictEqual(F.setBitAt(172, 3), 172);
+    assert.deepStrictEqual(F.setBitAt(172, 4), 188);
+    assert.deepStrictEqual(F.setBitAt(172, 5), 172);
+    assert.deepStrictEqual(F.setBitAt(172, 6), 236);
+    assert.deepStrictEqual(F.setBitAt(172, 7), 172);
+  });
+
+});
+

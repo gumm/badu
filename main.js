@@ -2,9 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-// noinspection JSUnusedLocalSymbols
-
-
 /**
  * A variadic compose that accepts any number of pure functions and composes
  * them together.
@@ -603,6 +600,18 @@ const cloneObj = o => Object.assign({}, o);
 
 //--------------------------------------------------------[ Math and Numbers ]--
 /**
+ * A generator function to produce consecutive ids, starting from
+ * n + 1 of n. If n is not given, use 0.
+ * @param {number=} opt_n
+ * @return {!Iterator<number>}
+ */
+function* idGen(opt_n) {
+  let i = opt_n ? opt_n + 1 : 0;
+  while (true) yield i++;
+}
+
+
+/**
  * @param {number} precision
  * @returns {function(number): number}
  */
@@ -806,6 +815,87 @@ const extrapolate = ([x1, y1], [x2, y2]) => x3 => {
   return [x3, x3 * Math.tan(Math.atan((y2 - y1) / (x2 - x1)))];
 };
 
+
+// ------------------------------------------------------------[ Bit Banging ]--
+/**
+ * Convert a decimal number to a binary string.
+ * @param {number} n
+ * @return {string} A string representing a binary ie. "1011".
+ */
+const numToBinString = n => n.toString(2);
+
+
+/**
+ * Convert a binary string to a decimal number.
+ * @param {string} s A string representing a binary ie. "1011".
+ * @return {number}
+ */
+const binStringToNum = s => parseInt(s, 2);
+
+
+/**
+ * Get the bit at the position n of the number b.
+ * Bit count starts at 0.
+ *
+ * Example:
+ * var b = 8;  // 1000
+ * alert(getBit(b,2));  // 0
+ * alert(getBit(b,6));  // 0
+ * alert(getBit(b,3));  // 1
+ *
+ * To print the result: result.toString(2)
+ *
+ * @param {number} b
+ * @param {number} n
+ * @return {number}
+ */
+const getBitAt = (b, n) => (b >> n) & 1;
+
+/**
+ * Set the bit at the position n of the number b. The bit is set to 1.
+ * Bit count starts at 0.
+ *
+ * Example:
+ * var b = 10;  // 1010
+ * c = setBit(b,2));  // 14 // 1110
+ * d = setBit(b,0));  // 11 // 1011
+ *
+ * @param {number} b
+ * @param {number} n
+ * @return {number}
+ */
+const setBitAt = (b, n) => b | (1 << n);
+
+
+/**
+ * Remove the bit at the position n of the number b. The bit is set to 0.
+ * Bit count starts at 0.
+ * @param {number} b
+ * @param {number} n
+ * @return {number}
+ */
+const clearBitAt = (b, n) => b & ~(1 << n);
+
+
+/**
+ * Invert the bit at the position n of the number b.
+ * Bit count starts at 0.
+ * @param {number} b
+ * @param {number} n
+ * @return {number}
+ */
+const invBitAt = (b, n) => b ^ (1 << n);
+
+
+/**
+ * Return true if the bit at the given position is 1.
+ * Bit count starts at 0.
+ * @param {number} b
+ * @param {number} n
+ * @return {boolean}
+ */
+const hasBitAt = (b, n) => getBitAt(b, n) === 1;
+
 exports.isUndefined = isUndefined;
 exports.leftPadWithTo = leftPadWithTo;
 exports.onlyIncludes = onlyIncludes;
@@ -879,3 +969,11 @@ exports.englishNumber = englishNumber;
 exports.hasValue = hasValue;
 exports.chunk = chunk;
 exports.extrapolate = extrapolate;
+exports.numToBinString = numToBinString;
+exports.binStringToNum = binStringToNum;
+exports.getBitAt = getBitAt;
+exports.setBitAt = setBitAt;
+exports.clearBitAt = clearBitAt;
+exports.invBitAt = invBitAt;
+exports.hasBitAt = hasBitAt;
+exports.idGen = idGen;
