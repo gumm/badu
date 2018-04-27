@@ -59,7 +59,7 @@ const alwaysTrue = (...args) => true;
  * @return {function(): undefined}
  */
 const maybeFunc = func => () => {
-  if (isDef(func)) { func(); }
+  if (whatType(func) === 'function') { func(); }
 };
 
 
