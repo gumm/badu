@@ -58,6 +58,15 @@ const alwaysFalse = (...args) => false;
 const alwaysTrue = (...args) => true;
 
 
+/**
+ * @param {*} func
+ * @return {function(): void}
+ */
+const maybeFunc = func => () => {
+  func ? func() : void 0;
+};
+
+
 
 //-------------------------------------------------------[ Log & Debug Tools ]--
 /**
@@ -1047,6 +1056,7 @@ export {
   makeRandomString,
   randomId,
   privateRandom,
-  privateCounter
+  privateCounter,
+  maybeFunc
 };
 

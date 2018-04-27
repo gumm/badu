@@ -1,6 +1,6 @@
 {
   "name": "badu",
-  "version": "1.2.12",
+  "version": "1.2.13",
   "description": "A set of boilerplate utility functions",
   "main": "main.js",
   "scripts": {
