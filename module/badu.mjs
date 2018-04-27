@@ -60,10 +60,10 @@ const alwaysTrue = (...args) => true;
 
 /**
  * @param {*} func
- * @return {function(): void}
+ * @return {function(): undefined}
  */
 const maybeFunc = func => () => {
-  func ? func() : void 0;
+  if (isDef(func)) { func() }
 };
 
 

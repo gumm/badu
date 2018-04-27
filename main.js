@@ -54,6 +54,15 @@ const alwaysFalse = (...args) => false;
 const alwaysTrue = (...args) => true;
 
 
+/**
+ * @param {*} func
+ * @return {function(): undefined}
+ */
+const maybeFunc = func => () => {
+  if (isDef(func)) { func(); }
+};
+
+
 
 //-------------------------------------------------------[ Log & Debug Tools ]--
 /**
@@ -1032,3 +1041,4 @@ exports.makeRandomString = makeRandomString;
 exports.randomId = randomId;
 exports.privateRandom = privateRandom;
 exports.privateCounter = privateCounter;
+exports.maybeFunc = maybeFunc;
