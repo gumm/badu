@@ -59,7 +59,7 @@ const alwaysTrue = (...args) => true;
  * @return {function(): undefined}
  */
 const maybeFunc = func => () => {
-  if (whatType(func) === 'function') { func(); }
+  if (whatType(func) === 'function') { /** @type {!Function} */(func)(); }
 };
 
 
@@ -176,7 +176,7 @@ const isDivisibleBy = n => x => isNumber(x) && /** @type number */(x) % n === 0;
 /**
  * @param {function(*=): *} a
  * @param {function(*=): *} b
- * @returns {function(*=): *}
+ * @returns {function(?): ?}
  */
 const both = (a, b) => n => a(n) && b(n);
 
@@ -263,7 +263,7 @@ const truncate = n => arr => arr.filter((_,i) => i < n);
  * Flatten multi-dimensional array to single dimension.
  * Example:
  * [[1], 2, [[3, 4], 5], [[[]]], [[[6]]], 7, 8, []] -> [1, 2, 3, 4, 5, 6, 7, 8]
- * @param {Array<*>} a
+ * @param {!Array<*>} a
  * @return {Array<*>}
  */
 const flatten = a => a.reduce(
