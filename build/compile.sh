@@ -34,9 +34,9 @@ DEV=(
 #  "--js_output_file=dist/dag-solve.min.js"
   "--hide_warnings_for=node_modules"
   "--dependency_mode=STRICT"
-  "--entry_point=module/badu.mjs"
+  "--entry_point=src/badu.js"
   # "node_modules/!(test)**/!(test).js"
-  "module/**.mjs"
+  "src/**.mjs"
 )
 
 if [[ "${BUILD}" == "es5" ]]; then

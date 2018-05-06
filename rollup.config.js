@@ -2,7 +2,7 @@
 
 export default [
   {
-    input: 'module/badu.mjs',
+    input: 'src/badu.js',
     output: {
       file: 'main.js',
       format: 'cjs',
@@ -10,7 +10,7 @@ export default [
     }
   },
   {
-    input: 'module/badu.mjs',
+    input: 'src/badu.js',
     output: {
       file: 'dist/_temp.js',
       format: 'iife',

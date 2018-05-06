@@ -1,5 +1,5 @@
 const assert = require('assert');
-import * as F from '../module/badu.mjs'
+import * as F from '../src/badu.js'
 
 describe('Functional tools', () => {
   it('compose: compose pure functions', () => {
