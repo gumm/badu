@@ -54,6 +54,14 @@ const alwaysFalse = (...args) => false;
 const alwaysTrue = (...args) => true;
 
 
+// noinspection JSUnusedLocalSymbols
+/**
+ * @param {...*} args
+ * @returns {null}
+ */
+const alwaysNull = (...args) => null;
+
+
 /**
  * @param {*} func
  * @return {function(): undefined}
@@ -973,6 +981,7 @@ exports.identity = identity;
 exports.alwaysUndef = alwaysUndef;
 exports.alwaysFalse = alwaysFalse;
 exports.alwaysTrue = alwaysTrue;
+exports.alwaysNull = alwaysNull;
 exports.whatType = whatType;
 exports.maybeBool = maybeBool;
 exports.isNumber = isNumber;
