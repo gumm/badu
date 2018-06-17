@@ -884,6 +884,20 @@ const extrapolate = ([x1, y1], [x2, y2]) => x3 => {
 };
 
 
+/**
+ * Given bytes (octets) format it into a human readable string.
+ * @param {number} precision
+ * @returns {function(number): !string}
+ */
+const formatBytes = precision => bytes => {
+  if (bytes === 0) { return '0'; }
+  const k = 1024; // or 1024 for binary
+  const dm = precision ? precision : 2;
+  const sizes = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Number((bytes / Math.pow(k, i)).toPrecision(dm)) + ' ' + sizes[i];
+};
+
 // ------------------------------------------------------------[ Bit Banging ]--
 /**
  * Convert a decimal number to a binary string.
@@ -1051,3 +1065,4 @@ exports.randomId = randomId;
 exports.privateRandom = privateRandom;
 exports.privateCounter = privateCounter;
 exports.maybeFunc = maybeFunc;
+exports.formatBytes = formatBytes;
