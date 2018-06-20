@@ -1,3 +1,5 @@
+import {transpose} from "../src/badu";
+
 const assert = require('assert');
 import * as F from '../src/badu.js'
 
@@ -485,6 +487,12 @@ describe('Array specific utils', () => {
   it('minInArr: returns min value of array',
       () => assert.strictEqual(F.minInArr([1,2,3,2,1]), 1)
   );
+
+  it('columnReduce: Reduce the columns in an array of arrays.', () => {
+    assert.deepStrictEqual(
+        F.columnReduce([[1, 2, 3], [4, 5, 6]], (p, c) => p + c),
+        [5, 7, 9])
+  });
 
   it('chunk: split an array into set of arrays of size n', () => {
     const chunkToThree = F.chunk(3);

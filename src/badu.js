@@ -400,6 +400,15 @@ const maxInArr = arr => Math.max(...arr);
 const minInArr = arr => Math.min(...arr);
 
 
+/**
+ * Reduce the columns in an array of arrays.
+ * columnReduce([[1,2,3], [4,5,6]], (p,c) => p + c) // [5,7,9]
+ * @param arr
+ * @param f
+ * @returns {Array}
+ */
+const columnReduce = (arr, f) => transpose(arr).map(e => e.reduce(f));
+
 //--------------------------------------------------------------[ Conversion ]--
 /**
  * @param {string} x
@@ -1081,6 +1090,7 @@ export {
   privateRandom,
   privateCounter,
   maybeFunc,
-  formatBytes
+  formatBytes,
+  columnReduce
 };
 
