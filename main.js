@@ -236,6 +236,32 @@ const range = (b, e, s) => [...(rangeGen(b, e, s))];
 
 
 /**
+ * Works by spoofing an iterable object by creating an object with a length
+ * property.
+ * @param {!number} m
+ * @param {!number} n
+ * @returns {Array<!number>}
+ */
+const range2 = (m, n) => Array.from(
+    {length: Math.floor(n - m) + 1},
+    (_, i) => m + i
+);
+
+
+/**
+ * Given max value, return a function that takes an int, and returns an
+ * array of values in clock order from the given int around.
+ * Example:
+ *     clock12 = clock(12)
+ *     clock12(4) -> [ 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3 ]
+ * @param {number} m
+ * @returns {function(number):Array<number>}
+ */
+const clock = m => s => [...range2(s, m), ...(s > 1 ? range2(1, s - 1): [])];
+
+
+
+/**
  * Get the first element of an array
  * @param {!Array<*>} x
  * @return {*}
@@ -345,6 +371,7 @@ const filterAtInc = n => arr => arr.filter((e, i) => (i + 1) % n);
 const sameArr = (a, b) => a.length === b.length && a.every((c, i) => b[i] === c);
 
 
+
 /**
  * A loose same elements comparison.
  * @param {Array<*>} a
@@ -404,6 +431,17 @@ const minInArr = arr => Math.min(...arr);
  * @returns {Array}
  */
 const columnReduce = (arr, f) => transpose(arr).map(e => e.reduce(f));
+
+
+/**
+ * Split an array into two arrays at the given position.
+ * splitAt :: Int -> [a] -> ([a],[a])
+ * @param {number} n
+ * @returns {function(!Array<*>):!Array<Array<*>>}
+ */
+const splitAt = n => arr => [arr.slice(0, n), arr.slice(n)];
+
+
 
 //--------------------------------------------------------------[ Conversion ]--
 /**
@@ -1016,6 +1054,8 @@ exports.both = both;
 exports.sameArr = sameArr;
 exports.sameEls = sameEls;
 exports.range = range;
+exports.range2 = range2;
+exports.clock = clock;
 exports.head = head;
 exports.reverse = reverse;
 exports.tail = tail;
@@ -1076,3 +1116,4 @@ exports.privateCounter = privateCounter;
 exports.maybeFunc = maybeFunc;
 exports.formatBytes = formatBytes;
 exports.columnReduce = columnReduce;
+exports.splitAt = splitAt;
