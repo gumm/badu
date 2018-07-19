@@ -196,6 +196,15 @@ const both = (a, b) => n => a(n) && b(n);
 const hasValue = v => (!(v === undefined || Number.isNaN(v)));
 
 
+/**
+ * Check if an Object has keys. Usefull to check if JSON responses are
+ * empty.
+ * @param o
+ * @returns {boolean}
+ */
+const isEmpty = o => o.constructor === Object && Object.keys(o).length === 0;
+
+
 //-------------------------------------------------------------[ Array Tools ]--
 /**
  * A generator function that returns an iterator over the specified range of
@@ -1050,6 +1059,7 @@ exports.isString = isString;
 exports.isObject = isObject;
 exports.isEven = isEven;
 exports.isDivisibleBy = isDivisibleBy;
+exports.isEmpty = isEmpty;
 exports.both = both;
 exports.sameArr = sameArr;
 exports.sameEls = sameEls;
