@@ -92,6 +92,13 @@ describe('Basic Object utils', () => {
     return assert.deepStrictEqual(findE(obj1), 'here I am');
   });
 
+  it('pathOr: converts string numbers to numbers when ' +
+      'trying to find things in an array', () => {
+    const obj1 = {a:{b:{c:[0,1,[2, {d: 'here I am'}]]}}};
+    const findE = F.pathOr('default', ['a','b','c', '2', '1', 'd']);
+    return assert.deepStrictEqual(findE(obj1), 'here I am');
+  });
+
   it('cloneObj: is a utility around Object.assign', () => {
     const obj1 = {a:{b:{c:[0,1,[2, {d: 'here I am'}]]}}};
     const clone = F.cloneObj(obj1);

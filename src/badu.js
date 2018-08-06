@@ -677,7 +677,7 @@ const mergeDeep = (l, r) => {
 const pathOr = (f, arr) => e => {
   const r = arr.reduce((p, c) => {
     try {
-      return p[c];
+      return p[maybeNumber(c)];
     } catch (err) {
       return undefined
     }
