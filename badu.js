@@ -1,7 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
 /**
  * A variadic compose that accepts any number of pure functions and composes
  * them together.
@@ -670,7 +666,7 @@ const mergeDeep = (l, r) => {
 const pathOr = (f, arr) => e => {
   const r = arr.reduce((p, c) => {
     try {
-      return p[c];
+      return p[maybeNumber(c)];
     } catch (err) {
       return undefined
     }
@@ -1034,96 +1030,4 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-exports.isUndefined = isUndefined;
-exports.leftPadWithTo = leftPadWithTo;
-exports.onlyIncludes = onlyIncludes;
-exports.isDef = isDef;
-exports.isDefAndNotNull = isDefAndNotNull;
-exports.alwaysAppend = alwaysAppend;
-exports.replaceAll = replaceAll;
-exports.cloneObj = cloneObj;
-exports.compose = compose;
-exports.partial = partial;
-exports.mergeDeep = mergeDeep;
-exports.pathOr = pathOr;
-exports.trace = trace;
-exports.identity = identity;
-exports.alwaysUndef = alwaysUndef;
-exports.alwaysFalse = alwaysFalse;
-exports.alwaysTrue = alwaysTrue;
-exports.alwaysNull = alwaysNull;
-exports.whatType = whatType;
-exports.maybeBool = maybeBool;
-exports.isNumber = isNumber;
-exports.isString = isString;
-exports.isObject = isObject;
-exports.isEven = isEven;
-exports.isDivisibleBy = isDivisibleBy;
-exports.isEmpty = isEmpty;
-exports.both = both;
-exports.sameArr = sameArr;
-exports.sameEls = sameEls;
-exports.range = range;
-exports.range2 = range2;
-exports.clock = clock;
-exports.head = head;
-exports.reverse = reverse;
-exports.tail = tail;
-exports.flatten = flatten;
-exports.truncate = truncate;
-exports.elAt = elAt;
-exports.transpose = transpose;
-exports.repeat = repeat;
-exports.countOck = countOck;
-exports.countByFunc = countByFunc;
-exports.filterAtInc = filterAtInc;
-exports.map = map;
-exports.filter = filter;
-exports.maxInArr = maxInArr;
-exports.minInArr = minInArr;
-exports.stripLeadingChar = stripLeadingChar;
-exports.toLowerCase = toLowerCase;
-exports.toUpperCase = toUpperCase;
-exports.toString = toString;
-exports.toNumber = toNumber;
-exports.anyToLowerCase = anyToLowerCase;
-exports.stringReverse = stringReverse;
-exports.numReverse = numReverse;
-exports.split = split;
-exports.replace = replace;
-exports.join = join;
-exports.join2 = join2;
-exports.append = append;
-exports.prepend = prepend;
-exports.interleave = interleave;
-exports.interleave2 = interleave2;
-exports.countSubString = countSubString;
-exports.pRound = pRound;
-exports.maybeNumber = maybeNumber;
-exports.negate = negate;
-exports.divMod = divMod;
-exports.divMod2 = divMod2;
-exports.factorize = factorize;
-exports.luhn = luhn;
-exports.imeisvToImei = imeisvToImei;
-exports.shannon = shannon;
-exports.englishNumber = englishNumber;
-exports.hasValue = hasValue;
-exports.chunk = chunk;
-exports.extrapolate = extrapolate;
-exports.numToBinString = numToBinString;
-exports.binStringToNum = binStringToNum;
-exports.getBitAt = getBitAt;
-exports.setBitAt = setBitAt;
-exports.clearBitAt = clearBitAt;
-exports.invBitAt = invBitAt;
-exports.hasBitAt = hasBitAt;
-exports.idGen = idGen;
-exports.makeRandomString = makeRandomString;
-exports.randomId = randomId;
-exports.privateRandom = privateRandom;
-exports.privateCounter = privateCounter;
-exports.maybeFunc = maybeFunc;
-exports.formatBytes = formatBytes;
-exports.columnReduce = columnReduce;
-exports.splitAt = splitAt;
+export { isUndefined, leftPadWithTo, onlyIncludes, isDef, isDefAndNotNull, alwaysAppend, replaceAll, cloneObj, compose, partial, mergeDeep, pathOr, trace, identity, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, whatType, maybeBool, isNumber, isString, isObject, isEven, isDivisibleBy, isEmpty, both, sameArr, sameEls, range, range2, clock, head, reverse, tail, flatten, truncate, elAt, transpose, repeat, countOck, countByFunc, filterAtInc, map, filter, maxInArr, minInArr, stripLeadingChar, toLowerCase, toUpperCase, toString, toNumber, anyToLowerCase, stringReverse, numReverse, split, replace, join, join2, append, prepend, interleave, interleave2, countSubString, pRound, maybeNumber, negate, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, hasValue, chunk, extrapolate, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, idGen, makeRandomString, randomId, privateRandom, privateCounter, maybeFunc, formatBytes, columnReduce, splitAt };

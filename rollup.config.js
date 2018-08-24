@@ -4,8 +4,8 @@ export default [
   {
     input: 'src/badu.js',
     output: {
-      file: 'main.js',
-      format: 'cjs',
+      file: 'badu.js',
+      format: 'es',
       name: 'badu',
     }
   },
