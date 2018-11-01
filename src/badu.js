@@ -262,6 +262,14 @@ const range2 = (m, n) => Array.from(
 
 
 /**
+ * Range from 0 to n - 1
+ * @param {!number} n
+ * @returns {Array<!number>}
+ */
+const iRange = n => Array(n).fill(0).map((_, i) => i);
+
+
+/**
  * Given max value, return a function that takes an int, and returns an
  * array of values in clock order from the given int around.
  * Example:
@@ -1084,6 +1092,7 @@ export {
   sameEls,
   range,
   range2,
+  iRange,
   clock,
   head,
   reverse,

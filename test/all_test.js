@@ -377,6 +377,12 @@ describe('Array specific utils', () => {
     assert.strictEqual(F.sameArr(r, result), true)
   });
 
+  it('iRange: takes a single argument and ranges from 0 up', () => {
+    const r = F.iRange(10);
+    const result = [0,1,2,3,4,5,6,7,8,9];
+    assert.strictEqual(F.sameArr(r, result), true)
+  });
+
   it('head: returns the first element of an array',
       () => assert.strictEqual(F.head([1,2,3]), 1)
   );
