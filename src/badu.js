@@ -465,6 +465,16 @@ const splitAt = n => arr => [arr.slice(0, n), arr.slice(n)];
 
 const shuffle = (a, b) => a.reduce((p,c,i) => p.push(c) && p.push(b[i]) && p, []);
 
+/**
+ * Given an array of arrays, find the elements that appear in more than
+ * one array.
+ * @param a {!Array<!Array<*>>}
+ * @returns {Array}
+ */
+const findShared = a => [...flatten(a).reduce((p, c) =>
+        p.has(c) ? p.set(c, [...p.get(c), c]) : p.set(c, [c]),
+    new Map()).values()].filter(e => e.length > 1).map(e => e[0]);
+
 
 
 //--------------------------------------------------------------[ Conversion ]--
@@ -1154,6 +1164,7 @@ export {
   maybeFunc,
   formatBytes,
   columnReduce,
-  splitAt
+  splitAt,
+  findShared
 };
 

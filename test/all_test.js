@@ -516,6 +516,28 @@ describe('Array specific utils', () => {
     );
   });
 
+  it('findShared: find elements shared amongst an array of arrays', () => {
+    const test1 = [0,1,2,9];
+    const test2 = [2,3,4,5];
+    const test3 = [4,6,7,8,2,9];
+    const expected = [2, 9, 4];
+    assert.deepStrictEqual(
+        F.findShared([test1, test2, test3]),
+        expected
+    );
+  });
+
+  it('findShared: also counts duplicates *within* an target', () => {
+    const test1 = [0,0,0,1,2,9];
+    const test2 = [2,3,3,4,5];
+    const test3 = [4,6,7,8,2,9,6,7];
+    const expected = [0, 2, 9, 3, 4, 6, 7];
+    assert.deepStrictEqual(
+        F.findShared([test1, test2, test3]),
+        expected
+    );
+  });
+
 });
 
 describe('String related utils', () => {

@@ -458,6 +458,16 @@ const columnReduce = (arr, f) => transpose(arr).map(e => e.reduce(f));
  */
 const splitAt = n => arr => [arr.slice(0, n), arr.slice(n)];
 
+/**
+ * Given an array of arrays, find the elements that appear in more than
+ * one array.
+ * @param a {!Array<!Array<*>>}
+ * @returns {Array}
+ */
+const findShared = a => [...flatten(a).reduce((p, c) =>
+        p.has(c) ? p.set(c, [...p.get(c), c]) : p.set(c, [c]),
+    new Map()).values()].filter(e => e.length > 1).map(e => e[0]);
+
 
 
 //--------------------------------------------------------------[ Conversion ]--
@@ -1136,3 +1146,4 @@ exports.maybeFunc = maybeFunc;
 exports.formatBytes = formatBytes;
 exports.columnReduce = columnReduce;
 exports.splitAt = splitAt;
+exports.findShared = findShared;
