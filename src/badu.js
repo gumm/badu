@@ -1,4 +1,3 @@
-
 // noinspection JSUnusedLocalSymbols
 /**
  * @typedef {(Uint8Array | Int32Array | Uint16Array | Uint32Array | Float64Array | Int8Array | Float32Array | Uint8ClampedArray | Int16Array)}
@@ -31,7 +30,7 @@ const identity = e => e;
  * @param {...*} a Additional arguments that are partially applied to fn.
  * @return {function(...*): *} A partially-applied form of the function.
  */
-const partial = (fn, ...a) => (...b)  => fn(...[...a, ...b]);
+const partial = (fn, ...a) => (...b) => fn(...[...a, ...b]);
 
 
 // noinspection JSUnusedLocalSymbols
@@ -71,9 +70,10 @@ const alwaysNull = (...args) => null;
  * @return {function(): undefined}
  */
 const maybeFunc = func => () => {
-  if (whatType(func) === 'function') { /** @type {!Function} */(func)() }
+  if (whatType(func) === 'function') {
+    /** @type {!Function} */(func)()
+  }
 };
-
 
 
 //-------------------------------------------------------[ Log & Debug Tools ]--
@@ -209,6 +209,22 @@ const hasValue = v => (!(v === undefined || Number.isNaN(v)));
 const isEmpty = o => o.constructor === Object && Object.keys(o).length === 0;
 
 
+/**
+ * Returns true if the values are the same
+ * @param {*} v
+ * @returns {function(*): boolean}
+ */
+const sameAs = v => e => v === e;
+
+
+/**
+ * Checks of all the elements in the array are the same.
+ * @param arr
+ * @returns {boolean}
+ */
+const allElementsEqual = arr => arr.every(sameAs(arr[0]));
+
+
 //-------------------------------------------------------------[ Array Tools ]--
 /**
  * A generator function that returns an iterator over the specified range of
@@ -222,7 +238,7 @@ const isEmpty = o => o.constructor === Object && Object.keys(o).length === 0;
  * @param {number} e End here - Last element in array
  * @param {number=} s Step this size
  */
-function* rangeGen(b, e, s=1) {
+function* rangeGen(b, e, s = 1) {
   if (!isNumber(s) || s === 0) {
     throw new TypeError(`Invalid step size: ${s}`);
   }
@@ -278,8 +294,7 @@ const iRange = n => Array(n).fill(0).map((_, i) => i);
  * @param {number} m
  * @returns {function(number):Array<number>}
  */
-const clock = m => s => [...range2(s, m), ...(s > 1 ? range2(1, s - 1): [])];
-
+const clock = m => s => [...range2(s, m), ...(s > 1 ? range2(1, s - 1) : [])];
 
 
 /**
@@ -311,7 +326,7 @@ const reverse = x => Array.from(x).reduce((p, c) => [c, ...p], []);
  * @param {number} n
  * @return {function(!Array<*>): !Array<*>}
  */
-const truncate = n => arr => arr.filter((_,i) => i < n);
+const truncate = n => arr => arr.filter((_, i) => i < n);
 
 
 /**
@@ -322,7 +337,7 @@ const truncate = n => arr => arr.filter((_,i) => i < n);
  * @return {Array<*>}
  */
 const flatten = a => a.reduce(
-    (p,c) => c.reduce ? flatten([...p, ...c]) : [...p, c], []);
+    (p, c) => c.reduce ? flatten([...p, ...c]) : [...p, c], []);
 
 
 /**
@@ -335,6 +350,21 @@ const elAt = i => arr => arr[i];
 
 
 /**
+ * Given an array of arrays return a function that returns an array of
+ * elements at the given index.
+ * Example:
+ * columnAt([
+ *    ['a', 'b', 'c'],
+ *    ['A', 'B', 'C'],
+ *    [1, 2, 3]
+ * ])(2) -> ['c', 'C', 3]
+ * @param {!Array<!Array<*>>} arr
+ * @returns {function(!number): !Array<*>}
+ */
+const columnAt = arr => i => arr.map(e => e[i]);
+
+
+/**
  * Transpose an array of arrays:
  * Example:
  * [['a', 'b', 'c'], ['A', 'B', 'C'], [1, 2, 3]] ->
@@ -342,11 +372,7 @@ const elAt = i => arr => arr[i];
  * @param {!Array<!Array<*>>} a
  * @return {!Array<!Array<*>>}
  */
-const transpose = a => a[0].map(
-    (e,i) => {
-      const fun = elAt(i);
-      return a.map(fun);
-    });
+const transpose = a => a[0].map((e, i) => a.map(elAt(i)));
 
 
 /**
@@ -383,6 +409,7 @@ const countByFunc = f => arr => arr.filter(f).length;
  */
 const filterAtInc = n => arr => arr.filter((e, i) => (i + 1) % n);
 
+
 /**
  * A strict same elements in same order comparison.
  * @param {Array<*>} a
@@ -390,7 +417,6 @@ const filterAtInc = n => arr => arr.filter((e, i) => (i + 1) % n);
  * @returns {boolean}
  */
 const sameArr = (a, b) => a.length === b.length && a.every((c, i) => b[i] === c);
-
 
 
 /**
@@ -463,7 +489,7 @@ const columnReduce = (arr, f) => transpose(arr).map(e => e.reduce(f));
 const splitAt = n => arr => [arr.slice(0, n), arr.slice(n)];
 
 
-const shuffle = (a, b) => a.reduce((p,c,i) => p.push(c) && p.push(b[i]) && p, []);
+const shuffle = (a, b) => a.reduce((p, c, i) => p.push(c) && p.push(b[i]) && p, []);
 
 /**
  * Given an array of arrays, find the elements that appear in more than
@@ -474,7 +500,6 @@ const shuffle = (a, b) => a.reduce((p,c,i) => p.push(c) && p.push(b[i]) && p, []
 const findShared = a => [...flatten(a).reduce((p, c) =>
         p.has(c) ? p.set(c, [...p.get(c), c]) : p.set(c, [c]),
     new Map()).values()].filter(e => e.length > 1).map(e => e[0]);
-
 
 
 //--------------------------------------------------------------[ Conversion ]--
@@ -657,6 +682,37 @@ const countSubString = subStr => str => str.split(subStr).length - 1;
 const stringReverse = compose(join(''), reverse);
 
 
+/**
+ * Longest Common Prefix
+ * Given an arbitrary number of string as arguments, return the longest common
+ * prefix.
+ * @param {...string} args
+ * @returns {!string}
+ */
+const lcp = (...args) => {
+
+  /**
+   * Prepare a function to return an array of elements at the given index.
+   * @type {function(!number): !Array<*>}
+   */
+  const elementsAt = columnAt(args);
+
+  /**
+   * Takes an integer and a string, and iteratively build the longest common
+   * prefix
+   * @param {!number} n The index number under consideration.
+   * @param {!string} s The resulting string.
+   * @returns {*}
+   */
+  const f = (n, s) => {
+    const arr = elementsAt(n);
+    const el = arr[0];
+    return el && arr.every(sameAs(el)) ? f(n + 1, s + el) : s;
+  };
+  return f(0, '');
+};
+
+
 //------------------------------------------------------------[ Object tools ]--
 /**
  * @param {!Object} l
@@ -669,14 +725,14 @@ const mergeDeep = (l, r) => {
     Object.keys(r).forEach(key => {
       if (isObject(r[key])) {
         if (!(key in l))
-          Object.assign(output, { [key]: r[key] });
+          Object.assign(output, {[key]: r[key]});
         else
           output[key] = mergeDeep(l[key], r[key]);
       } else {
         if (Array.isArray(l[key]) && Array.isArray(r[key])) {
           output[key] = [...l[key], ...r[key]];
         } else {
-          Object.assign(output, { [key]: r[key] });
+          Object.assign(output, {[key]: r[key]});
         }
       }
     });
@@ -785,7 +841,9 @@ const pRound = precision => {
  * @returns {number|*}
  */
 const maybeNumber = s => {
-  if (s === null) { return s; }
+  if (s === null) {
+    return s;
+  }
   const p = 1 * s;
   return Number.isNaN(p) ? s : p;
 };
@@ -804,7 +862,7 @@ const numReverse = compose(toNumber, join(''), reverse, toString);
  * @param {number} y
  * @returns {function(number): !Array<number>}
  */
-const divMod = y => x => [Math.floor(y/x), y % x];
+const divMod = y => x => [Math.floor(y / x), y % x];
 
 
 /**
@@ -815,7 +873,7 @@ const divMod = y => x => [Math.floor(y/x), y % x];
  * @param {number} x
  * @returns {function(number): !Array<number>}
  */
-const divMod2 = x => y => [Math.floor(y/x), y % x];
+const divMod2 = x => y => [Math.floor(y / x), y % x];
 
 
 /**
@@ -865,8 +923,8 @@ const luhn = n => {
  *    AA-BBBBBB-CCCCCC-EE respectively.
  * The definition of the formats can be found below.
  *
- * AA	   BB-BB-BB	 CC-CC-CC	   D	   EE
- * TAC	 TAC	     SN	         CD	   SVN
+ * AA     BB-BB-BB   CC-CC-CC     D     EE
+ * TAC   TAC       SN           CD     SVN
  * TAC : Type Allocation Code
  * SN : Serial Number
  * CD : Check Digit based on Luhn algorithm
@@ -903,7 +961,7 @@ const shannon = s =>
     [...s.split('').reduce((p, c) => p.set(c, p.has(c) ? p.get(c) + 1 : 1),
         new Map()
     ).values()]
-        .map(v => v/s.length)
+        .map(v => v / s.length)
         .reduce((p, c) => p -= c * Math.log(c) / Math.log(2), 0);
 
 
@@ -942,7 +1000,7 @@ const englishNumber = value => {
       [value, remainder] = divMod(value)(1000);
       chunks.push(remainder);
     }
-    chunks.forEach((e,i) => {
+    chunks.forEach((e, i) => {
       if (e > 0) {
         text.push(`${englishNumber(e)}${i === 0 ? '' : ' ' + big[i]}`);
         if (i === 0 && e < 100) {
@@ -981,7 +1039,9 @@ const extrapolate = ([x1, y1], [x2, y2]) => x3 => {
  * @returns {function(number): !string}
  */
 const formatBytes = precision => bytes => {
-  if (bytes === 0) { return '0'; }
+  if (bytes === 0) {
+    return '0';
+  }
   const k = 1024; // or 1024 for binary
   const dm = precision ? precision : 2;
   const sizes = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -1100,6 +1160,7 @@ export {
   both,
   sameArr,
   sameEls,
+  allElementsEqual,
   range,
   range2,
   iRange,
@@ -1114,6 +1175,7 @@ export {
   repeat,
   countOck,
   countByFunc,
+  columnAt,
   filterAtInc,
   map,
   filter,
@@ -1165,6 +1227,8 @@ export {
   formatBytes,
   columnReduce,
   splitAt,
-  findShared
+  findShared,
+  sameAs,
+  lcp
 };
 

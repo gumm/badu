@@ -330,6 +330,16 @@ describe('Some answers questions', () => {
   it('sameEls: when elements differ it fails',
       () => assert.strictEqual(F.sameEls([1,2], [2,1,1]), false));
 
+  it('allElementsEqual: returns true if all the elements ' +
+      'in the array are the same',
+      () => assert.strictEqual(F.allElementsEqual([1,1,1,1,1]), true));
+
+  it('allElementsEqual: returns false if any element differs',
+      () => assert.strictEqual(F.allElementsEqual([1,1,'1',1,1]), false));
+
+  it('allElementsEqual: returns true an empty array is given',
+      () => assert.strictEqual(F.allElementsEqual([]), true));
+
   it('hasValue: is defined and not null',
       () => assert.strictEqual(F.hasValue(1), true));
 
@@ -354,6 +364,47 @@ describe('Some answers questions', () => {
   it('hasValue: NaN does not have value',
       () => assert.strictEqual(F.hasValue(NaN), false));
 
+  it('sameAs: given a marker, test that the given element is the same', () => {
+    const marker = 'a';
+    const test = F.sameAs(marker);
+    assert.strictEqual(test('a'), true);
+    assert.strictEqual(test('_a'), false);
+  });
+
+  it('sameAs: marker can be a number', () => {
+    const marker = 123;
+    const test = F.sameAs(marker);
+    assert.strictEqual(test(123), true);
+    assert.strictEqual(test(122), false);
+  });
+
+  it('sameAs: marker can be a boolean', () => {
+    const marker = true;
+    const test = F.sameAs(marker);
+    assert.strictEqual(test(true), true);
+    assert.strictEqual(test(false), false);
+  });
+
+  it('sameAs: marker can be a undefined', () => {
+    const marker = undefined;
+    const test = F.sameAs(marker);
+    assert.strictEqual(test(undefined), true);
+    assert.strictEqual(test(void 0), true);
+    assert.strictEqual(test(false), false);
+  });
+
+  it('sameAs: marker can be null', () => {
+    const marker = null;
+    const test = F.sameAs(marker);
+    assert.strictEqual(test(null), true);
+    assert.strictEqual(test(undefined), false);
+  });
+
+  it('sameAs: marker can *NOT* be NaN!', () => {
+    const marker = NaN;
+    const test = F.sameAs(marker);
+    assert.strictEqual(test(NaN), false);
+  });
 
 });
 
@@ -437,6 +488,37 @@ describe('Array specific utils', () => {
     const wayOut = F.elAt(99);
     const arr = [1,2,3];
     assert.strictEqual(wayOut(arr), undefined);
+  });
+
+  it('columnAt: returns an array of all elements at position n', () => {
+    const matrix = [
+        ['1', '2', '3'],
+        [1, 2, 3],
+        [true, false, null]
+    ];
+    const column0 = ['1', 1, true];
+    const column1 = ['2', 2, false];
+    const column2 = ['3', 3, null];
+    const testThese = F.columnAt(matrix);
+    [column0, column1, column2].forEach((e, i) => {
+      assert.strictEqual(F.sameArr(testThese(i), e), true);
+    })
+  });
+
+  it('columnAt: does not need equal length arrays', () => {
+    const matrix = [
+      ['1'],
+      [1, 2,],
+      [true, false, null]
+    ];
+    const column0 = ['1', 1, true];
+    const column1 = [undefined, 2, false];
+    const column2 = [undefined, undefined, null];
+    const column3 = [undefined, undefined, undefined];
+    const testThese = F.columnAt(matrix);
+    [column0, column1, column2, column3].forEach((e, i) => {
+      assert.strictEqual(F.sameArr(testThese(i), e), true);
+    })
   });
 
   it('transpose: rotate an array of arrays', () => {
@@ -690,6 +772,22 @@ describe('String related utils', () => {
   it('countSubString: Count occurrences of a substring', () => {
     const countTh = F.countSubString('th');
     assert.deepStrictEqual(countTh('the three truths'), 3)
+  });
+
+  it('lcp: Finds the longest common prefix in a set of strings', () => {
+    assert.strictEqual(F.lcp('hello', 'helicopter'), 'hel')
+  });
+
+  it('lcp: Returns the empty string if nothing is passed in', () => {
+    assert.strictEqual(F.lcp(), '')
+  });
+
+  it('lcp: Takes any number of arguments', () => {
+    assert.strictEqual(F.lcp('hello', 'helm', 'helium', 'helix'), 'hel')
+  });
+
+  it('lcp: Returns the string as is when given only one argument', () => {
+    assert.strictEqual(F.lcp('hello',), 'hello')
   });
 
 });
