@@ -787,7 +787,7 @@ describe('String related utils', () => {
   });
 
   it('lcp: Returns the string as is when given only one argument', () => {
-    assert.strictEqual(F.lcp('hello',), 'hello')
+    assert.strictEqual(F.lcp('hello'), 'hello')
   });
 
 });
