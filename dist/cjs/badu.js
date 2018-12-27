@@ -358,7 +358,7 @@ const elAt = i => arr => arr[i];
  *    ['A', 'B', 'C'],
  *    [1, 2, 3]
  * ])(2) -> ['c', 'C', 3]
- * @param {!Array<!Array<*>>} arr
+ * @param {!Array<!Array<*>|!string>} arr
  * @returns {function(!number): !Array<*>}
  */
 const columnAt = arr => i => arr.map(e => e[i]);
