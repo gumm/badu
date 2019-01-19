@@ -502,6 +502,17 @@ const findShared = a => [...flatten(a).reduce((p, c) =>
     new Map()).values()].filter(e => e.length > 1).map(e => e[0]);
 
 
+/**
+ * Filter an array to only include the elements that correspond to the given
+ * array of indexes.
+ * @param indexes {!Array<!number>}
+ * @returns {function(*): *}
+ */
+const filterOnlyIndexes = indexes => arr => {
+  return arr.filter((e, i) => indexes.includes(i));
+};
+
+
 //--------------------------------------------------------------[ Conversion ]--
 /**
  * @param {string} x
@@ -1177,6 +1188,7 @@ export {
   countByFunc,
   columnAt,
   filterAtInc,
+  filterOnlyIndexes,
   map,
   filter,
   maxInArr,

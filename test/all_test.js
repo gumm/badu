@@ -36,18 +36,17 @@ describe('Functional tools', () => {
   });
 
 
-
 });
 
 describe('Basic Object utils', () => {
 
   it('mergeDeep: merges 2 objects', () => {
-    const obj1 = {a:{b:{c:[1,2,3]}}};
-    const obj2 = {a:{d:'new',b:{c:[4,5,6]}}, e:{f:[123]}};
+    const obj1 = {a: {b: {c: [1, 2, 3]}}};
+    const obj2 = {a: {d: 'new', b: {c: [4, 5, 6]}}, e: {f: [123]}};
     const expected = {
       "a": {
         "b": {
-          "c": [1,2,3,4,5,6]
+          "c": [1, 2, 3, 4, 5, 6]
         },
         "d": "new",
       },
@@ -61,46 +60,46 @@ describe('Basic Object utils', () => {
   });
 
   it('mergeDeep: arrays are merged', () => {
-    const obj1 = {a:[1,2,3]};
-    const obj2 = {a:[4,5,6]};
-    const expected = {a: [1,2,3,4,5,6]};
+    const obj1 = {a: [1, 2, 3]};
+    const obj2 = {a: [4, 5, 6]};
+    const expected = {a: [1, 2, 3, 4, 5, 6]};
     return assert.deepStrictEqual(F.mergeDeep(obj1, obj2), expected);
   });
 
   it('mergeDeep: second object trumps first if key exist in both', () => {
-    const obj1 = {a:{b:{c:'hello'}}};
-    const obj2 = {a:{b:{c:'I win'}}};
-    const expected = {a:{b:{c:'I win'}}};
+    const obj1 = {a: {b: {c: 'hello'}}};
+    const obj2 = {a: {b: {c: 'I win'}}};
+    const expected = {a: {b: {c: 'I win'}}};
     return assert.deepStrictEqual(F.mergeDeep(obj1, obj2), expected);
   });
 
   it('pathOr: gets a value from deep in an object', () => {
-    const obj1 = {a:{b:{c:'hello'}}};
-    const findC = F.pathOr('default', ['a','b','c']);
+    const obj1 = {a: {b: {c: 'hello'}}};
+    const findC = F.pathOr('default', ['a', 'b', 'c']);
     return assert.deepStrictEqual(findC(obj1), 'hello');
   });
 
   it('pathOr: can have a fallback default', () => {
-    const obj1 = {a:{b:{c:'hello'}}};
-    const findE = F.pathOr('default', ['a','b','e']);
+    const obj1 = {a: {b: {c: 'hello'}}};
+    const findE = F.pathOr('default', ['a', 'b', 'e']);
     return assert.deepStrictEqual(findE(obj1), 'default');
   });
 
   it('pathOr: can find elements in an array', () => {
-    const obj1 = {a:{b:{c:[0,1,[2, {d: 'here I am'}]]}}};
-    const findE = F.pathOr('default', ['a','b','c', 2, 1, 'd']);
+    const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
+    const findE = F.pathOr('default', ['a', 'b', 'c', 2, 1, 'd']);
     return assert.deepStrictEqual(findE(obj1), 'here I am');
   });
 
   it('pathOr: converts string numbers to numbers when ' +
       'trying to find things in an array', () => {
-    const obj1 = {a:{b:{c:[0,1,[2, {d: 'here I am'}]]}}};
-    const findE = F.pathOr('default', ['a','b','c', '2', '1', 'd']);
+    const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
+    const findE = F.pathOr('default', ['a', 'b', 'c', '2', '1', 'd']);
     return assert.deepStrictEqual(findE(obj1), 'here I am');
   });
 
   it('cloneObj: is a utility around Object.assign', () => {
-    const obj1 = {a:{b:{c:[0,1,[2, {d: 'here I am'}]]}}};
+    const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
     const clone = F.cloneObj(obj1);
     return assert.deepStrictEqual(clone, obj1);
   });
@@ -116,7 +115,7 @@ describe('Some functions always return the same thing', () => {
       () => assert.strictEqual(F.identity('s'), 's'));
 
   it('identity: array',
-      () => assert.deepStrictEqual(F.identity([1,2,3]), [1,2,3]));
+      () => assert.deepStrictEqual(F.identity([1, 2, 3]), [1, 2, 3]));
 
   it('alwaysUndef: returns "undefined"',
       () => assert.strictEqual(F.alwaysUndef(), undefined));
@@ -171,10 +170,10 @@ describe('Some answers questions', () => {
       () => assert.strictEqual(F.whatType(NaN), 'number'));
 
   it('whatType: returns "object" if an object is given',
-      () => assert.strictEqual(F.whatType({a:1}), 'object'));
+      () => assert.strictEqual(F.whatType({a: 1}), 'object'));
 
   it('whatType: returns "object" if an array is given',
-      () => assert.strictEqual(F.whatType([1,2]), 'object'));
+      () => assert.strictEqual(F.whatType([1, 2]), 'object'));
 
   it('whatType: returns "object" if a Map is given',
       () => assert.strictEqual(F.whatType(new Map()), 'object'));
@@ -259,10 +258,10 @@ describe('Some answers questions', () => {
       () => assert.strictEqual(F.isString(NaN), false));
 
   it('isObject: returns true if given an object',
-      () => assert.strictEqual(F.isObject({a:1}), true));
+      () => assert.strictEqual(F.isObject({a: 1}), true));
 
   it('isObject: handles array as not-an-object',
-      () => assert.strictEqual(F.isObject([1,2]), false));
+      () => assert.strictEqual(F.isObject([1, 2]), false));
 
   it('isObject: handles Maps as not-an-object',
       () => assert.strictEqual(F.isObject(new Map()), false));
@@ -306,36 +305,36 @@ describe('Some answers questions', () => {
 
   it('both: returns a function to test if both the given functions return true',
       () => {
-        const t = F.both(F.isNumber,F.isEven);
+        const t = F.both(F.isNumber, F.isEven);
         assert.strictEqual(t(123), false);
         assert.strictEqual(t(124), true);
       });
 
   it('sameArr: returns true if both arrays have the ' +
       'same elements in the same order',
-      () => assert.strictEqual(F.sameArr([1,2], [1,2]), true));
+      () => assert.strictEqual(F.sameArr([1, 2], [1, 2]), true));
 
   it('sameArr: if the order differs the test fails',
-      () => assert.strictEqual(F.sameArr([1,2], [2,1]), false));
+      () => assert.strictEqual(F.sameArr([1, 2], [2, 1]), false));
 
   it('sameArr: if the elements differs the test fails',
-      () => assert.strictEqual(F.sameArr([1,2], [1,1]), false));
+      () => assert.strictEqual(F.sameArr([1, 2], [1, 1]), false));
 
   it('sameEls: returns true if both arrays have the same elements',
-      () => assert.strictEqual(F.sameEls([1,2], [1,2]), true));
+      () => assert.strictEqual(F.sameEls([1, 2], [1, 2]), true));
 
   it('sameEls: order does not matter',
-      () => assert.strictEqual(F.sameEls([1,2], [2,1]), true));
+      () => assert.strictEqual(F.sameEls([1, 2], [2, 1]), true));
 
   it('sameEls: when elements differ it fails',
-      () => assert.strictEqual(F.sameEls([1,2], [2,1,1]), false));
+      () => assert.strictEqual(F.sameEls([1, 2], [2, 1, 1]), false));
 
   it('allElementsEqual: returns true if all the elements ' +
       'in the array are the same',
-      () => assert.strictEqual(F.allElementsEqual([1,1,1,1,1]), true));
+      () => assert.strictEqual(F.allElementsEqual([1, 1, 1, 1, 1]), true));
 
   it('allElementsEqual: returns false if any element differs',
-      () => assert.strictEqual(F.allElementsEqual([1,1,'1',1,1]), false));
+      () => assert.strictEqual(F.allElementsEqual([1, 1, '1', 1, 1]), false));
 
   it('allElementsEqual: returns true an empty array is given',
       () => assert.strictEqual(F.allElementsEqual([]), true));
@@ -411,31 +410,31 @@ describe('Some answers questions', () => {
 describe('Array specific utils', () => {
 
   it('range: make an array from beginning to end', () => {
-    const r = F.range(1,10);
-    const result = [1,2,3,4,5,6,7,8,9,10];
+    const r = F.range(1, 10);
+    const result = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     assert.strictEqual(F.sameArr(r, result), true)
   });
 
   it('range: can go backwards', () => {
-    const r = F.range(10,1);
-    const result = [10,9,8,7,6,5,4,3,2,1];
+    const r = F.range(10, 1);
+    const result = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
     assert.strictEqual(F.sameArr(r, result), true)
   });
 
   it('range: takes an optional step size', () => {
-    const r = F.range(1,10,2);
-    const result = [1,3,5,7,9];
+    const r = F.range(1, 10, 2);
+    const result = [1, 3, 5, 7, 9];
     assert.strictEqual(F.sameArr(r, result), true)
   });
 
   it('iRange: takes a single argument and ranges from 0 up', () => {
     const r = F.iRange(10);
-    const result = [0,1,2,3,4,5,6,7,8,9];
+    const result = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     assert.strictEqual(F.sameArr(r, result), true)
   });
 
   it('head: returns the first element of an array',
-      () => assert.strictEqual(F.head([1,2,3]), 1)
+      () => assert.strictEqual(F.head([1, 2, 3]), 1)
   );
 
   it('head: returns undefined when the array is empty',
@@ -443,7 +442,7 @@ describe('Array specific utils', () => {
   );
 
   it('tail: returns the last element of an array',
-      () => assert.strictEqual(F.tail([1,2,3]), 3)
+      () => assert.strictEqual(F.tail([1, 2, 3]), 3)
   );
 
   it('tail: returns undefined when the array is empty',
@@ -451,12 +450,12 @@ describe('Array specific utils', () => {
   );
 
   it('reverse: reverses an array', () => {
-    assert.strictEqual(F.sameArr(F.reverse([1,2,3]), [3,2,1]), true)
+    assert.strictEqual(F.sameArr(F.reverse([1, 2, 3]), [3, 2, 1]), true)
   });
 
   it('reverse: given a string, it returns an array with ' +
       'the string reversed', () => {
-    assert.strictEqual(F.sameArr(F.reverse('abc'), ['c','b','a']), true)
+    assert.strictEqual(F.sameArr(F.reverse('abc'), ['c', 'b', 'a']), true)
   });
 
   it('flatten: flattens a multi dimensional arr', () => {
@@ -470,7 +469,7 @@ describe('Array specific utils', () => {
     const truncTo3 = F.truncate(3);
     assert.strictEqual(F.sameArr(
         truncTo3([1, 2, 3, 4, 5, 6, 7, 8]),
-        [1,2,3]),
+        [1, 2, 3]),
         true)
   });
 
@@ -478,7 +477,7 @@ describe('Array specific utils', () => {
     const first = F.elAt(0);
     const second = F.elAt(1);
     const third = F.elAt(2);
-    const arr = [1,2,3];
+    const arr = [1, 2, 3];
     assert.strictEqual(first(arr), 1);
     assert.strictEqual(second(arr), 2);
     assert.strictEqual(third(arr), 3);
@@ -486,15 +485,15 @@ describe('Array specific utils', () => {
 
   it('elAt: returns the undefined if the index is not valid', () => {
     const wayOut = F.elAt(99);
-    const arr = [1,2,3];
+    const arr = [1, 2, 3];
     assert.strictEqual(wayOut(arr), undefined);
   });
 
   it('columnAt: returns an array of all elements at position n', () => {
     const matrix = [
-        ['1', '2', '3'],
-        [1, 2, 3],
-        [true, false, null]
+      ['1', '2', '3'],
+      [1, 2, 3],
+      [true, false, null]
     ];
     const column0 = ['1', 1, true];
     const column1 = ['2', 2, false];
@@ -528,59 +527,59 @@ describe('Array specific utils', () => {
   });
 
   it('repeat: fills an array with the given element n times', () => {
-    assert.deepStrictEqual(F.repeat(1, 3), [1,1,1]);
+    assert.deepStrictEqual(F.repeat(1, 3), [1, 1, 1]);
   });
 
   it('countOck: counts the number of times an element is in an array', () => {
     const countZeros = F.countOck(0);
-    assert.deepStrictEqual(countZeros([0,1,0,1,0,0,0,1]), 5);
+    assert.deepStrictEqual(countZeros([0, 1, 0, 1, 0, 0, 0, 1]), 5);
   });
 
   it('countOck: handles NaNs', () => {
     const countNaNs = F.countOck(NaN);
-    assert.deepStrictEqual(countNaNs([NaN,1,NaN,1,NaN,0,NaN,1]), 4);
+    assert.deepStrictEqual(countNaNs([NaN, 1, NaN, 1, NaN, 0, NaN, 1]), 4);
   });
 
   it('countOck: handles undefined', () => {
     const countundefineds = F.countOck(undefined);
     assert.deepStrictEqual(
-        countundefineds([undefined,1,undefined,1,null,0,NaN,1]), 2);
+        countundefineds([undefined, 1, undefined, 1, null, 0, NaN, 1]), 2);
   });
 
   it('countOck: handles null', () => {
     const countnulls = F.countOck(null);
     assert.deepStrictEqual(
-        countnulls([undefined,1,undefined,1,null,0,NaN,1]), 1);
+        countnulls([undefined, 1, undefined, 1, null, 0, NaN, 1]), 1);
   });
 
   it('countByFunc:  Counts the occurrence of something that ' +
       'satisfies the predicate', () => {
     const countArr = F.countByFunc(e => Array.isArray(e));
     assert.deepStrictEqual(
-        countArr([[],[], NaN, {}, 1, {length:1}]), 2);
+        countArr([[], [], NaN, {}, 1, {length: 1}]), 2);
   });
 
   it('filterAtInc: Remove every n-th element from the given array', () => {
     const remThirds = F.filterAtInc(3);
-    assert.deepStrictEqual(remThirds([1,2,3,4,1,2,3,4]), [1,2,4,1,3,4]);
+    assert.deepStrictEqual(remThirds([1, 2, 3, 4, 1, 2, 3, 4]), [1, 2, 4, 1, 3, 4]);
   });
 
   it('map: Takes a function returns a function that takes an array', () => {
     const plus1 = F.map(x => x + 1);
-    assert.deepStrictEqual(plus1([1,2,3]), [2,3,4]);
+    assert.deepStrictEqual(plus1([1, 2, 3]), [2, 3, 4]);
   });
 
   it('filter: Takes a function returns a function that takes an array', () => {
     const onlyEvens = F.filter(F.isEven);
-    assert.deepStrictEqual(onlyEvens([1,2,3,4,5,6]), [2,4,6]);
+    assert.deepStrictEqual(onlyEvens([1, 2, 3, 4, 5, 6]), [2, 4, 6]);
   });
 
   it('maxInArr: returns max value of array',
-      () => assert.strictEqual(F.maxInArr([1,2,3,2,1]), 3)
+      () => assert.strictEqual(F.maxInArr([1, 2, 3, 2, 1]), 3)
   );
 
   it('minInArr: returns min value of array',
-      () => assert.strictEqual(F.minInArr([1,2,3,2,1]), 1)
+      () => assert.strictEqual(F.minInArr([1, 2, 3, 2, 1]), 1)
   );
 
   it('columnReduce: Reduce the columns in an array of arrays.', () => {
@@ -591,17 +590,17 @@ describe('Array specific utils', () => {
 
   it('chunk: split an array into set of arrays of size n', () => {
     const chunkToThree = F.chunk(3);
-    const testArr = [0,1,2,3,4,5,6,7,8,9];
+    const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     assert.deepStrictEqual(
         chunkToThree(testArr),
-        [[0,1,2], [3,4,5], [6,7,8], [9]]
+        [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
     );
   });
 
   it('findShared: find elements shared amongst an array of arrays', () => {
-    const test1 = [0,1,2,9];
-    const test2 = [2,3,4,5];
-    const test3 = [4,6,7,8,2,9];
+    const test1 = [0, 1, 2, 9];
+    const test2 = [2, 3, 4, 5];
+    const test3 = [4, 6, 7, 8, 2, 9];
     const expected = [2, 9, 4];
     assert.deepStrictEqual(
         F.findShared([test1, test2, test3]),
@@ -610,12 +609,24 @@ describe('Array specific utils', () => {
   });
 
   it('findShared: also counts duplicates *within* an target', () => {
-    const test1 = [0,0,0,1,2,9];
-    const test2 = [2,3,3,4,5];
-    const test3 = [4,6,7,8,2,9,6,7];
+    const test1 = [0, 0, 0, 1, 2, 9];
+    const test2 = [2, 3, 3, 4, 5];
+    const test3 = [4, 6, 7, 8, 2, 9, 6, 7];
     const expected = [0, 2, 9, 3, 4, 6, 7];
     assert.deepStrictEqual(
         F.findShared([test1, test2, test3]),
+        expected
+    );
+  });
+
+  it('filterOnlyIndexes: filters an array to only contain elements at given ' +
+      'indexes', () => {
+    const given = [10, 11, 12, 13, 14, 15];
+    const indexes = [0, 2, 5];
+    const expected = [10, 12, 15];
+    const func = F.filterOnlyIndexes(indexes);
+    assert.deepStrictEqual(
+        func(given),
         expected
     );
   });
@@ -795,29 +806,29 @@ describe('String related utils', () => {
 describe('Number and math specific utils', () => {
 
   it('extrapolate: find a point on a line', () => {
-    const pointOnLineAtX = F.extrapolate([0,0],[3,5]);
-    assert.deepStrictEqual(pointOnLineAtX(3), [3,5]);
-    assert.deepStrictEqual(pointOnLineAtX(12), [12,20]);
+    const pointOnLineAtX = F.extrapolate([0, 0], [3, 5]);
+    assert.deepStrictEqual(pointOnLineAtX(3), [3, 5]);
+    assert.deepStrictEqual(pointOnLineAtX(12), [12, 20]);
   });
 
   it('extrapolate: horizontal line', () => {
-    const pointOnLineAtX = F.extrapolate([0,0],[5,0]);
-    assert.deepStrictEqual(pointOnLineAtX(3), [3,0]);
+    const pointOnLineAtX = F.extrapolate([0, 0], [5, 0]);
+    assert.deepStrictEqual(pointOnLineAtX(3), [3, 0]);
   });
 
   it('extrapolate: vertical lines are undefined', () => {
-    const pointOnLineAtX = F.extrapolate([0,0],[0,5]);
+    const pointOnLineAtX = F.extrapolate([0, 0], [0, 5]);
     assert.deepStrictEqual(pointOnLineAtX(3), undefined);
   });
 
   it('pRound: precision round', () => {
     const r = F.pRound(3);
-    assert.strictEqual(r(2/3), 0.667)
+    assert.strictEqual(r(2 / 3), 0.667)
   });
 
   it('pRound: round to int', () => {
     const r = F.pRound(0);
-    assert.strictEqual(r(2/3), 1)
+    assert.strictEqual(r(2 / 3), 1)
   });
 
   it('maybeNumber: return a number if you can - else ' +
