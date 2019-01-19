@@ -495,6 +495,17 @@ const findShared = a => [...flatten(a).reduce((p, c) =>
     new Map()).values()].filter(e => e.length > 1).map(e => e[0]);
 
 
+/**
+ * Filter an array to only include the elements that correspond to the given
+ * array of indexes.
+ * @param indexes {!Array<!number>}
+ * @returns {function(*): *}
+ */
+const filterOnlyIndexes = indexes => arr => {
+  return arr.filter((e, i) => indexes.includes(i));
+};
+
+
 //--------------------------------------------------------------[ Conversion ]--
 /**
  * @param {string} x
@@ -1112,4 +1123,4 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-export { isUndefined, leftPadWithTo, onlyIncludes, isDef, isDefAndNotNull, alwaysAppend, replaceAll, cloneObj, compose, partial, mergeDeep, pathOr, trace, identity, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, whatType, maybeBool, isNumber, isString, isObject, isEven, isDivisibleBy, isEmpty, both, sameArr, sameEls, allElementsEqual, range, range2, iRange, clock, head, reverse, tail, flatten, truncate, elAt, transpose, repeat, countOck, countByFunc, columnAt, filterAtInc, map, filter, maxInArr, minInArr, stripLeadingChar, toLowerCase, toUpperCase, toString, toNumber, anyToLowerCase, stringReverse, numReverse, split, replace, join, join2, append, prepend, interleave, interleave2, countSubString, pRound, maybeNumber, negate, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, hasValue, chunk, extrapolate, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, idGen, makeRandomString, randomId, privateRandom, privateCounter, maybeFunc, formatBytes, columnReduce, splitAt, findShared, sameAs, lcp };
+export { isUndefined, leftPadWithTo, onlyIncludes, isDef, isDefAndNotNull, alwaysAppend, replaceAll, cloneObj, compose, partial, mergeDeep, pathOr, trace, identity, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, whatType, maybeBool, isNumber, isString, isObject, isEven, isDivisibleBy, isEmpty, both, sameArr, sameEls, allElementsEqual, range, range2, iRange, clock, head, reverse, tail, flatten, truncate, elAt, transpose, repeat, countOck, countByFunc, columnAt, filterAtInc, filterOnlyIndexes, map, filter, maxInArr, minInArr, stripLeadingChar, toLowerCase, toUpperCase, toString, toNumber, anyToLowerCase, stringReverse, numReverse, split, replace, join, join2, append, prepend, interleave, interleave2, countSubString, pRound, maybeNumber, negate, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, hasValue, chunk, extrapolate, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, idGen, makeRandomString, randomId, privateRandom, privateCounter, maybeFunc, formatBytes, columnReduce, splitAt, findShared, sameAs, lcp };
