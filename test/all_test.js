@@ -679,6 +679,21 @@ describe('String related utils', () => {
     assert.strictEqual(stripSub('sub-hello'), 'hello')
   });
 
+  it('stripTrailingChar: strips a single trailing char', () => {
+    const strip = F.stripTrailingChar(':');
+    assert.strictEqual(strip('hello:'), 'hello')
+  });
+
+  it('stripTrailingChar: can take a sub-string', () => {
+    const strip = F.stripTrailingChar(' there');
+    assert.strictEqual(strip('hello there'), 'hello')
+  });
+
+  it('stripTrailingChar: strips nothing if the pattern is not found', () => {
+    const strip = F.stripTrailingChar('/');
+    assert.strictEqual(strip('hello'), 'hello')
+  });
+
   it('toLowerCase: converts strings to lowercase', () => {
     assert.strictEqual(F.toLowerCase('HellO'), 'hello')
   });

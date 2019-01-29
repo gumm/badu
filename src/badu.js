@@ -604,6 +604,20 @@ const stripLeadingChar = c => s => s.startsWith(c) ? s.slice(c.length) : s;
 
 
 /**
+ * Strip the leading char if it is the same as c
+ * @param {string} c
+ * @return {function(string): string}
+ */
+const stripTrailingChar = c => {
+  const f = compose(
+      stringReverse,
+      stripLeadingChar(stringReverse(c)),
+      stringReverse);
+  return s => f(s);
+}
+
+
+/**
  * @param {string} s
  * @return {function(string): Array<string>}
  */
@@ -1194,6 +1208,7 @@ export {
   maxInArr,
   minInArr,
   stripLeadingChar,
+  stripTrailingChar,
   toLowerCase,
   toUpperCase,
   toString,

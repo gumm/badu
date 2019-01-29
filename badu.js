@@ -597,6 +597,20 @@ const stripLeadingChar = c => s => s.startsWith(c) ? s.slice(c.length) : s;
 
 
 /**
+ * Strip the leading char if it is the same as c
+ * @param {string} c
+ * @return {function(string): string}
+ */
+const stripTrailingChar = c => {
+  const f = compose(
+      stringReverse,
+      stripLeadingChar(stringReverse(c)),
+      stringReverse);
+  return s => f(s);
+};
+
+
+/**
  * @param {string} s
  * @return {function(string): Array<string>}
  */
@@ -1123,4 +1137,4 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-export { isUndefined, leftPadWithTo, onlyIncludes, isDef, isDefAndNotNull, alwaysAppend, replaceAll, cloneObj, compose, partial, mergeDeep, pathOr, trace, identity, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, whatType, maybeBool, isNumber, isString, isObject, isEven, isDivisibleBy, isEmpty, both, sameArr, sameEls, allElementsEqual, range, range2, iRange, clock, head, reverse, tail, flatten, truncate, elAt, transpose, repeat, countOck, countByFunc, columnAt, filterAtInc, filterOnlyIndexes, map, filter, maxInArr, minInArr, stripLeadingChar, toLowerCase, toUpperCase, toString, toNumber, anyToLowerCase, stringReverse, numReverse, split, replace, join, join2, append, prepend, interleave, interleave2, countSubString, pRound, maybeNumber, negate, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, hasValue, chunk, extrapolate, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, idGen, makeRandomString, randomId, privateRandom, privateCounter, maybeFunc, formatBytes, columnReduce, splitAt, findShared, sameAs, lcp };
+export { isUndefined, leftPadWithTo, onlyIncludes, isDef, isDefAndNotNull, alwaysAppend, replaceAll, cloneObj, compose, partial, mergeDeep, pathOr, trace, identity, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, whatType, maybeBool, isNumber, isString, isObject, isEven, isDivisibleBy, isEmpty, both, sameArr, sameEls, allElementsEqual, range, range2, iRange, clock, head, reverse, tail, flatten, truncate, elAt, transpose, repeat, countOck, countByFunc, columnAt, filterAtInc, filterOnlyIndexes, map, filter, maxInArr, minInArr, stripLeadingChar, stripTrailingChar, toLowerCase, toUpperCase, toString, toNumber, anyToLowerCase, stringReverse, numReverse, split, replace, join, join2, append, prepend, interleave, interleave2, countSubString, pRound, maybeNumber, negate, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, hasValue, chunk, extrapolate, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, idGen, makeRandomString, randomId, privateRandom, privateCounter, maybeFunc, formatBytes, columnReduce, splitAt, findShared, sameAs, lcp };
