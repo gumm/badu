@@ -1242,3 +1242,5 @@ exports.splitAt = splitAt;
 exports.findShared = findShared;
 exports.sameAs = sameAs;
 exports.lcp = lcp;
+
+module.exports = Object.assign({}, module.exports, exports);

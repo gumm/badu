@@ -15,6 +15,7 @@ export default [
       file: 'dist/cjs/badu.js',
       format: 'cjs',
       name: 'badu',
+      outro: 'module.exports = Object.assign({}, module.exports, exports);'
     }
   },
   {
