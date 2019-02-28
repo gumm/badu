@@ -852,6 +852,16 @@ const randomId = opt_length => {
 
 //--------------------------------------------------------[ Math and Numbers ]--
 /**
+ * Bitwise conversion of a number to its integer component.
+ * Unlike Math.floor(n) this does not convert -1.123 to -2 but to the interger
+ * part: -1.
+ * It just chops any floating bits from the number.
+ * @param n
+ * @returns {number}
+ */
+const toInt = n => n | 0;
+
+/**
  * @param {number} precision
  * @returns {function(number): number}
  */
@@ -1225,6 +1235,7 @@ export {
   interleave,
   interleave2,
   countSubString,
+  toInt,
   pRound,
   maybeNumber,
   negate,

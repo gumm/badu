@@ -836,6 +836,21 @@ describe('Number and math specific utils', () => {
     assert.deepStrictEqual(pointOnLineAtX(3), undefined);
   });
 
+  it('toInt: fast (bitwise) conversion of float to integer', () => {
+    const r = F.toInt(3.346);
+    assert.strictEqual(r, 3)
+  });
+
+  it('toInt: takes the integer component of the float', () => {
+    const r = F.toInt(3.999);
+    assert.strictEqual(r, 3)
+  });
+
+  it('toInt: same for negative numbers', () => {
+    const r = F.toInt(-3.999);
+    assert.strictEqual(r, -3)
+  });
+
   it('pRound: precision round', () => {
     const r = F.pRound(3);
     assert.strictEqual(r(2 / 3), 0.667)
