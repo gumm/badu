@@ -1,4 +1,4 @@
-import {transpose} from "../src/badu";
+import {pairs, transpose} from "../src/badu";
 
 const assert = require('assert');
 import * as F from '../src/badu.js'
@@ -594,6 +594,46 @@ describe('Array specific utils', () => {
     assert.deepStrictEqual(
         chunkToThree(testArr),
         [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
+    );
+  });
+
+  it('pairs: split an array into set of arrays of size 2', () => {
+    const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    assert.deepStrictEqual(
+        F.pairs(testArr),
+        [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]
+    );
+  });
+
+  it('pairs: empty input is OK', () => {
+    const testArr = [];
+    assert.deepStrictEqual(
+        F.pairs(testArr),
+        []
+    );
+  });
+
+  it('pairs: uneven input is OK and results in final singleton', () => {
+    const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    assert.deepStrictEqual(
+        F.pairs(testArr),
+        [[0, 1], [2, 3], [4, 5], [6, 7], [8]]
+    );
+  });
+
+  it('pairsToMap: returns a Map of kv-pairs from a flat array', () => {
+    const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    assert.deepStrictEqual(
+        F.pairsToMap(testArr),
+        new Map().set(0,1).set(2,3).set(4,5).set(6,7).set(8,9)
+    );
+  });
+
+  it('pairsToMap: Uneven array result in undefined last element', () => {
+    const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    assert.deepStrictEqual(
+        F.pairsToMap(testArr),
+        new Map().set(0,1).set(2,3).set(4,5).set(6,7).set(8, undefined)
     );
   });
 
