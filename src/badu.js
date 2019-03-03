@@ -632,7 +632,7 @@ const stripTrailingChar = c => {
       stripLeadingChar(stringReverse(c)),
       stringReverse);
   return s => f(s);
-}
+};
 
 
 /**
@@ -820,7 +820,7 @@ const cloneObj = o => Object.assign({}, o);
 const getNowSeconds = () => Math.floor(Date.now() / 1000);
 
 
-//--------------------------------------------------------[ Math and Numbers ]--
+//----------------------------------------------------------[ IDs and Random ]--
 /**
  * A generator function to produce consecutive ids, starting from
  * n + 1 of n. If n is not given, use 0.
@@ -848,11 +848,11 @@ const privateCounter = (opt_start) => {
 /**
  * Private function that will always return the same random string each time
  * it is called.
- * @return {string}
+ * @return {Function}
  */
 const privateRandom = () => {
   const c = randomId();
-  return (() => c)();
+  return () => c;
 };
 
 
@@ -866,6 +866,27 @@ const randomId = opt_length => {
   const s = makeRandomString();
   return opt_length ? s.substr(0, opt_length) : s;
 };
+
+
+/**
+ * Get a function that produces an integer in the range
+ * between start (inclusive) and end (exclusive)
+ * @param {number} min
+ * @param {number} max
+ * @returns {function(): number}
+ */
+const randIntBetween = (min = 0, max = 10) => {
+  const diff = max - min;
+  return () => (Math.random() * diff) | 0;
+};
+
+
+/**
+ * Randomly get either a 1 or a -1. Good for randomly changing the sign of a
+ * number
+ * @returns {number}
+ */
+const randSign = () => [-1, 1][(Math.random() * 2) | 0];
 
 
 //--------------------------------------------------------[ Math and Numbers ]--
@@ -1279,6 +1300,8 @@ export {
   idGen,
   makeRandomString,
   randomId,
+  randIntBetween,
+  randSign,
   privateRandom,
   privateCounter,
   maybeFunc,

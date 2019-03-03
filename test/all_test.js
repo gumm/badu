@@ -1,5 +1,3 @@
-import {pairs, transpose} from "../src/badu";
-
 const assert = require('assert');
 import * as F from '../src/badu.js'
 
@@ -1069,4 +1067,96 @@ describe('Bit-banging utils', () => {
   });
 
 });
+
+describe('Random Numbers and IDs', () => {
+
+  it('idGen: A generator function to produce a count on each call', () => {
+    const counter = F.idGen();
+    assert.strictEqual(counter.next().value, 0);
+    assert.strictEqual(counter.next().value, 1);
+    assert.strictEqual(counter.next().value, 2);
+    assert.strictEqual(counter.next().value, 3);
+    assert.strictEqual(counter.next().value, 4);
+    assert.strictEqual(counter.next().value, 5);
+  });
+
+  it('privateCounter: A function to produce a count on each call', () => {
+    const counter = F.privateCounter();
+    const counter2 = F.privateCounter();
+    assert.strictEqual(counter(), 0);
+    assert.strictEqual(counter2(), 0);
+    assert.strictEqual(counter(), 1);
+    assert.strictEqual(counter2(), 1);
+    assert.strictEqual(counter(), 2);
+    assert.strictEqual(counter2(), 2);
+    assert.strictEqual(counter(), 3);
+    assert.strictEqual(counter2(), 3);
+    assert.strictEqual(counter(), 4);
+    assert.strictEqual(counter2(), 4);
+    assert.strictEqual(counter(), 5);
+    assert.strictEqual(counter2(), 5);
+  });
+
+  it('privateRandom: A function to always return the same random ID', () => {
+    const pRand1 = F.privateRandom();
+    const result = pRand1();
+    const counter = F.privateCounter();
+    const count = 10000;
+    while (counter() < count) {
+      assert.strictEqual(pRand1(), result);
+    }
+
+  });
+
+  it('randomId: Generates a random ID random ID', () => {
+    const counter = F.privateCounter();
+    const count = 10000;
+    const seen = [];
+    while (counter() < count) {
+      const id = F.randomId();
+      assert.strictEqual(seen.includes(id), false);
+      seen.push(id);
+    }
+  });
+
+  it('randIntBetween: Default is an integer between 0 and 10(excl)', () => {
+    const min = 0;
+    const max = 10;
+    const randIntFunc = F.randIntBetween();
+    const counter = F.privateCounter();
+    const count = 10000;
+    while (counter() < count) {
+      assert.strictEqual(min <= randIntFunc() < max, true);
+    }
+  });
+
+  it('randIntBetween: Accepts limits', () => {
+    const min = 12;
+    const max = 23;
+    const randIntFunc = F.randIntBetween(min, max);
+    const counter = F.privateCounter();
+    const count = 10000;
+    while (counter() < count) {
+      assert.strictEqual(min <= randIntFunc() < max, true);
+    }
+  });
+
+  it('randSign: Randomly return either -1 of 1', () => {
+    const counter = F.privateCounter();
+    const count = 10000;
+    while (counter() < count) {
+      const s = F.randSign();
+      assert.strictEqual(s === -1 || s === 1, true);
+    }
+  });
+
+
+
+
+
+
+});
+
+
+
 
