@@ -453,6 +453,24 @@ const chunk = n => a => a.reduce(
     (p, c, i) => (!(i % n)) ? p.push([c]) && p : p[p.length - 1].push(c) && p,
     []);
 
+/**
+ * A special implementation of 'chunks' where the chunk size is 2.
+ * Useful for converting array into kv-pairs.
+ * @param arr
+ * @returns {!Array<!Array<*>>}
+ */
+const pairs = arr => chunk(2)(arr);
+
+
+/**
+ * Given an array of elements, treat each even index as a key, and each odd
+ * index as the value for the preceding key.
+ * Return a map of those kv-pairs
+ * @param arr
+ * @returns {Map<any, any>}
+ */
+const pairsToMap = arr => new Map(pairs(arr));
+
 
 /**
  * Find the biggest number in a list of numbers
@@ -839,6 +857,16 @@ const randomId = opt_length => {
 
 //--------------------------------------------------------[ Math and Numbers ]--
 /**
+ * Bitwise conversion of a number to its integer component.
+ * Unlike Math.floor(n) this does not convert -1.123 to -2 but to the interger
+ * part: -1.
+ * It just chops any floating bits from the number.
+ * @param n
+ * @returns {number}
+ */
+const toInt = n => n | 0;
+
+/**
  * @param {number} precision
  * @returns {function(number): number}
  */
@@ -1210,6 +1238,7 @@ exports.prepend = prepend;
 exports.interleave = interleave;
 exports.interleave2 = interleave2;
 exports.countSubString = countSubString;
+exports.toInt = toInt;
 exports.pRound = pRound;
 exports.maybeNumber = maybeNumber;
 exports.negate = negate;
@@ -1222,6 +1251,8 @@ exports.shannon = shannon;
 exports.englishNumber = englishNumber;
 exports.hasValue = hasValue;
 exports.chunk = chunk;
+exports.pairs = pairs;
+exports.pairsToMap = pairsToMap;
 exports.extrapolate = extrapolate;
 exports.numToBinString = numToBinString;
 exports.binStringToNum = binStringToNum;

@@ -449,6 +449,24 @@ const chunk = n => a => a.reduce(
     (p, c, i) => (!(i % n)) ? p.push([c]) && p : p[p.length - 1].push(c) && p,
     []);
 
+/**
+ * A special implementation of 'chunks' where the chunk size is 2.
+ * Useful for converting array into kv-pairs.
+ * @param arr
+ * @returns {!Array<!Array<*>>}
+ */
+const pairs = arr => chunk(2)(arr);
+
+
+/**
+ * Given an array of elements, treat each even index as a key, and each odd
+ * index as the value for the preceding key.
+ * Return a map of those kv-pairs
+ * @param arr
+ * @returns {Map<any, any>}
+ */
+const pairsToMap = arr => new Map(pairs(arr));
+
 
 /**
  * Find the biggest number in a list of numbers
@@ -835,6 +853,16 @@ const randomId = opt_length => {
 
 //--------------------------------------------------------[ Math and Numbers ]--
 /**
+ * Bitwise conversion of a number to its integer component.
+ * Unlike Math.floor(n) this does not convert -1.123 to -2 but to the interger
+ * part: -1.
+ * It just chops any floating bits from the number.
+ * @param n
+ * @returns {number}
+ */
+const toInt = n => n | 0;
+
+/**
  * @param {number} precision
  * @returns {function(number): number}
  */
@@ -1137,4 +1165,4 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-export { isUndefined, leftPadWithTo, onlyIncludes, isDef, isDefAndNotNull, alwaysAppend, replaceAll, cloneObj, compose, partial, mergeDeep, pathOr, trace, identity, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, whatType, maybeBool, isNumber, isString, isObject, isEven, isDivisibleBy, isEmpty, both, sameArr, sameEls, allElementsEqual, range, range2, iRange, clock, head, reverse, tail, flatten, truncate, elAt, transpose, repeat, countOck, countByFunc, columnAt, filterAtInc, filterOnlyIndexes, map, filter, maxInArr, minInArr, stripLeadingChar, stripTrailingChar, toLowerCase, toUpperCase, toString, toNumber, anyToLowerCase, stringReverse, numReverse, split, replace, join, join2, append, prepend, interleave, interleave2, countSubString, pRound, maybeNumber, negate, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, hasValue, chunk, extrapolate, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, idGen, makeRandomString, randomId, privateRandom, privateCounter, maybeFunc, formatBytes, columnReduce, splitAt, findShared, sameAs, lcp };
+export { isUndefined, leftPadWithTo, onlyIncludes, isDef, isDefAndNotNull, alwaysAppend, replaceAll, cloneObj, compose, partial, mergeDeep, pathOr, trace, identity, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, whatType, maybeBool, isNumber, isString, isObject, isEven, isDivisibleBy, isEmpty, both, sameArr, sameEls, allElementsEqual, range, range2, iRange, clock, head, reverse, tail, flatten, truncate, elAt, transpose, repeat, countOck, countByFunc, columnAt, filterAtInc, filterOnlyIndexes, map, filter, maxInArr, minInArr, stripLeadingChar, stripTrailingChar, toLowerCase, toUpperCase, toString, toNumber, anyToLowerCase, stringReverse, numReverse, split, replace, join, join2, append, prepend, interleave, interleave2, countSubString, toInt, pRound, maybeNumber, negate, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, hasValue, chunk, pairs, pairsToMap, extrapolate, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, idGen, makeRandomString, randomId, privateRandom, privateCounter, maybeFunc, formatBytes, columnReduce, splitAt, findShared, sameAs, lcp };
