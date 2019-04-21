@@ -524,6 +524,21 @@ const filterOnlyIndexes = indexes => arr => {
 };
 
 
+/**
+ * Convert two arrays into a map. The first array is considered the keys, and
+ * the second the values. When arrays are of unequal lengths, the values will
+ * be undefined for all elements in the key array without a matching index in
+ * the values array. If the keys array is shorter than the values array, the
+ * non-mapped values will be discarded
+ * @param kArr {Array<*>}
+ * @param vArr {Array<*>}
+ * @returns {Map<any, any>}
+ */
+const kvArrsToMap = (kArr, vArr) => new Map(
+    kArr.reduce((p,c,i) => p.push([c, vArr[i]]) && p, [])
+);
+
+
 //--------------------------------------------------------------[ Conversion ]--
 /**
  * @param {string} x
@@ -1186,4 +1201,4 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-export { isUndefined, leftPadWithTo, onlyIncludes, isDef, isDefAndNotNull, alwaysAppend, replaceAll, cloneObj, compose, partial, mergeDeep, pathOr, trace, identity, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, whatType, maybeBool, isNumber, isString, isObject, isEven, isDivisibleBy, isEmpty, both, sameArr, sameEls, allElementsEqual, range, range2, iRange, clock, head, reverse, tail, flatten, truncate, elAt, transpose, repeat, countOck, countByFunc, columnAt, filterAtInc, filterOnlyIndexes, map, filter, maxInArr, minInArr, stripLeadingChar, stripTrailingChar, toLowerCase, toUpperCase, toString, toNumber, anyToLowerCase, stringReverse, numReverse, split, replace, join, join2, append, prepend, interleave, interleave2, countSubString, toInt, pRound, maybeNumber, negate, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, hasValue, chunk, pairs, pairsToMap, extrapolate, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, idGen, makeRandomString, randomId, randIntBetween, randSign, privateRandom, privateCounter, maybeFunc, formatBytes, columnReduce, splitAt, findShared, sameAs, lcp };
+export { isUndefined, leftPadWithTo, onlyIncludes, isDef, isDefAndNotNull, alwaysAppend, replaceAll, cloneObj, compose, partial, mergeDeep, pathOr, trace, identity, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, whatType, maybeBool, isNumber, isString, isObject, isEven, isDivisibleBy, isEmpty, both, sameArr, sameEls, allElementsEqual, range, range2, iRange, clock, head, reverse, tail, flatten, truncate, elAt, transpose, repeat, countOck, countByFunc, columnAt, filterAtInc, filterOnlyIndexes, kvArrsToMap, map, filter, maxInArr, minInArr, stripLeadingChar, stripTrailingChar, toLowerCase, toUpperCase, toString, toNumber, anyToLowerCase, stringReverse, numReverse, split, replace, join, join2, append, prepend, interleave, interleave2, countSubString, toInt, pRound, maybeNumber, negate, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, hasValue, chunk, pairs, pairsToMap, extrapolate, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, idGen, makeRandomString, randomId, randIntBetween, randSign, privateRandom, privateCounter, maybeFunc, formatBytes, columnReduce, splitAt, findShared, sameAs, lcp };

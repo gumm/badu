@@ -528,6 +528,21 @@ const filterOnlyIndexes = indexes => arr => {
 };
 
 
+/**
+ * Convert two arrays into a map. The first array is considered the keys, and
+ * the second the values. When arrays are of unequal lengths, the values will
+ * be undefined for all elements in the key array without a matching index in
+ * the values array. If the keys array is shorter than the values array, the
+ * non-mapped values will be discarded
+ * @param kArr {Array<*>}
+ * @param vArr {Array<*>}
+ * @returns {Map<any, any>}
+ */
+const kvArrsToMap = (kArr, vArr) => new Map(
+    kArr.reduce((p,c,i) => p.push([c, vArr[i]]) && p, [])
+);
+
+
 //--------------------------------------------------------------[ Conversion ]--
 /**
  * @param {string} x
@@ -1237,6 +1252,7 @@ exports.countByFunc = countByFunc;
 exports.columnAt = columnAt;
 exports.filterAtInc = filterAtInc;
 exports.filterOnlyIndexes = filterOnlyIndexes;
+exports.kvArrsToMap = kvArrsToMap;
 exports.map = map;
 exports.filter = filter;
 exports.maxInArr = maxInArr;

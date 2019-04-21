@@ -669,6 +669,39 @@ describe('Array specific utils', () => {
     );
   });
 
+  it('kvArrsToMap: converts key and value arrays to a map', () => {
+    const keys = [1, 2, 3, 4];
+    const values = ['a', 'b', 'c', 'd'];
+    const expected = new Map().set(1, 'a').set(2, 'b').set(3, 'c').set(4, 'd');
+    assert.deepStrictEqual(
+        F.kvArrsToMap(keys, values),
+        expected
+    );
+  });
+
+  it('kvArrsToMap: discards values if keys array is short', () => {
+    const keys = [1, 2, 3];
+    const values = ['a', 'b', 'c', 'd'];
+    const expected = new Map().set(1, 'a').set(2, 'b').set(3, 'c');
+    assert.deepStrictEqual(
+        F.kvArrsToMap(keys, values),
+        expected
+    );
+  });
+
+  it('kvArrsToMap: makes values undefined if values are short', () => {
+    const keys = [1, 2, 3, 4];
+    const values = ['a', 'b', 'c'];
+    const expected = new Map().set(1, 'a').set(2, 'b')
+        .set(3, 'c').set(4, undefined);
+    assert.deepStrictEqual(
+        F.kvArrsToMap(keys, values),
+        expected
+    );
+  });
+
+
+
 });
 
 describe('String related utils', () => {
@@ -966,11 +999,15 @@ describe('Number and math specific utils', () => {
 
   it('divMod: the seed number is divided by the subsequent number', () => {
     const divTen = F.divMod(10);
+    // divTen(3) = [3, 1] -> 10/3 = 3 carry 1
+
     assert.deepStrictEqual(divTen(3), [3, 1])
   });
 
   it('divMod2: the subsequent number is divided by the seed number', () => {
     const divByTen = F.divMod2(10);
+    // divByTen(3) = [0, 3] -> 3/10 = 0 carry 3
+
     assert.deepStrictEqual(divByTen(3), [0, 3])
   });
 
