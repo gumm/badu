@@ -201,7 +201,7 @@ const hasValue = v => (!(v === undefined || Number.isNaN(v)));
 
 
 /**
- * Check if an Object has keys. Usefull to check if JSON responses are
+ * Check if an Object has keys. Useful to check if JSON responses are
  * empty.
  * @param o
  * @returns {boolean}
@@ -537,13 +537,11 @@ const filterOnlyIndexes = indexes => arr => {
  * be undefined for all elements in the key array without a matching index in
  * the values array. If the keys array is shorter than the values array, the
  * non-mapped values will be discarded
- * @param kArr {Array<*>}
- * @param vArr {Array<*>}
+ * @param kA {Array<*>} Array to use as keys
+ * @param vA {Array<*>} Array to use as values
  * @returns {Map<any, any>}
  */
-const kvArrsToMap = (kArr, vArr) => new Map(
-    kArr.reduce((p,c,i) => p.push([c, vArr[i]]) && p, [])
-);
+const arrToMap = (kA, vA) => kA.reduce((p, c, i) => p.set(c, vA[i]), new Map());
 
 
 //--------------------------------------------------------------[ Conversion ]--
@@ -1267,7 +1265,7 @@ export {
   columnAt,
   filterAtInc,
   filterOnlyIndexes,
-  kvArrsToMap,
+  arrToMap,
   map,
   filter,
   maxInArr,

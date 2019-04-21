@@ -669,33 +669,33 @@ describe('Array specific utils', () => {
     );
   });
 
-  it('kvArrsToMap: converts key and value arrays to a map', () => {
+  it('arrToMap: converts key and value arrays to a map', () => {
     const keys = [1, 2, 3, 4];
     const values = ['a', 'b', 'c', 'd'];
     const expected = new Map().set(1, 'a').set(2, 'b').set(3, 'c').set(4, 'd');
     assert.deepStrictEqual(
-        F.kvArrsToMap(keys, values),
+        F.arrToMap(keys, values),
         expected
     );
   });
 
-  it('kvArrsToMap: discards values if keys array is short', () => {
+  it('arrToMap: discards values if keys array is short', () => {
     const keys = [1, 2, 3];
     const values = ['a', 'b', 'c', 'd'];
     const expected = new Map().set(1, 'a').set(2, 'b').set(3, 'c');
     assert.deepStrictEqual(
-        F.kvArrsToMap(keys, values),
+        F.arrToMap(keys, values),
         expected
     );
   });
 
-  it('kvArrsToMap: makes values undefined if values are short', () => {
+  it('arrToMap: makes values undefined if values are short', () => {
     const keys = [1, 2, 3, 4];
     const values = ['a', 'b', 'c'];
     const expected = new Map().set(1, 'a').set(2, 'b')
         .set(3, 'c').set(4, undefined);
     assert.deepStrictEqual(
-        F.kvArrsToMap(keys, values),
+        F.arrToMap(keys, values),
         expected
     );
   });
