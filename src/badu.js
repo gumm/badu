@@ -4,6 +4,38 @@
  */
 let arrayLike;
 
+/**
+ * @type {Array<number>}
+ */
+const numericInt = [0,1,2,3,4,5,6,7,8,9];
+
+/**
+ * @type {Array<string>}
+ */
+const numericString = '0123456789'.split('');
+
+/**
+ * @type {Array<string>}
+ */
+const alphaLower = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+/**
+ * @type {Array<string>}
+ */
+const alphaUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+/**
+ * @type {Array<string>}
+ */
+const alphaNum = [...alphaLower, ...alphaUpper, ...numericString];
+
+/**
+ * @type {Map<string, boolean>}
+ */
+const boolMap = new Map()
+    .set('true', true)
+    .set('false', false);
+
 
 /**
  * A variadic compose that accepts any number of pure functions and composes
@@ -33,6 +65,7 @@ const identity = e => e;
 const partial = (fn, ...a) => (...b) => fn(...[...a, ...b]);
 
 
+//---------------------------------------------------------[ Always the same ]--
 // noinspection JSUnusedLocalSymbols
 /**
  * @param {...*} args
@@ -65,17 +98,6 @@ const alwaysTrue = (...args) => true;
 const alwaysNull = (...args) => null;
 
 
-/**
- * @param {*} func
- * @return {function(): undefined}
- */
-const maybeFunc = func => () => {
-  if (whatType(func) === 'function') {
-    /** @type {!Function} */(func)()
-  }
-};
-
-
 //-------------------------------------------------------[ Log & Debug Tools ]--
 /**
  * @param {string} tag
@@ -104,21 +126,22 @@ const trace = tag => partial(logInline, tag);
  */
 const whatType = x => typeof x;
 
-
-/**
- * @type {Map<*, boolean>}
- */
-const boolMap = new Map()
-    .set('true', true)
-    .set('false', false);
-
-
 /**
  * Convert the given thing to a boolean if it can. Else return it as is.
  * @param {*} s
  * @returns {*|boolean}
  */
 const maybeBool = s => isDef(boolMap.get(s)) ? boolMap.get(s) : s;
+
+/**
+ * @param {*} func
+ * @return {function(): undefined}
+ */
+const maybeFunc = func => () => {
+  if (whatType(func) === 'function') {
+    return /** @type {!Function} */(func)()
+  }
+};
 
 
 //--------------------------------------------------------------[ Assertions ]--
@@ -217,14 +240,6 @@ const isEmpty = o => o.constructor === Object && Object.keys(o).length === 0;
 const sameAs = v => e => v === e;
 
 
-/**
- * Checks of all the elements in the array are the same.
- * @param arr
- * @returns {boolean}
- */
-const allElementsEqual = arr => arr.every(sameAs(arr[0]));
-
-
 //-------------------------------------------------------------[ Array Tools ]--
 /**
  * A generator function that returns an iterator over the specified range of
@@ -256,9 +271,10 @@ function* rangeGen(b, e, s = 1) {
 /**
  * Range between. Similar to Python's range.
  * console.log(range(1, -1));
- * @param {number} b
- * @param {number} e
- * @param {number=} s
+ * Both begin and end is inclusive
+ * @param {number} b Beginning Inclusive
+ * @param {number} e End Inclusive
+ * @param {number=} s Step size
  * @returns {Array<number>}
  */
 const range = (b, e, s) => [...(rangeGen(b, e, s))];
@@ -266,7 +282,8 @@ const range = (b, e, s) => [...(rangeGen(b, e, s))];
 
 /**
  * Works by spoofing an iterable object by creating an object with a length
- * property.
+ * property. Steps by 1 only.
+ * Both begin and end is inclusive
  * @param {!number} m
  * @param {!number} n
  * @returns {Array<!number>}
@@ -430,6 +447,14 @@ const sameEls = (a, b) => a.length === b.length &&
 
 
 /**
+ * Checks of all the elements in the array are the same.
+ * @param arr
+ * @returns {boolean}
+ */
+const allElementsEqual = arr => arr.every(sameAs(arr[0]));
+
+
+/**
  * @param func
  * @returns {function(!Array<*>): !Array<*>}
  */
@@ -507,7 +532,31 @@ const columnReduce = (arr, f) => transpose(arr).map(e => e.reduce(f));
 const splitAt = n => arr => [arr.slice(0, n), arr.slice(n)];
 
 
-const shuffle = (a, b) => a.reduce((p, c, i) => p.push(c) && p.push(b[i]) && p, []);
+/**
+ * Creates a new list out of the two supplied by pairing up equally-positioned
+ * items from both lists. The returned list is truncated to the length of the
+ * shorter of the two input lists.
+ * Example:
+ *    zip([1, 2], ['a', 'b', 'c']) -> [[1, 'a'], [2, 'b']]
+ *    zip([1, 2, 3], ['a', 'b']) -> [[1, 'a'], [2, 'b']]
+ * @param {Array<*>} a
+ * @param {Array<*>} b
+ * @returns {Array<*>}
+ */
+const zip = (a, b) => a.reduce((p, c, i) => b[i] ? push(p, [c, b[i]]) : p, []);
+
+/**
+ * Creates a new flat list out of the two supplied by pairing up
+ * equally-positioned items from both lists. The pairing is limited to
+ * elements where both arrays have elements at that position.
+ * Example:
+ *    zipFlat([1, 2], ['a', 'b', 'c']) -> [1, 'a', 2, 'b']
+ *    zipFlat([1, 2, 3], ['a', 'b']) -> [1, 'a', 2, 'b']
+ * @param {Array<*>} a
+ * @param {Array<*>} b
+ * @returns {Array<*>}
+ */
+const zipFlat = (a, b) => flatten(zip(a, b));
 
 /**
  * Given an array of arrays, find the elements that appear in more than
@@ -543,6 +592,49 @@ const filterOnlyIndexes = indexes => arr => {
  */
 const arrToMap = (kA, vA) => kA.reduce((p, c, i) => p.set(c, vA[i]), new Map());
 
+/**
+ * Remove n elements from the array starting at the given index
+ * @param {number} idx Index position of first removed element
+ * @param {number} n Number of elements to remove from there onwards
+ * @param {Array<*>} arr The array to operate on.
+ *    This array will NOT be mutated.
+ * @returns {Array<*>} A two element 2D array, the first element is
+ *    the array of removed elements, and the second element is a copy
+ *    of the original array with the elements removed.
+ */
+const remove = (idx, n, arr) => {
+  const cpy = [...arr];
+  return [cpy.splice(idx, n), cpy]
+};
+
+/**
+ * Remove the element from the array at index
+ * @param {number} i The index number of the element to be removed
+ * @param {Array<*>} arr The array to remove the element from
+ * @returns {Array<*>} A two element array, the first element is the
+ *    element removed from the index position, the next is the leftover
+ *    array after the element was removed.
+ */
+const removeAtIndex = (i, arr) => {
+  const [a, b] = remove(i, 1, arr);
+  return [a[0], b];
+};
+
+/**
+ * Returns a random element from an array, and a copy of the original array with
+ * that element removed.
+ * @param {Array<*>} arr
+ * @returns {Array<*>}
+ */
+const removeRandom = arr => removeAtIndex(randIntBetween(0, arr.length)(), arr);
+
+/**
+ * Pushes, but returns the array not the pushed element.
+ * @param {Array<*>} arr
+ * @param {*} e
+ * @returns {Array<*>}
+ */
+const push = (arr, e) => [...arr, e];
 
 //--------------------------------------------------------------[ Conversion ]--
 /**
@@ -619,11 +711,13 @@ const leftPadWithTo = (v, n) => {
  * Given an array of characters, test that a string only contains elements from
  * that array.
  * @param {!Array<string>} a
+ * @param {boolean} retBool When set to true, return true/false instead of the
+ *    default which is to return the original string if it passes.
  * @returns {function(string): (boolean|string)}
  */
-const onlyIncludes = a => s => {
+const onlyIncludes = (a, retBool = false) => s => {
   const allGood = Array.from(/** @type string */(s)).every(e => a.includes(e));
-  return allGood ? s : false;
+  return allGood ? (retBool ? true : s) : false;
 };
 
 /**
@@ -672,13 +766,15 @@ const replaceAll = (p, r) => x => x.replace(new RegExp(`${p}`, 'g'), r);
 
 
 /**
+ * Join the elements of an array
  * @param {string} s
- * @return {function(string): (string)}
+ * @return {function(Array): (string)}
  */
 const join = s => x => x.join(s);
 
 
 /**
+ * Join the given arguments
  * @param {string} s
  * @return {function(*): (*|string)}
  */
@@ -833,6 +929,37 @@ const cloneObj = o => Object.assign({}, o);
 const getNowSeconds = () => Math.floor(Date.now() / 1000);
 
 
+/**
+ * Get a date from the given integer
+ * @param {number} ts A timestamp. This can be either positive or negative
+ *   Timestamp values of zero or smaller is considered relative seconds ago.
+ *   Positive timestamps with 12 digits or less are considered timestamps given
+ *   in seconds.
+ *   Timestamps with more than 12 digits are considered timestamps given in
+ *   milliseconds.
+ * @returns {Date|undefined}
+ */
+const assumeDateFromTs = ts => {
+  let date;
+  if (isSignedInt(ts)) {
+    date = new Date();
+    if (ts <= 0) {
+      // Zero or below is relative seconds.
+      date.setSeconds(date.getSeconds() + ts);
+    } else if (ts > 999999999999) {
+      // This timestamp is probably in milliseconds
+      date.setTime(ts);
+    }
+    else if (ts > 0) {
+      // This timestamp is probably in seconds
+      const milli = ts * 1000;
+      date.setTime(milli);
+    }
+  }
+  return date;
+};
+
+
 //----------------------------------------------------------[ IDs and Random ]--
 /**
  * A generator function to produce consecutive ids, starting from
@@ -895,6 +1022,17 @@ const randIntBetween = (min = 0, max = 10) => {
 
 
 /**
+ * A non-repeating sub-string of the given length from the given seed string.
+ * @param {string} seed The seed string.
+ * @returns {function(number): string}
+ */
+const randSubSet = seed => l => Array(l).fill(0).reduce(p => {
+  const [a, b] = removeRandom(p[1]);
+  return [push(p[0], a), b]
+}, [[], seed.split('')])[0].join('');
+
+
+/**
  * Randomly get either a 1 or a -1. Good for randomly changing the sign of a
  * number
  * @returns {number}
@@ -904,14 +1042,36 @@ const randSign = () => [-1, 1][(Math.random() * 2) | 0];
 
 //--------------------------------------------------------[ Math and Numbers ]--
 /**
+ * Determine the sign of the zero
+ * @param x
+ * @returns {boolean}
+ */
+const isNegativeZero = x => x === 0 && (1/x < 0);
+
+
+/**
  * Bitwise conversion of a number to its integer component.
- * Unlike Math.floor(n) this does not convert -1.123 to -2 but to the interger
+ * Unlike Math.floor(n) this does not convert -1.123 to -2 but to the integer
  * part: -1.
  * It just chops any floating bits from the number.
  * @param n
  * @returns {number}
  */
 const toInt = n => n | 0;
+
+
+/**
+ * Only numbers that can reliably be passed to JSON as a number, and that
+ * are not floats will return true. The rest false.
+ * @param {*} a The value to check
+ * @return {boolean}
+ */
+const isSignedInt = a =>{
+  const aS = isDefAndNotNull(a) ? a.toString() : '.';
+  const onlyNums = onlyIncludes('+-0123456789'.split(''), true);
+  return whatType(a) === 'number' && onlyNums(aS);
+};
+
 
 /**
  * @param {number} precision
@@ -1218,80 +1378,116 @@ const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
 
 export {
-  isUndefined,
-  leftPadWithTo,
-  onlyIncludes,
-  isDef,
-  isDefAndNotNull,
-  alwaysAppend,
-  replaceAll,
-  cloneObj,
+  numericInt,
+  numericString,
+  alphaLower,
+  alphaUpper,
+  alphaNum,
   compose,
-  partial,
-  mergeDeep,
-  pathOr,
-  trace,
   identity,
+  partial,
   alwaysUndef,
   alwaysFalse,
   alwaysTrue,
   alwaysNull,
+  logInline,
+  trace,
   whatType,
+  boolMap,
   maybeBool,
-  isNumber,
+  maybeFunc,
+  isDef,
+  isUndefined,
+  isDefAndNotNull,
   isString,
+  isNumber,
   isObject,
   isEven,
   isDivisibleBy,
-  isEmpty,
   both,
-  sameArr,
-  sameEls,
-  allElementsEqual,
+  hasValue,
+  isEmpty,
+  sameAs,
+  rangeGen,
   range,
   range2,
   iRange,
   clock,
   head,
-  reverse,
   tail,
-  flatten,
+  reverse,
   truncate,
+  flatten,
   elAt,
+  columnAt,
   transpose,
   repeat,
   countOck,
   countByFunc,
-  columnAt,
   filterAtInc,
-  filterOnlyIndexes,
-  arrToMap,
+  sameArr,
+  sameEls,
+  allElementsEqual,
   map,
   filter,
+  chunk,
+  pairs,
+  pairsToMap,
   maxInArr,
   minInArr,
-  stripLeadingChar,
-  stripTrailingChar,
+  columnReduce,
+  splitAt,
+  zip,
+  zipFlat,
+  findShared,
+  filterOnlyIndexes,
+  arrToMap,
+  remove,
+  removeAtIndex,
+  removeRandom,
+  push,
   toLowerCase,
-  toUpperCase,
   toString,
   toNumber,
+  toUpperCase,
+  negate,
   anyToLowerCase,
-  stringReverse,
-  numReverse,
+  makeRandomString,
+  leftPadWithTo,
+  onlyIncludes,
+  stripLeadingChar,
+  stripTrailingChar,
   split,
   replace,
+  replaceAll,
   join,
   join2,
   append,
+  alwaysAppend,
   prepend,
   interleave,
   interleave2,
   countSubString,
+  stringReverse,
+  lcp,
+  mergeDeep,
+  pathOr,
+  cloneObj,
+  getNowSeconds,
+  assumeDateFromTs,
+  idGen,
+  privateCounter,
+  privateRandom,
+  randomId,
+  randIntBetween,
+  randSubSet,
+  randSign,
+  isNegativeZero,
   toInt,
+  isSignedInt,
   pRound,
   maybeNumber,
-  negate,
+  numReverse,
   divMod,
   divMod2,
   factorize,
@@ -1299,11 +1495,8 @@ export {
   imeisvToImei,
   shannon,
   englishNumber,
-  hasValue,
-  chunk,
-  pairs,
-  pairsToMap,
   extrapolate,
+  formatBytes,
   numToBinString,
   binStringToNum,
   getBitAt,
@@ -1311,19 +1504,5 @@ export {
   clearBitAt,
   invBitAt,
   hasBitAt,
-  idGen,
-  makeRandomString,
-  randomId,
-  randIntBetween,
-  randSign,
-  privateRandom,
-  privateCounter,
-  maybeFunc,
-  formatBytes,
-  columnReduce,
-  splitAt,
-  findShared,
-  sameAs,
-  lcp
 };
 

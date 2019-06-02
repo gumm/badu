@@ -1,6 +1,132 @@
 const assert = require('assert');
 import * as F from '../src/badu.js'
 
+/**
+ numericInt,
+ numericString,
+ alphaLower,
+ alphaUpper,
+ alphaNum,
+ compose,
+ identity,
+ partial,
+ alwaysUndef,
+ alwaysFalse,
+ alwaysTrue,
+ alwaysNull,
+ logInline,
+ trace,
+ whatType,
+ boolMap,
+ maybeBool,
+ maybeFunc,
+ isDef,
+ isUndefined,
+ isDefAndNotNull,
+ isString,
+ isNumber,
+ isObject,
+ isEven,
+ isDivisibleBy,
+ both,
+ hasValue,
+ isEmpty,
+ sameAs,
+ rangeGen,
+ range,
+ range2,
+ iRange,
+ clock,
+ head,
+ tail,
+ reverse,
+ truncate,
+ flatten,
+ elAt,
+ columnAt,
+ transpose,
+ repeat,
+ countOck,
+ countByFunc,
+ filterAtInc,
+ sameArr,
+ sameEls,
+ allElementsEqual,
+ map,
+ filter,
+ chunk,
+ pairs,
+ pairsToMap,
+ maxInArr,
+ minInArr,
+ columnReduce,
+ splitAt,
+ zip,
+ zipFlat,
+ findShared,
+ filterOnlyIndexes,
+ arrToMap,
+ remove,
+ removeAtIndex,
+ removeRandom,
+ push,
+ toLowerCase,
+ toString,
+ toNumber,
+ toUpperCase,
+ negate,
+ anyToLowerCase,
+ makeRandomString,
+ leftPadWithTo,
+ onlyIncludes,
+ stripLeadingChar,
+ stripTrailingChar,
+ split,
+ replace,
+ replaceAll,
+ join,
+ join2,
+ append,
+ alwaysAppend,
+ prepend,
+ interleave,
+ interleave2,
+ countSubString,
+ stringReverse,
+ lcp,
+ mergeDeep,
+ pathOr,
+ cloneObj,
+ getNowSeconds,
+ idGen,
+ privateCounter,
+ privateRandom,
+ randomId,
+ randIntBetween,
+ randSubSet,
+ randSign,
+ toInt,
+ pRound,
+ maybeNumber,
+ numReverse,
+ divMod,
+ divMod2,
+ factorize,
+ luhn,
+ imeisvToImei,
+ shannon,
+ englishNumber,
+ extrapolate,
+ formatBytes,
+ numToBinString,
+ binStringToNum,
+ getBitAt,
+ setBitAt,
+ clearBitAt,
+ invBitAt,
+ hasBitAt,
+ */
+
 describe('Functional tools', () => {
   it('compose: compose pure functions', () => {
     const plusOne = x => x + 1;
@@ -16,96 +142,6 @@ describe('Functional tools', () => {
     assert.strictEqual(composed(3), ((3 * 2) + 1));
   });
 
-  it('partial: returns a partially applied function', () => {
-    const test = (a, b, c, d) => `${a} ${b} ${c} ${d}`;
-    const partial = F.partial(test, 'first', 'second');
-    assert.strictEqual(partial('third', 'last'), 'first second third last');
-  });
-
-  it('trace: can be used to see what is passed around inside a ' +
-      'composed function', () => {
-    const plusOne = x => x + 1;
-    const timesTwo = x => x * 2;
-    const trace1 = F.trace('First this:');
-    const trace2 = F.trace('Then this:');
-    const trace3 = F.trace('Lastly:');
-    const composed = F.compose(trace3, plusOne, trace2, timesTwo, trace1);
-    assert.strictEqual(composed(3), ((3 * 2) + 1));
-  });
-
-
-});
-
-describe('Basic Object utils', () => {
-
-  it('mergeDeep: merges 2 objects', () => {
-    const obj1 = {a: {b: {c: [1, 2, 3]}}};
-    const obj2 = {a: {d: 'new', b: {c: [4, 5, 6]}}, e: {f: [123]}};
-    const expected = {
-      "a": {
-        "b": {
-          "c": [1, 2, 3, 4, 5, 6]
-        },
-        "d": "new",
-      },
-      "e": {
-        "f": [
-          123
-        ]
-      }
-    };
-    return assert.deepStrictEqual(F.mergeDeep(obj1, obj2), expected);
-  });
-
-  it('mergeDeep: arrays are merged', () => {
-    const obj1 = {a: [1, 2, 3]};
-    const obj2 = {a: [4, 5, 6]};
-    const expected = {a: [1, 2, 3, 4, 5, 6]};
-    return assert.deepStrictEqual(F.mergeDeep(obj1, obj2), expected);
-  });
-
-  it('mergeDeep: second object trumps first if key exist in both', () => {
-    const obj1 = {a: {b: {c: 'hello'}}};
-    const obj2 = {a: {b: {c: 'I win'}}};
-    const expected = {a: {b: {c: 'I win'}}};
-    return assert.deepStrictEqual(F.mergeDeep(obj1, obj2), expected);
-  });
-
-  it('pathOr: gets a value from deep in an object', () => {
-    const obj1 = {a: {b: {c: 'hello'}}};
-    const findC = F.pathOr('default', ['a', 'b', 'c']);
-    return assert.deepStrictEqual(findC(obj1), 'hello');
-  });
-
-  it('pathOr: can have a fallback default', () => {
-    const obj1 = {a: {b: {c: 'hello'}}};
-    const findE = F.pathOr('default', ['a', 'b', 'e']);
-    return assert.deepStrictEqual(findE(obj1), 'default');
-  });
-
-  it('pathOr: can find elements in an array', () => {
-    const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
-    const findE = F.pathOr('default', ['a', 'b', 'c', 2, 1, 'd']);
-    return assert.deepStrictEqual(findE(obj1), 'here I am');
-  });
-
-  it('pathOr: converts string numbers to numbers when ' +
-      'trying to find things in an array', () => {
-    const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
-    const findE = F.pathOr('default', ['a', 'b', 'c', '2', '1', 'd']);
-    return assert.deepStrictEqual(findE(obj1), 'here I am');
-  });
-
-  it('cloneObj: is a utility around Object.assign', () => {
-    const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
-    const clone = F.cloneObj(obj1);
-    return assert.deepStrictEqual(clone, obj1);
-  });
-
-});
-
-describe('Some functions always return the same thing', () => {
-
   it('identity: returns whatever it was given',
       () => assert.strictEqual(F.identity(1), 1));
 
@@ -114,6 +150,30 @@ describe('Some functions always return the same thing', () => {
 
   it('identity: array',
       () => assert.deepStrictEqual(F.identity([1, 2, 3]), [1, 2, 3]));
+
+  it('partial: returns a partially applied function', () => {
+    const test = (a, b, c, d) => `${a} ${b} ${c} ${d}`;
+    const partial = F.partial(test, 'first', 'second');
+    assert.strictEqual(partial('third', 'last'), 'first second third last');
+  });
+
+  it('partial: returns a partially applied function', () => {
+    const sum = (a, b) => a + b;
+    const sum10 = F.partial(sum, 10);
+    assert.strictEqual(sum10(20), 30);
+  });
+
+  it('partial: can be applied multiple times', () => {
+    const plusThenDiv = (a, b, c) => (a + b) / c;
+    const plus10ThenDiv = F.partial(plusThenDiv, 10);
+    const plus10And5ThenDiv = F.partial(plus10ThenDiv, 5);
+    assert.strictEqual(plus10And5ThenDiv(5), 3);
+    assert.strictEqual(plus10And5ThenDiv(3), 5);
+  });
+
+});
+
+describe('Some functions always return the same thing', () => {
 
   it('alwaysUndef: returns "undefined"',
       () => assert.strictEqual(F.alwaysUndef(), undefined));
@@ -133,30 +193,40 @@ describe('Some functions always return the same thing', () => {
   it('alwaysTrue: regardless of what is passed in',
       () => assert.strictEqual(F.alwaysTrue(true), true));
 
+  it('alwaysNull: returns "false" ',
+      () => assert.strictEqual(F.alwaysNull(), null));
+
+  it('alwaysNull: regardless of what is passed in',
+      () => assert.strictEqual(F.alwaysNull(true), null));
 
 });
 
-describe('Some answers questions', () => {
+describe('Functions to debug and trace', () => {
 
-  it('isUndefined: returns true if given something that is not defined', () => {
-    let uDef;
-    // noinspection JSUnusedAssignment
-    assert.strictEqual(F.isUndefined(uDef), true);
-    assert.strictEqual(F.isUndefined(undefined), true);
-    assert.strictEqual(F.isUndefined(void 0), true);
+  it('logInline: logs the tag and returns the value', () => {
+    const tag = 'log the tag';
+    const value = 2;
+    assert.strictEqual(F.logInline(tag, value), 2);
   });
 
-  it('isUndefined: handles null', () => {
-    return assert.strictEqual(F.isUndefined(null), false);
+  it('trace: the same tag for different values', () => {
+    const trace1 = F.trace('The value is now:');
+    [1,2,3,4].forEach(trace1)
   });
 
-  it('isUndefined: handles NaN', () => {
-    return assert.strictEqual(F.isUndefined(NaN), false);
+  it('trace: can be used to see what is passed around inside a ' +
+      'composed function. Trace is partially applied logInline', () => {
+    const plusOne = x => x + 1;
+    const timesTwo = x => x * 2;
+    const trace1 = F.trace('First this:');
+    const trace2 = F.trace('Then this:');
+    const trace3 = F.trace('Lastly:');
+    const composed = F.compose(trace3, plusOne, trace2, timesTwo, trace1);
+    assert.strictEqual(composed(3), ((3 * 2) + 1));
   });
+});
 
-  it('isUndefined: handles the empty string', () => {
-    return assert.strictEqual(F.isUndefined(''), false);
-  });
+describe('Type interrogation function:', () => {
 
   it('whatType: returns "string" if a string is given',
       () => assert.strictEqual(F.whatType('s'), 'string'));
@@ -197,6 +267,19 @@ describe('Some answers questions', () => {
   it('maybeBool: is case sensitive',
       () => assert.strictEqual(F.maybeBool('True'), 'True'));
 
+  it('maybeFunc: executes its argument if a function', () => {
+    const aFunc = () => 2;
+    assert.strictEqual(F.maybeFunc(aFunc)(), 2);
+  });
+
+  it('maybeFunc: returns undefined if the argument is not a function', () => {
+    const notaFunc = `I'm not a function`;
+    assert.strictEqual(F.maybeFunc(notaFunc)(), undefined);
+  });
+});
+
+describe('Assertion functions:', () => {
+
   it('isDef: returns true if it was given something other than "undefined"',
       () => assert.strictEqual(F.isDef(0), true));
 
@@ -208,6 +291,26 @@ describe('Some answers questions', () => {
 
   it('isDef: handles undefined',
       () => assert.strictEqual(F.isDef(undefined), false));
+
+  it('isUndefined: returns true if given something that is not defined', () => {
+    let uDef;
+    // noinspection JSUnusedAssignment
+    assert.strictEqual(F.isUndefined(uDef), true);
+    assert.strictEqual(F.isUndefined(undefined), true);
+    assert.strictEqual(F.isUndefined(void 0), true);
+  });
+
+  it('isUndefined: handles null', () => {
+    return assert.strictEqual(F.isUndefined(null), false);
+  });
+
+  it('isUndefined: handles NaN', () => {
+    return assert.strictEqual(F.isUndefined(NaN), false);
+  });
+
+  it('isUndefined: handles the empty string', () => {
+    return assert.strictEqual(F.isUndefined(''), false);
+  });
 
   it('isDefAndNotNull: returns true if it was given something other ' +
       'than "undefined" or null',
@@ -228,6 +331,18 @@ describe('Some answers questions', () => {
   it('isDefAndNotNull: empty string is considered defined',
       () => assert.strictEqual(F.isDefAndNotNull(''), true));
 
+  it('isString: returns true if given a string',
+      () => assert.strictEqual(F.isString('s'), true));
+
+  it('isString: handles null',
+      () => assert.strictEqual(F.isString(null), false));
+
+  it('isString: handles undefined',
+      () => assert.strictEqual(F.isString(undefined), false));
+
+  it('isString: handles NaN',
+      () => assert.strictEqual(F.isString(NaN), false));
+
   it('isNumber: returns true if given a number',
       () => assert.strictEqual(F.isNumber(1), true));
 
@@ -242,18 +357,6 @@ describe('Some answers questions', () => {
 
   it('isNumber: handles Number.NEGATIVE_INFINITY',
       () => assert.strictEqual(F.isNumber(Number.NEGATIVE_INFINITY), true));
-
-  it('isString: returns true if given a string',
-      () => assert.strictEqual(F.isString('s'), true));
-
-  it('isString: handles null',
-      () => assert.strictEqual(F.isString(null), false));
-
-  it('isString: handles undefined',
-      () => assert.strictEqual(F.isString(undefined), false));
-
-  it('isString: handles NaN',
-      () => assert.strictEqual(F.isString(NaN), false));
 
   it('isObject: returns true if given an object',
       () => assert.strictEqual(F.isObject({a: 1}), true));
@@ -308,35 +411,6 @@ describe('Some answers questions', () => {
         assert.strictEqual(t(124), true);
       });
 
-  it('sameArr: returns true if both arrays have the ' +
-      'same elements in the same order',
-      () => assert.strictEqual(F.sameArr([1, 2], [1, 2]), true));
-
-  it('sameArr: if the order differs the test fails',
-      () => assert.strictEqual(F.sameArr([1, 2], [2, 1]), false));
-
-  it('sameArr: if the elements differs the test fails',
-      () => assert.strictEqual(F.sameArr([1, 2], [1, 1]), false));
-
-  it('sameEls: returns true if both arrays have the same elements',
-      () => assert.strictEqual(F.sameEls([1, 2], [1, 2]), true));
-
-  it('sameEls: order does not matter',
-      () => assert.strictEqual(F.sameEls([1, 2], [2, 1]), true));
-
-  it('sameEls: when elements differ it fails',
-      () => assert.strictEqual(F.sameEls([1, 2], [2, 1, 1]), false));
-
-  it('allElementsEqual: returns true if all the elements ' +
-      'in the array are the same',
-      () => assert.strictEqual(F.allElementsEqual([1, 1, 1, 1, 1]), true));
-
-  it('allElementsEqual: returns false if any element differs',
-      () => assert.strictEqual(F.allElementsEqual([1, 1, '1', 1, 1]), false));
-
-  it('allElementsEqual: returns true an empty array is given',
-      () => assert.strictEqual(F.allElementsEqual([]), true));
-
   it('hasValue: is defined and not null',
       () => assert.strictEqual(F.hasValue(1), true));
 
@@ -360,6 +434,12 @@ describe('Some answers questions', () => {
 
   it('hasValue: NaN does not have value',
       () => assert.strictEqual(F.hasValue(NaN), false));
+
+  it('isEmpty: Check if an object has keys',
+      () => assert.strictEqual(F.isEmpty({}), true));
+
+  it('isEmpty: Check if an object has keys',
+      () => assert.strictEqual(F.isEmpty({a:1}), false));
 
   it('sameAs: given a marker, test that the given element is the same', () => {
     const marker = 'a';
@@ -403,6 +483,7 @@ describe('Some answers questions', () => {
     assert.strictEqual(test(NaN), false);
   });
 
+
 });
 
 describe('Array specific utils', () => {
@@ -424,6 +505,78 @@ describe('Array specific utils', () => {
     const result = [1, 3, 5, 7, 9];
     assert.strictEqual(F.sameArr(r, result), true)
   });
+
+  it('range2: make an array from beginning to end', () => {
+    const r = F.range2(1, 10);
+    const result = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    assert.strictEqual(F.sameArr(r, result), true)
+  });
+
+  it('range2: can start at any positive number', () => {
+    const r = F.range2(7, 10);
+    const result = [7, 8, 9, 10];
+    assert.strictEqual(F.sameArr(r, result), true)
+  });
+
+  it('range2: Empty array if begin is bigger than end', () => {
+    const r = F.range2(10, 5);
+    const result = [];
+    assert.strictEqual(F.sameArr(r, result), true)
+  });
+
+  it('iRange: takes a single argument and ranges from 0 up', () => {
+    const r = F.iRange(10);
+    const result = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    assert.strictEqual(F.sameArr(r, result), true)
+  });
+
+  it('clock: Given size, return a function to give array starting at n', () => {
+    const clock6 = F.clock(6);
+    assert.strictEqual(F.sameArr(clock6(1), [1,2,3,4,5,6]), true);
+    assert.strictEqual(F.sameArr(clock6(2), [2,3,4,5,6,1]), true);
+    assert.strictEqual(F.sameArr(clock6(3), [3,4,5,6,1,2]), true);
+    assert.strictEqual(F.sameArr(clock6(4), [4,5,6,1,2,3]), true);
+    assert.strictEqual(F.sameArr(clock6(5), [5,6,1,2,3,4]), true);
+    assert.strictEqual(F.sameArr(clock6(6), [6,1,2,3,4,5]), true);
+  });
+
+  // it('clock: can do multiple rotations from given input', () => {
+  //   const clock6 = F.clock(6);
+  //   console.log(clock6(17));
+  //   assert.strictEqual(F.sameArr(clock6(7), [1,2,3,4,5,6]), true);
+  //   assert.strictEqual(F.sameArr(clock6(17), [1,2,3,4,5,6]), true);
+  // });
+
+  it('allElementsEqual: returns true if all the elements ' +
+      'in the array are the same',
+      () => assert.strictEqual(F.allElementsEqual([1, 1, 1, 1, 1]), true));
+
+  it('allElementsEqual: returns false if any element differs',
+      () => assert.strictEqual(F.allElementsEqual([1, 1, '1', 1, 1]), false));
+
+  it('allElementsEqual: returns true an empty array is given',
+      () => assert.strictEqual(F.allElementsEqual([]), true));
+
+  it('sameArr: returns true if both arrays have the ' +
+      'same elements in the same order',
+      () => assert.strictEqual(F.sameArr([1, 2], [1, 2]), true));
+
+  it('sameArr: if the order differs the test fails',
+      () => assert.strictEqual(F.sameArr([1, 2], [2, 1]), false));
+
+  it('sameArr: if the elements differs the test fails',
+      () => assert.strictEqual(F.sameArr([1, 2], [1, 1]), false));
+
+  it('sameEls: returns true if both arrays have the same elements',
+      () => assert.strictEqual(F.sameEls([1, 2], [1, 2]), true));
+
+  it('sameEls: order does not matter',
+      () => assert.strictEqual(F.sameEls([1, 2], [2, 1]), true));
+
+  it('sameEls: when elements differ it fails',
+      () => assert.strictEqual(F.sameEls([1, 2], [2, 1, 1]), false));
+
+
 
   it('iRange: takes a single argument and ranges from 0 up', () => {
     const r = F.iRange(10);
@@ -572,20 +725,6 @@ describe('Array specific utils', () => {
     assert.deepStrictEqual(onlyEvens([1, 2, 3, 4, 5, 6]), [2, 4, 6]);
   });
 
-  it('maxInArr: returns max value of array',
-      () => assert.strictEqual(F.maxInArr([1, 2, 3, 2, 1]), 3)
-  );
-
-  it('minInArr: returns min value of array',
-      () => assert.strictEqual(F.minInArr([1, 2, 3, 2, 1]), 1)
-  );
-
-  it('columnReduce: Reduce the columns in an array of arrays.', () => {
-    assert.deepStrictEqual(
-        F.columnReduce([[1, 2, 3], [4, 5, 6]], (p, c) => p + c),
-        [5, 7, 9])
-  });
-
   it('chunk: split an array into set of arrays of size n', () => {
     const chunkToThree = F.chunk(3);
     const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -623,7 +762,7 @@ describe('Array specific utils', () => {
     const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     assert.deepStrictEqual(
         F.pairsToMap(testArr),
-        new Map().set(0,1).set(2,3).set(4,5).set(6,7).set(8,9)
+        new Map().set(0, 1).set(2, 3).set(4, 5).set(6, 7).set(8, 9)
     );
   });
 
@@ -631,8 +770,73 @@ describe('Array specific utils', () => {
     const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     assert.deepStrictEqual(
         F.pairsToMap(testArr),
-        new Map().set(0,1).set(2,3).set(4,5).set(6,7).set(8, undefined)
+        new Map().set(0, 1).set(2, 3).set(4, 5).set(6, 7).set(8, undefined)
     );
+  });
+
+  it('maxInArr: returns max value of array',
+      () => assert.strictEqual(F.maxInArr([1, 2, 3, 2, 1]), 3)
+  );
+
+  it('minInArr: returns min value of array',
+      () => assert.strictEqual(F.minInArr([1, 2, 3, 2, 1]), 1)
+  );
+
+  it('columnReduce: Reduce the columns in an array of arrays.', () => {
+    assert.deepStrictEqual(
+        F.columnReduce([[1, 2, 3], [4, 5, 6]], (p, c) => p + c),
+        [5, 7, 9])
+  });
+
+  it('splitAt: Split an array into two arrays at the given position.', () => {
+    const spitAt3 = F.splitAt(3);
+    const spitAt6 = F.splitAt(6);
+    const expected3 = [[0, 1, 2], [3, 4, 5, 6, 7, 8, 9]];
+    const expected6 = [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9]];
+    assert.deepStrictEqual(
+        spitAt3(F.numericInt), expected3);
+    assert.deepStrictEqual(
+        spitAt6(F.numericInt), expected6);
+  });
+
+  it('zip: Combine two arrays into array of tuples', () => {
+    const expected = [
+      [0, 'A'], [1, 'B'], [2, 'C'], [3, 'D'], [4, 'E'],
+      [5, 'F'], [6, 'G'], [7, 'H'], [8, 'I'], [9, 'J'],];
+    assert.deepStrictEqual(
+        F.zip(F.numericInt, F.alphaUpper), expected);
+  });
+
+  it('zip: Shorter Array drives result. Shorter first', () => {
+    const expected = [[0, 'A'], [1, 'B'], [2, 'C']];
+    assert.deepStrictEqual(
+        F.zip([0, 1, 2], F.alphaUpper), expected);
+  });
+
+  it('zip: Shorter Array drives result. Shorter second', () => {
+    const expected = [[0, 'A'], [1, 'B'], [2, 'C']];
+    assert.deepStrictEqual(
+        F.zip(F.numericInt, ['A', 'B', 'C']), expected);
+  });
+
+  it('zipFlat: Combine two arrays flat consecutive pairs', () => {
+    const expected = [
+      0, 'A', 1, 'B', 2, 'C', 3, 'D', 4, 'E',
+      5, 'F', 6, 'G', 7, 'H', 8, 'I', 9, 'J'];
+    assert.deepStrictEqual(
+        F.zipFlat(F.numericInt, F.alphaUpper), expected);
+  });
+
+  it('zipFlat: Shorter Array drives result. Shorter first', () => {
+    const expected = [0, 'A', 1, 'B', 2, 'C'];
+    assert.deepStrictEqual(
+        F.zipFlat([0, 1, 2], F.alphaUpper), expected);
+  });
+
+  it('zipFlat: Shorter Array drives result. Shorter second', () => {
+    const expected = [0, 'A', 1, 'B', 2, 'C'];
+    assert.deepStrictEqual(
+        F.zipFlat(F.numericInt, ['A', 'B', 'C']), expected);
   });
 
   it('findShared: find elements shared amongst an array of arrays', () => {
@@ -700,9 +904,150 @@ describe('Array specific utils', () => {
     );
   });
 
+  it('remove: Remove n elements from the array starting at the given index', () => {
+    assert.deepStrictEqual(
+        F.remove(4, 3, F.numericInt), [[4, 5, 6], [0, 1, 2, 3, 7, 8, 9]]
+    );
+  });
 
+  it('removeAtIndex: Remove a single element at index', () => {
+    assert.deepStrictEqual(
+        F.removeAtIndex(4, F.numericInt), [4, [0, 1, 2, 3, 5, 6, 7, 8, 9]]
+    );
+  });
+
+  it('removeRandom: Remove a random single element from array', () => {
+    const [removed, resultArr] = F.removeRandom(F.numericInt);
+
+    // Check that the element has been removed
+    assert.strictEqual(resultArr.indexOf(removed), -1);
+
+    // Check the result is shorter by 1 than the original
+    assert.strictEqual(resultArr.length, F.numericInt.length - 1);
+
+    // Check removed was in the original, and original is not mutated
+    assert.strictEqual(F.numericInt.indexOf(removed) >= 0, true);
+
+    // Check that all elements in the result were in the original
+    // (bar the removed element)
+    F.numericInt.forEach(e => {
+      if (e !== removed) {
+        assert.strictEqual(resultArr.indexOf(e) >= 0, true);
+      }
+    })
+  });
+
+  it('push: Pushes, but returns the array not the pushed element.', () => {
+    const original = [1,2,3];
+    const expected = [1,2,3,4];
+    assert.deepStrictEqual(F.push(original, 4), expected);
+
+    // Also check the original remains unchanged
+    assert.deepStrictEqual([1,2,3], original);
+  });
 
 });
+
+describe('Basic Object utils', () => {
+
+  it('mergeDeep: merges 2 objects', () => {
+    const obj1 = {a: {b: {c: [1, 2, 3]}}};
+    const obj2 = {a: {d: 'new', b: {c: [4, 5, 6]}}, e: {f: [123]}};
+    const expected = {
+      "a": {
+        "b": {
+          "c": [1, 2, 3, 4, 5, 6]
+        },
+        "d": "new",
+      },
+      "e": {
+        "f": [
+          123
+        ]
+      }
+    };
+    return assert.deepStrictEqual(F.mergeDeep(obj1, obj2), expected);
+  });
+
+  it('mergeDeep: arrays are merged', () => {
+    const obj1 = {a: [1, 2, 3]};
+    const obj2 = {a: [4, 5, 6]};
+    const expected = {a: [1, 2, 3, 4, 5, 6]};
+    return assert.deepStrictEqual(F.mergeDeep(obj1, obj2), expected);
+  });
+
+  it('mergeDeep: second object trumps first if key exist in both', () => {
+    const obj1 = {a: {b: {c: 'hello'}}};
+    const obj2 = {a: {b: {c: 'I win'}}};
+    const expected = {a: {b: {c: 'I win'}}};
+    return assert.deepStrictEqual(F.mergeDeep(obj1, obj2), expected);
+  });
+
+  it('pathOr: gets a value from deep in an object', () => {
+    const obj1 = {a: {b: {c: 'hello'}}};
+    const findC = F.pathOr('default', ['a', 'b', 'c']);
+    return assert.deepStrictEqual(findC(obj1), 'hello');
+  });
+
+  it('pathOr: can have a fallback default', () => {
+    const obj1 = {a: {b: {c: 'hello'}}};
+    const findE = F.pathOr('default', ['a', 'b', 'e']);
+    return assert.deepStrictEqual(findE(obj1), 'default');
+  });
+
+  it('pathOr: can find elements in an array', () => {
+    const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
+    const findE = F.pathOr('default', ['a', 'b', 'c', 2, 1, 'd']);
+    return assert.deepStrictEqual(findE(obj1), 'here I am');
+  });
+
+  it('pathOr: converts string numbers to numbers when ' +
+      'trying to find things in an array', () => {
+    const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
+    const findE = F.pathOr('default', ['a', 'b', 'c', '2', '1', 'd']);
+    return assert.deepStrictEqual(findE(obj1), 'here I am');
+  });
+
+  it('cloneObj: is a utility around Object.assign', () => {
+    const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
+    const clone = F.cloneObj(obj1);
+    return assert.deepStrictEqual(clone, obj1);
+  });
+
+});
+
+
+
+describe('Date and time utils', () => {
+
+  it('assumeDateFromTs: assumes the date from a timestamp', () => {
+    const nowSeconds = F.getNowSeconds();
+    const nowFromSeconds = F.assumeDateFromTs(nowSeconds);
+    const nowFromMilliseconds = F.assumeDateFromTs(nowSeconds * 1000);
+    const tenSecAgo = F.assumeDateFromTs(-10);
+    assert.strictEqual(
+        Math.floor((tenSecAgo.getTime() / 1000)) + 10 , nowSeconds);
+    assert.deepStrictEqual(nowFromSeconds, nowFromMilliseconds);
+  });
+
+  it('assumeDateFromTs: assumes zero to be now', () => {
+    assert.strictEqual(F.assumeDateFromTs(0).getTime() , new Date().getTime());
+  });
+
+  it('assumeDateFromTs: assumes negative numbers are seconds ago', () => {
+    const secondsAgo = 1234;
+    const nowSeconds = F.getNowSeconds();
+    const tenSecAgo = F.assumeDateFromTs(-secondsAgo);
+    assert.strictEqual(
+        Math.floor((tenSecAgo.getTime() / 1000)) + secondsAgo , nowSeconds);
+  });
+
+});
+
+
+
+
+
 
 describe('String related utils', () => {
 
@@ -890,6 +1235,14 @@ describe('String related utils', () => {
 });
 
 describe('Number and math specific utils', () => {
+
+  it('isSignedInt: return true if the number is a signed int', () => {
+    assert.strictEqual(F.isSignedInt(1), true);
+    assert.strictEqual(F.isSignedInt(-1234), true);
+    assert.strictEqual(F.isSignedInt(+1234), true);
+    assert.strictEqual(F.isSignedInt(1.0), true);
+    assert.strictEqual(F.isSignedInt(1.01), false);
+  });
 
   it('extrapolate: find a point on a line', () => {
     const pointOnLineAtX = F.extrapolate([0, 0], [3, 5]);
@@ -1186,10 +1539,6 @@ describe('Random Numbers and IDs', () => {
       assert.strictEqual(s === -1 || s === 1, true);
     }
   });
-
-
-
-
 
 
 });
