@@ -125,6 +125,14 @@ import * as F from '../src/badu.js'
  clearBitAt,
  invBitAt,
  hasBitAt,
+ haversine,
+ didRiseThroughBoundary,
+ didFallThroughBoundary,
+ didEnterBand,
+ didExitBand,
+ geoIsInside,
+ geoFenceDidEnter,
+ geoFenceDidExit,
  */
 
 describe('Functional tools', () => {
@@ -575,8 +583,6 @@ describe('Array specific utils', () => {
 
   it('sameEls: when elements differ it fails',
       () => assert.strictEqual(F.sameEls([1, 2], [2, 1, 1]), false));
-
-
 
   it('iRange: takes a single argument and ranges from 0 up', () => {
     const r = F.iRange(10);
@@ -1045,10 +1051,6 @@ describe('Date and time utils', () => {
 });
 
 
-
-
-
-
 describe('String related utils', () => {
 
   it('leftPadWithTo: left-pad a string with the given ' +
@@ -1409,6 +1411,222 @@ describe('Number and math specific utils', () => {
 
   it('englishNumber: can not do fractions', () => {
     assert.deepStrictEqual(F.englishNumber(3.2), undefined)
+  });
+
+  it('didRiseThroughBoundary: detects rising boundary crossing', () => {
+    const boundry = 36.12;
+    const previous = 30;
+    const current = 40;
+    assert.strictEqual(F.didRiseThroughBoundary(boundry)(previous, current), true);
+  });
+
+  it('didRiseThroughBoundary: false if it was above and went up', () => {
+    const boundry = 36.12;
+    const previous = 37;
+    const current = 40;
+    assert.strictEqual(F.didRiseThroughBoundary(boundry)(previous, current), false);
+  });
+
+  it('didRiseThroughBoundary: false if it was below and stayed below', () => {
+    const boundry = 36.12;
+    const previous = 35;
+    const current = 36;
+    assert.strictEqual(F.didRiseThroughBoundary(boundry)(previous, current), false);
+  });
+
+  it('didRiseThroughBoundary: false if it was above and went below', () => {
+    const boundry = 36.12;
+    const previous = 37;
+    const current = 36;
+    assert.strictEqual(F.didRiseThroughBoundary(boundry)(previous, current), false);
+  });
+
+  it('didFallThroughBoundary: detects falling boundary crossing', () => {
+    const boundry = 36.12;
+    const previous = 40;
+    const current = 30;
+    assert.strictEqual(F.didFallThroughBoundary(boundry)(previous, current), true);
+  });
+
+  it('didFallThroughBoundary: false if it was below and went down', () => {
+    const boundry = 36.12;
+    const previous = 36;
+    const current = 35;
+    assert.strictEqual(F.didFallThroughBoundary(boundry)(previous, current), false);
+  });
+
+  it('didFallThroughBoundary: false if it was above and stayed above', () => {
+    const boundry = 36.12;
+    const previous = 37;
+    const current = 36;
+    assert.strictEqual(F.didRiseThroughBoundary(boundry)(previous, current), false);
+  });
+
+  it('didRiseThroughBoundary: false if it was below and went above', () => {
+    const boundry = 36.12;
+    const previous = 36;
+    const current = 37;
+    assert.strictEqual(F.didFallThroughBoundary(boundry)(previous, current), false);
+  });
+
+  it('didEnterBand: detects if a value is between two other values', () => {
+    const upper = 30;
+    const lower = 20;
+    const testFunc = F.didEnterBand(upper, lower);
+    let previous;
+    let current;
+
+    // Enter from above
+    previous = 36;
+    current = 25;
+    assert.strictEqual(testFunc(previous, current), true);
+
+    // Enter from below
+    previous = 19;
+    current = 25;
+    assert.strictEqual(testFunc(previous, current), true);
+
+    // Cross over whole band
+    previous = 19;
+    current = 36;
+    assert.strictEqual(testFunc(previous, current), false);
+
+    // Stay inside
+    previous = 21;
+    current = 22;
+    assert.strictEqual(testFunc(previous, current), false);
+
+    // Stay outside
+    previous = 19;
+    current = 18;
+    assert.strictEqual(testFunc(previous, current), false);
+  });
+
+  it('didExitBand: detects if a value is between two other values', () => {
+    const upper = 30;
+    const lower = 20;
+    const testFunc = F.didExitBand(upper, lower);
+    let previous;
+    let current;
+
+    // Rising exit
+    previous = 25;
+    current = 36;
+    assert.strictEqual(testFunc(previous, current), true);
+
+    // Falling exit
+    previous = 25;
+    current = 19;
+    assert.strictEqual(testFunc(previous, current), true);
+
+    // Cross over whole band
+    previous = 36;
+    current = 19;
+    assert.strictEqual(testFunc(previous, current), false);
+
+    // Stay inside
+    previous = 21;
+    current = 22;
+    assert.strictEqual(testFunc(previous, current), false);
+
+    // Stay outside
+    previous = 19;
+    current = 18;
+    assert.strictEqual(testFunc(previous, current), false);
+  });
+
+  it('haversine: computes km distance between geo points', () => {
+    const cLat =36.12;
+    const cLon = -86.67;
+    const pLat = 33.94;
+    const pLon = -118.40;
+    assert.equal(F.haversine([cLat, cLon], [pLat, pLon]),  2887.26)
+  });
+
+  it('geoIsInside: true if point inside circular geo-fence', () => {
+    const cLat = 0;
+    const cLon = 0;
+    const radius = 0.1; // Expressed as kilometers
+    const isInside = F.geoIsInside([cLat, cLon], radius);
+
+    let pLat;
+    let pLon;
+
+    pLat = 33.94;
+    pLon = -118.40;
+    assert.equal(isInside([pLat, pLon]),  false);
+
+    pLat = 0;
+    pLon = 0;
+    assert.equal(isInside([pLat, pLon]),  true);
+
+    pLat = 0;
+    pLon = 0.0001;
+    assert.equal(isInside([pLat, pLon]),  true);
+
+    pLat = 0;
+    pLon = 0.001;
+    assert.equal(isInside([pLat, pLon]),  false);
+  });
+
+  it('geoFenceDidEnter: true for inward boundary crossing', () => {
+    const cLat = 0;
+    const cLon = 0;
+    const centerPoint = [cLat, cLon];
+    const radius = 0.1; // Expressed as kilometers
+    const testDidEnter = F.geoFenceDidEnter(centerPoint, radius);
+    let pPrev;
+    let pCur;
+
+    // Was inside, now outside
+    pPrev = [0,0];
+    pCur = [1,1];
+    assert.equal(testDidEnter(pPrev, pCur),  false);
+
+    // Was inside, stayed inside
+    pPrev = [0,0];
+    pCur = [0.0001,0.0001];
+    assert.equal(testDidEnter(pPrev, pCur),  false);
+
+    // Was outside, stayed outside
+    pPrev = [2,2];
+    pCur = [1,1];
+    assert.equal(testDidEnter(pPrev, pCur),  false);
+
+    // Was outside, now inside
+    pPrev = [1,1];
+    pCur = [0,0];
+    assert.equal(testDidEnter(pPrev, pCur),  true);
+  });
+
+  it('geoFenceDidExit: true for outward boundary crossing', () => {
+    const cLat = 0;
+    const cLon = 0;
+    const centerPoint = [cLat, cLon];
+    const radius = 0.1; // Expressed as kilometers
+    const testDidExit = F.geoFenceDidExit(centerPoint, radius);
+    let pPrev;
+    let pCur;
+
+    // Was inside, now outside
+    pPrev = [0,0];
+    pCur = [1,1];
+    assert.equal(testDidExit(pPrev, pCur),  true);
+
+    // Was inside, stayed inside
+    pPrev = [0,0];
+    pCur = [0.0001,0.0001];
+    assert.equal(testDidExit(pPrev, pCur),  false);
+
+    // Was outside, stayed outside
+    pPrev = [2,2];
+    pCur = [1,1];
+    assert.equal(testDidExit(pPrev, pCur),  false);
+
+    // Was outside, now inside
+    pPrev = [1,1];
+    pCur = [0,0];
+    assert.equal(testDidExit(pPrev, pCur),  false);
   });
 
 });

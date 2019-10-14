@@ -3,7 +3,7 @@
 /**
  * @type {Array<number>}
  */
-const numericInt = [0,1,2,3,4,5,6,7,8,9];
+const numericInt = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 /**
  * @type {Array<string>}
@@ -945,8 +945,7 @@ const assumeDateFromTs = ts => {
     } else if (ts > 999999999999) {
       // This timestamp is probably in milliseconds
       date.setTime(ts);
-    }
-    else if (ts > 0) {
+    } else if (ts > 0) {
       // This timestamp is probably in seconds
       const milli = ts * 1000;
       date.setTime(milli);
@@ -1038,11 +1037,19 @@ const randSign = () => [-1, 1][(Math.random() * 2) | 0];
 
 //--------------------------------------------------------[ Math and Numbers ]--
 /**
+ * Given desimal degrees, return radians
+ * @param {!number} x
+ * @returns {number}
+ */
+const degreesToRadians = x => x / 180 * Math.PI;
+
+
+/**
  * Determine the sign of the zero
- * @param x
+ * @param {!number} x
  * @returns {boolean}
  */
-const isNegativeZero = x => x === 0 && (1/x < 0);
+const isNegativeZero = x => x === 0 && (1 / x < 0);
 
 
 /**
@@ -1062,7 +1069,7 @@ const toInt = n => n | 0;
  * @param {*} a The value to check
  * @return {boolean}
  */
-const isSignedInt = a =>{
+const isSignedInt = a => {
   const aS = isDefAndNotNull(a) ? a.toString() : '.';
   const onlyNums = onlyIncludes('+-0123456789'.split(''), true);
   return whatType(a) === 'number' && onlyNums(aS);
@@ -1292,6 +1299,80 @@ const formatBytes = precision => bytes => {
   return Number((bytes / Math.pow(k, i)).toPrecision(dm)) + ' ' + sizes[i];
 };
 
+
+const didRiseThroughBoundary = b => (p, c) => p < b && b < c;
+
+const didFallThroughBoundary = b => (p, c) => p > b && b > c;
+
+const didEnterBand = (u, l) => {
+  const enterFromBottom = didRiseThroughBoundary(l);
+  const enterFromTop = didFallThroughBoundary(u);
+  return (p, c) => {
+    const isInside = c >= l && c <= u;
+    return isInside && (enterFromTop(p, c) || enterFromBottom(p, c))
+  }
+};
+
+const didExitBand = (u, l) => {
+  const exitThroughUpper = didRiseThroughBoundary(u);
+  const exitThroughLower = didFallThroughBoundary(l);
+  return (p, c) => {
+    const wasInside = p >= l && p <= u;
+    return wasInside && (exitThroughUpper(p, c) || exitThroughLower(p, c))
+  }
+};
+
+
+/**
+ * The haversine formula is an equation important in navigation, giving
+ * great-circle distances between two points on a sphere from their longitudes
+ * and latitudes. It is a special case of a more general formula in spherical
+ * trigonometry, the law of haversines, relating the sides and angles
+ * of spherical "triangles".
+ *
+ * haversine :: (Num, Num) -> (Num, Num) -> Num
+ *
+ * @param lat1
+ * @param lon1
+ * @param lat2
+ * @param lon2
+ * @returns {number} km distance between points.
+ */
+const haversine = ([lat1, lon1], [lat2, lon2]) => {
+
+  const [rlat1, rlat2, rlon1, rlon2] =
+      [lat1, lat2, lon1, lon2].map(degreesToRadians);
+
+  const dLat = rlat2 - rlat1;
+  const dLon = rlon2 - rlon1;
+  const radius = 6372.8; // Earth's radius in km
+
+  return Math.round(
+      radius * 2 * Math.asin(
+      Math.sqrt(
+          Math.pow(Math.sin(dLat / 2), 2) +
+          Math.pow(Math.sin(dLon / 2), 2) *
+          Math.cos(rlat1) * Math.cos(rlat2))
+      ) * 100
+  ) / 100;
+};
+
+const geoIsInside = ([latC, lonC], radius) => ([latP, lonP]) => {
+  const h = haversine([latC, lonC], [latP, lonP]);
+  return radius >= h
+};
+
+const geoFenceDidEnter = (centerPoint, radius) => (p, c) => {
+  const isInside = geoIsInside(centerPoint, radius);
+  return isInside(c) && !isInside(p);
+};
+
+const geoFenceDidExit = (centerPoint, radius) => (p, c) => {
+  const isInside = geoIsInside(centerPoint, radius);
+  return isInside(p) && !isInside(c);
+};
+
+
 // ------------------------------------------------------------[ Bit Banging ]--
 /**
  * Convert a decimal number to a binary string.
@@ -1372,4 +1453,4 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-export { numericInt, numericString, alphaLower, alphaUpper, alphaNum, compose, identity, partial, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, logInline, trace, whatType, boolMap, maybeBool, maybeFunc, isDef, isUndefined, isDefAndNotNull, isString, isNumber, isObject, isEven, isDivisibleBy, both, hasValue, isEmpty, sameAs, rangeGen, range, range2, iRange, clock, head, tail, reverse, truncate, flatten, elAt, columnAt, transpose, repeat, countOck, countByFunc, filterAtInc, sameArr, sameEls, allElementsEqual, map, filter, chunk, pairs, pairsToMap, maxInArr, minInArr, columnReduce, splitAt, zip, zipFlat, findShared, filterOnlyIndexes, arrToMap, remove, removeAtIndex, removeRandom, push, toLowerCase, toString, toNumber, toUpperCase, negate, anyToLowerCase, makeRandomString, leftPadWithTo, onlyIncludes, stripLeadingChar, stripTrailingChar, split, replace, replaceAll, join, join2, append, alwaysAppend, prepend, interleave, interleave2, countSubString, stringReverse, lcp, mergeDeep, pathOr, cloneObj, getNowSeconds, assumeDateFromTs, idGen, privateCounter, privateRandom, randomId, randIntBetween, randSubSet, randSign, isNegativeZero, toInt, isSignedInt, pRound, maybeNumber, numReverse, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, extrapolate, formatBytes, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt };
+export { numericInt, numericString, alphaLower, alphaUpper, alphaNum, compose, identity, partial, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, logInline, trace, whatType, boolMap, maybeBool, maybeFunc, isDef, isUndefined, isDefAndNotNull, isString, isNumber, isObject, isEven, isDivisibleBy, both, hasValue, isEmpty, sameAs, rangeGen, range, range2, iRange, clock, head, tail, reverse, truncate, flatten, elAt, columnAt, transpose, repeat, countOck, countByFunc, filterAtInc, sameArr, sameEls, allElementsEqual, map, filter, chunk, pairs, pairsToMap, maxInArr, minInArr, columnReduce, splitAt, zip, zipFlat, findShared, filterOnlyIndexes, arrToMap, remove, removeAtIndex, removeRandom, push, toLowerCase, toString, toNumber, toUpperCase, negate, anyToLowerCase, makeRandomString, leftPadWithTo, onlyIncludes, stripLeadingChar, stripTrailingChar, split, replace, replaceAll, join, join2, append, alwaysAppend, prepend, interleave, interleave2, countSubString, stringReverse, lcp, mergeDeep, pathOr, cloneObj, getNowSeconds, assumeDateFromTs, idGen, privateCounter, privateRandom, randomId, randIntBetween, randSubSet, randSign, isNegativeZero, toInt, isSignedInt, pRound, maybeNumber, numReverse, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, extrapolate, formatBytes, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, haversine, didRiseThroughBoundary, didFallThroughBoundary, didEnterBand, didExitBand, geoIsInside, geoFenceDidEnter, geoFenceDidExit };
