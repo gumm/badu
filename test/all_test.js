@@ -856,7 +856,7 @@ describe('Array specific utils', () => {
     );
   });
 
-  it('findShared: also counts duplicates *within* an target', () => {
+  it('findShared: also counts duplicates *within* its target', () => {
     const test1 = [0, 0, 0, 1, 2, 9];
     const test2 = [2, 3, 3, 4, 5];
     const test3 = [4, 6, 7, 8, 2, 9, 6, 7];
@@ -866,6 +866,49 @@ describe('Array specific utils', () => {
         expected
     );
   });
+
+  it('intersection: finds elements that appear in both arrays', () => {
+    const test1 = [0, 0, 0, 1, 2, 4, 9];
+    const test2 = [2, 3, 3, 4, 5];
+    const expected = [2, 4];
+    assert.deepStrictEqual(
+        F.intersection(test1, test2),
+        expected
+    );
+  });
+
+  it('union: unique elements in the combination of the given arrays', () => {
+    const test1 = [0, 0, 0, 1, 2, 4, 9];
+    const test2 = [2, 3, 3, 4, 5];
+    const expected = [0, 1, 2, 4, 9, 3, 5];
+    assert.deepStrictEqual(
+        F.union(test1, test2),
+        expected
+    );
+  });
+
+  it('difference: elements in arr1 one and not in arr2', () => {
+    const test1 = [0, 0, 0, 1, 2, 4, 9];
+    const test2 = [2, 3, 3, 4, 5];
+    const expected = [0, 1, 9];
+    assert.deepStrictEqual(
+        F.difference(test1, test2),
+        expected
+    );
+  });
+
+
+  it('symmetricDiff: find elements that only appear in a single array', () => {
+    const test1 = [0, 0, 0, 1, 2, 4, 9];
+    const test2 = [2, 3, 3, 4, 5];
+    const expected = [0, 1, 9, 3, 5];
+    assert.deepStrictEqual(
+        F.symmetricDiff(test1, test2),
+        expected
+    );
+  });
+
+
 
   it('filterOnlyIndexes: filters an array to only contain elements at given ' +
       'indexes', () => {
@@ -1627,6 +1670,26 @@ describe('Number and math specific utils', () => {
     pPrev = [1,1];
     pCur = [0,0];
     assert.equal(testDidExit(pPrev, pCur),  false);
+  });
+
+  it('geoFenceRealWorld...', () => {
+    const arr = [-26.182922,28.11948,30,-26.183341,28.118475,-26.181599,28.11805900000001];
+    const [latF, lonF, rad, latC, lonC, latP, lonP] = arr;
+
+    const pPoint = [latP, lonP]; // Previous position
+    const cPoint = [latC, lonC]; // Current position
+
+    const testInside = F.geoIsInside([latF, lonF], rad/1000);
+    const wasInside = testInside(pPoint);
+    const nowInside = testInside(cPoint);
+
+    const didEnter = !wasInside && nowInside;
+    const didExit = wasInside && !nowInside;
+
+    console.log(wasInside, nowInside, didEnter);
+    console.log(wasInside, nowInside, didExit);
+
+
   });
 
 });

@@ -153,6 +153,8 @@ const isDef = t => t !== undefined;
 
 
 /**
+ *
+ *
  * @param {*} t
  * @return {boolean}
  */
@@ -636,6 +638,58 @@ const removeRandom = arr => removeAtIndex(randIntBetween(0, arr.length)(), arr);
  */
 const push = (arr, e) => [...arr, e];
 
+
+/**
+ * Find elements common in both arrays
+ * @example
+ *    intersection([0, 0, 0, 1, 2, 4, 9], [2, 3, 3, 4, 5]) -> [2, 4]
+ * @param {Array<*>} arr1
+ * @param {Array<*>} arr2
+ * @returns {Array<*>}
+ */
+const intersection = (arr1, arr2) => {
+  const s2 = new Set(arr2);
+  return [...new Set(arr1)].filter(e => s2.has(e))
+};
+
+
+/**
+ * Find elements in only in arr1 and not in arr2
+ * @example
+ *    difference([0, 0, 0, 1, 2, 4, 9], [2, 3, 3, 4, 5]) -> [0, 1, 9]
+ * @param {Array<*>} arr1
+ * @param {Array<*>} arr2
+ * @returns {Array<*>}
+ */
+const difference = (arr1, arr2) => {
+  const s2 = new Set(arr2);
+  return [...new Set(arr1)].filter(e => !s2.has(e))
+};
+
+
+/**
+ * All unique elements from the combination of both arrays
+ * @example
+ *     union([0, 0, 0, 1, 2, 4, 9], [2, 3, 3, 4, 5]) -> [0, 1, 2, 4, 9, 3, 5]
+ * @param {Array<*>} arr1
+ * @param {Array<*>} arr2
+ * @returns {Array<*>}
+ */
+const union = (arr1, arr2) => [...new Set(
+    [...new Set(arr1), ...new Set(arr2)])];
+
+/**
+ * Find elements unique to each of the arrays
+ * @example
+ *      symmetricDiff([0, 1, 2, 4, 9], [2, 3, 4, 5]) -> [0, 1, 9, 3, 5]
+ * @param {Array<*>} arr1
+ * @param {Array<*>} arr2
+ * @returns {Array<*>}
+ */
+const symmetricDiff = (arr1, arr2) => difference(
+    union(arr1, arr2), intersection(arr1, arr2));
+
+
 //--------------------------------------------------------------[ Conversion ]--
 /**
  * @param {string} x
@@ -729,7 +783,7 @@ const stripLeadingChar = c => s => s.startsWith(c) ? s.slice(c.length) : s;
 
 
 /**
- * Strip the leading char if it is the same as c
+ * Strip the trailing char if it is the same as c
  * @param {string} c
  * @return {function(string): string}
  */
@@ -1519,6 +1573,10 @@ exports.splitAt = splitAt;
 exports.zip = zip;
 exports.zipFlat = zipFlat;
 exports.findShared = findShared;
+exports.intersection = intersection;
+exports.difference = difference;
+exports.union = union;
+exports.symmetricDiff = symmetricDiff;
 exports.filterOnlyIndexes = filterOnlyIndexes;
 exports.arrToMap = arrToMap;
 exports.remove = remove;

@@ -149,6 +149,8 @@ const isDef = t => t !== undefined;
 
 
 /**
+ *
+ *
  * @param {*} t
  * @return {boolean}
  */
@@ -632,6 +634,58 @@ const removeRandom = arr => removeAtIndex(randIntBetween(0, arr.length)(), arr);
  */
 const push = (arr, e) => [...arr, e];
 
+
+/**
+ * Find elements common in both arrays
+ * @example
+ *    intersection([0, 0, 0, 1, 2, 4, 9], [2, 3, 3, 4, 5]) -> [2, 4]
+ * @param {Array<*>} arr1
+ * @param {Array<*>} arr2
+ * @returns {Array<*>}
+ */
+const intersection = (arr1, arr2) => {
+  const s2 = new Set(arr2);
+  return [...new Set(arr1)].filter(e => s2.has(e))
+};
+
+
+/**
+ * Find elements in only in arr1 and not in arr2
+ * @example
+ *    difference([0, 0, 0, 1, 2, 4, 9], [2, 3, 3, 4, 5]) -> [0, 1, 9]
+ * @param {Array<*>} arr1
+ * @param {Array<*>} arr2
+ * @returns {Array<*>}
+ */
+const difference = (arr1, arr2) => {
+  const s2 = new Set(arr2);
+  return [...new Set(arr1)].filter(e => !s2.has(e))
+};
+
+
+/**
+ * All unique elements from the combination of both arrays
+ * @example
+ *     union([0, 0, 0, 1, 2, 4, 9], [2, 3, 3, 4, 5]) -> [0, 1, 2, 4, 9, 3, 5]
+ * @param {Array<*>} arr1
+ * @param {Array<*>} arr2
+ * @returns {Array<*>}
+ */
+const union = (arr1, arr2) => [...new Set(
+    [...new Set(arr1), ...new Set(arr2)])];
+
+/**
+ * Find elements unique to each of the arrays
+ * @example
+ *      symmetricDiff([0, 1, 2, 4, 9], [2, 3, 4, 5]) -> [0, 1, 9, 3, 5]
+ * @param {Array<*>} arr1
+ * @param {Array<*>} arr2
+ * @returns {Array<*>}
+ */
+const symmetricDiff = (arr1, arr2) => difference(
+    union(arr1, arr2), intersection(arr1, arr2));
+
+
 //--------------------------------------------------------------[ Conversion ]--
 /**
  * @param {string} x
@@ -725,7 +779,7 @@ const stripLeadingChar = c => s => s.startsWith(c) ? s.slice(c.length) : s;
 
 
 /**
- * Strip the leading char if it is the same as c
+ * Strip the trailing char if it is the same as c
  * @param {string} c
  * @return {function(string): string}
  */
@@ -1453,4 +1507,4 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-export { numericInt, numericString, alphaLower, alphaUpper, alphaNum, compose, identity, partial, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, logInline, trace, whatType, boolMap, maybeBool, maybeFunc, isDef, isUndefined, isDefAndNotNull, isString, isNumber, isObject, isEven, isDivisibleBy, both, hasValue, isEmpty, sameAs, rangeGen, range, range2, iRange, clock, head, tail, reverse, truncate, flatten, elAt, columnAt, transpose, repeat, countOck, countByFunc, filterAtInc, sameArr, sameEls, allElementsEqual, map, filter, chunk, pairs, pairsToMap, maxInArr, minInArr, columnReduce, splitAt, zip, zipFlat, findShared, filterOnlyIndexes, arrToMap, remove, removeAtIndex, removeRandom, push, toLowerCase, toString, toNumber, toUpperCase, negate, anyToLowerCase, makeRandomString, leftPadWithTo, onlyIncludes, stripLeadingChar, stripTrailingChar, split, replace, replaceAll, join, join2, append, alwaysAppend, prepend, interleave, interleave2, countSubString, stringReverse, lcp, mergeDeep, pathOr, cloneObj, getNowSeconds, assumeDateFromTs, idGen, privateCounter, privateRandom, randomId, randIntBetween, randSubSet, randSign, isNegativeZero, toInt, isSignedInt, pRound, maybeNumber, numReverse, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, extrapolate, formatBytes, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, haversine, didRiseThroughBoundary, didFallThroughBoundary, didEnterBand, didExitBand, geoIsInside, geoFenceDidEnter, geoFenceDidExit };
+export { numericInt, numericString, alphaLower, alphaUpper, alphaNum, compose, identity, partial, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, logInline, trace, whatType, boolMap, maybeBool, maybeFunc, isDef, isUndefined, isDefAndNotNull, isString, isNumber, isObject, isEven, isDivisibleBy, both, hasValue, isEmpty, sameAs, rangeGen, range, range2, iRange, clock, head, tail, reverse, truncate, flatten, elAt, columnAt, transpose, repeat, countOck, countByFunc, filterAtInc, sameArr, sameEls, allElementsEqual, map, filter, chunk, pairs, pairsToMap, maxInArr, minInArr, columnReduce, splitAt, zip, zipFlat, findShared, intersection, difference, union, symmetricDiff, filterOnlyIndexes, arrToMap, remove, removeAtIndex, removeRandom, push, toLowerCase, toString, toNumber, toUpperCase, negate, anyToLowerCase, makeRandomString, leftPadWithTo, onlyIncludes, stripLeadingChar, stripTrailingChar, split, replace, replaceAll, join, join2, append, alwaysAppend, prepend, interleave, interleave2, countSubString, stringReverse, lcp, mergeDeep, pathOr, cloneObj, getNowSeconds, assumeDateFromTs, idGen, privateCounter, privateRandom, randomId, randIntBetween, randSubSet, randSign, isNegativeZero, toInt, isSignedInt, pRound, maybeNumber, numReverse, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, extrapolate, formatBytes, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, haversine, didRiseThroughBoundary, didFallThroughBoundary, didEnterBand, didExitBand, geoIsInside, geoFenceDidEnter, geoFenceDidExit };
