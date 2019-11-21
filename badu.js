@@ -1066,7 +1066,7 @@ const randomId = opt_length => {
  */
 const randIntBetween = (min = 0, max = 10) => {
   const diff = max - min;
-  return () => (Math.random() * diff) | 0;
+  return () => (Math.random() * diff) + min | 0;
 };
 
 

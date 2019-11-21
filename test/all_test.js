@@ -1808,7 +1808,8 @@ describe('Random Numbers and IDs', () => {
     const counter = F.privateCounter();
     const count = 10000;
     while (counter() < count) {
-      assert.strictEqual(min <= randIntFunc() < max, true);
+      const rand = randIntFunc();
+      assert.strictEqual(((min <= rand) && (rand < max)), true);
     }
   });
 
