@@ -1431,6 +1431,111 @@ const geoFenceDidExit = (centerPoint, radius) => (p, c) => {
 };
 
 
+// ---------------------------------------------------------[ Hex Conversion ]--
+/**
+ * Converts a hex string into an integer array.
+ * @param {string} hexString Hex string of 16-bit integers (two characters
+ *     per integer).
+ * @return {!Array<number>} Array of {0,255} integers for the given string.
+ */
+const hexToByteArray = hexString => {
+  if (hexString.length % 2 === 0) {
+    return [...hexString].reduce(
+        (p, c, i) => i % 2 === 0
+            ? [...p, parseInt(hexString.substring(i, i + 2), 16)]
+            : p, []);
+  } else {
+    throw new Error('Key string length must be multiple of 2');
+  }
+};
+
+
+/**
+ * Turns an array of numbers into the hex string given by the concatenation of
+ * the hex values to which the numbers correspond.
+ * @param {Uint8Array|Array<number>} arr Array of numbers representing
+ *     characters.
+ * @param {string=} opt_separator Optional separator between values
+ * @return {string} Hex string.
+ */
+const byteArrayToHex = (arr, opt_separator) => arr.map(
+    numByte => {
+      const hexByte = numByte.toString(16).toUpperCase();
+      return hexByte.length > 1 ? hexByte : `0${hexByte}`;
+    }).join(opt_separator || '');
+
+
+// -------------------------------------------------------[ UTF-8 Conversion ]--
+/**
+ * Converts a JS string to a UTF-8 "byte" array.
+ * @param {string} str 16-bit unicode string.
+ * @return {!Array<number>} UTF-8 byte array.
+ */
+const stringToUtf8ByteArray = (str) => {
+  const out = [];
+  let p = 0;
+  [...str].forEach((e, i) => {
+    let c = str.charCodeAt(i);
+    if (c < 128) {
+      out[p++] = c;
+    } else if (c < 2048) {
+      out[p++] = (c >> 6) | 192;
+      out[p++] = (c & 63) | 128;
+    } else if (
+        ((c & 0xFC00) === 0xD800) && (i + 1) < str.length &&
+        ((str.charCodeAt(i + 1) & 0xFC00) === 0xDC00)) {
+      // Surrogate Pair
+      c = 0x10000 + ((c & 0x03FF) << 10) + (str.charCodeAt(++i) & 0x03FF);
+      out[p++] = (c >> 18) | 240;
+      out[p++] = ((c >> 12) & 63) | 128;
+      out[p++] = ((c >> 6) & 63) | 128;
+      out[p++] = (c & 63) | 128;
+    } else {
+      out[p++] = (c >> 12) | 224;
+      out[p++] = ((c >> 6) & 63) | 128;
+      out[p++] = (c & 63) | 128;
+    }
+  });
+  return out;
+};
+
+
+/**
+ * Converts a UTF-8 byte array to JavaScript's 16-bit Unicode.
+ * @param {Uint8Array|Array<number>} bytes UTF-8 byte array.
+ * @return {string} 16-bit Unicode string.
+ */
+const utf8ByteArrayToString = bytes => {
+  const out = [];
+  let pos = 0;
+  let c = 0;
+  while (pos < bytes.length) {
+    const c1 = bytes[pos++];
+    if (c1 < 128) {
+      out[c++] = String.fromCharCode(c1);
+    } else if (c1 > 191 && c1 < 224) {
+      const c2 = bytes[pos++];
+      out[c++] = String.fromCharCode((c1 & 31) << 6 | c2 & 63);
+    } else if (c1 > 239 && c1 < 365) {
+      // Surrogate Pair
+      const c2 = bytes[pos++];
+      const c3 = bytes[pos++];
+      const c4 = bytes[pos++];
+      const u = ((c1 & 7) << 18 | (c2 & 63) << 12 | (c3 & 63) << 6 | c4 & 63) -
+          0x10000;
+      out[c++] = String.fromCharCode(0xD800 + (u >> 10));
+      out[c++] = String.fromCharCode(0xDC00 + (u & 1023));
+    } else {
+      const c2 = bytes[pos++];
+      const c3 = bytes[pos++];
+      out[c++] =
+          String.fromCharCode((c1 & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
+    }
+  }
+  return out.join('');
+};
+
+
 // ------------------------------------------------------------[ Bit Banging ]--
 /**
  * Convert a decimal number to a binary string.
@@ -1649,5 +1754,9 @@ exports.didExitBand = didExitBand;
 exports.geoIsInside = geoIsInside;
 exports.geoFenceDidEnter = geoFenceDidEnter;
 exports.geoFenceDidExit = geoFenceDidExit;
+exports.hexToByteArray = hexToByteArray;
+exports.byteArrayToHex = byteArrayToHex;
+exports.stringToUtf8ByteArray = stringToUtf8ByteArray;
+exports.utf8ByteArrayToString = utf8ByteArrayToString;
 
 module.exports = Object.assign({}, module.exports, exports);

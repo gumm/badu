@@ -1826,5 +1826,44 @@ describe('Random Numbers and IDs', () => {
 });
 
 
+describe('HEX manipulation', () => {
+
+  const hexStr = 'AE4EE51905A95C63C03D90880B718F6E';
+  const byteArr = [
+      174, 78, 229, 25, 5, 169, 92, 99,
+      192, 61, 144, 136, 11, 113, 143, 110 ];
+
+  it('hexToByteArray: Convert Hex string to array of numbers', () => {
+    const arr = F.hexToByteArray(hexStr);
+    assert.strictEqual(F.sameArr(arr, byteArr), true);
+  });
+
+  it('byteArrayToHex: Convert array of numbers into hex string', () => {
+    const hexString = F.byteArrayToHex(byteArr);
+    assert.strictEqual(hexString, hexStr);
+  });
+
+
+});
+
+describe('UTF8 Byte array manipulation', () => {
+
+  const byteArr = [ 226, 130, 172 ];
+  const utf8String = '€';
+
+  it('stringToUtf8ByteArray: Convert string to array of numbers', () => {
+
+    const res = F.stringToUtf8ByteArray(utf8String);
+    assert.strictEqual(F.sameArr(res, byteArr), true);
+  });
+
+  it('utf8ByteArrayToString: Convert byte array to a string', () => {
+    const str = F.utf8ByteArrayToString(byteArr);
+    assert.strictEqual(str, utf8String);
+  });
+
+});
+
+
 
 
