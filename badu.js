@@ -1148,6 +1148,9 @@ const maybeNumber = s => {
   if (s === null) {
     return s;
   }
+  if (whatType(s) === 'string' && s.startsWith('0')) {
+    return s;
+  }
   const p = 1 * s;
   return Number.isNaN(p) ? s : p;
 };
