@@ -1152,7 +1152,10 @@ const maybeNumber = s => {
   if (s === null) {
     return s;
   }
-  if (whatType(s) === 'string' && s.startsWith('0')) {
+  if (whatType(s) === 'string' &&
+      s.length > 1 &&
+      s.startsWith('0') &&
+      !s.startsWith('0.')) {
     return s;
   }
   const p = 1 * s;
