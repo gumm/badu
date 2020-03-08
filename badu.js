@@ -722,6 +722,14 @@ const negate = n => !n;
 
 
 /**
+ * If the given string includes the delimiter, quote the text
+ * @param delim
+ * @return {function(*): *}
+ */
+const quote = delim => s => s.includes(delim) ? `"${s}"`: s;
+
+
+/**
  * @type {function(*): string}
  */
 const anyToLowerCase = compose(toLowerCase, toString);
@@ -1618,4 +1626,4 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-export { numericInt, numericString, alphaLower, alphaUpper, alphaNum, compose, identity, partial, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, logInline, trace, whatType, boolMap, maybeBool, maybeFunc, isDef, isUndefined, isDefAndNotNull, isString, isNumber, isObject, isEven, isDivisibleBy, both, hasValue, isEmpty, sameAs, rangeGen, range, range2, iRange, clock, head, tail, reverse, truncate, flatten, elAt, columnAt, transpose, repeat, countOck, countByFunc, filterAtInc, sameArr, sameEls, allElementsEqual, map, filter, chunk, pairs, pairsToMap, maxInArr, minInArr, columnReduce, splitAt, zip, zipFlat, findShared, intersection, difference, union, symmetricDiff, filterOnlyIndexes, arrToMap, remove, removeAtIndex, removeRandom, push, toLowerCase, toString, toNumber, toUpperCase, negate, anyToLowerCase, makeRandomString, leftPadWithTo, onlyIncludes, stripLeadingChar, stripTrailingChar, split, replace, replaceAll, join, join2, append, alwaysAppend, prepend, interleave, interleave2, countSubString, stringReverse, lcp, mergeDeep, pathOr, cloneObj, getNowSeconds, assumeDateFromTs, idGen, privateCounter, privateRandom, randomId, randIntBetween, randSubSet, randSign, isNegativeZero, toInt, isSignedInt, pRound, maybeNumber, numReverse, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, extrapolate, formatBytes, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, haversine, didRiseThroughBoundary, didFallThroughBoundary, didEnterBand, didExitBand, geoIsInside, geoFenceDidEnter, geoFenceDidExit, hexToByteArray, byteArrayToHex, stringToUtf8ByteArray, utf8ByteArrayToString };
+export { numericInt, numericString, alphaLower, alphaUpper, alphaNum, compose, identity, partial, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, logInline, trace, whatType, boolMap, maybeBool, maybeFunc, isDef, isUndefined, isDefAndNotNull, isString, isNumber, isObject, isEven, isDivisibleBy, both, hasValue, isEmpty, sameAs, rangeGen, range, range2, iRange, clock, head, tail, reverse, truncate, flatten, elAt, columnAt, transpose, repeat, countOck, countByFunc, filterAtInc, sameArr, sameEls, allElementsEqual, map, filter, chunk, pairs, pairsToMap, maxInArr, minInArr, columnReduce, splitAt, zip, zipFlat, findShared, intersection, difference, union, symmetricDiff, filterOnlyIndexes, arrToMap, remove, removeAtIndex, removeRandom, push, toLowerCase, toString, toNumber, toUpperCase, negate, quote, anyToLowerCase, makeRandomString, leftPadWithTo, onlyIncludes, stripLeadingChar, stripTrailingChar, split, replace, replaceAll, join, join2, append, alwaysAppend, prepend, interleave, interleave2, countSubString, stringReverse, lcp, mergeDeep, pathOr, cloneObj, getNowSeconds, assumeDateFromTs, idGen, privateCounter, privateRandom, randomId, randIntBetween, randSubSet, randSign, isNegativeZero, toInt, isSignedInt, pRound, maybeNumber, numReverse, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, extrapolate, formatBytes, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, haversine, didRiseThroughBoundary, didFallThroughBoundary, didEnterBand, didExitBand, geoIsInside, geoFenceDidEnter, geoFenceDidExit, hexToByteArray, byteArrayToHex, stringToUtf8ByteArray, utf8ByteArrayToString };

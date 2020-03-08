@@ -726,6 +726,14 @@ const negate = n => !n;
 
 
 /**
+ * If the given string includes the delimiter, quote the text
+ * @param delim
+ * @return {function(*): *}
+ */
+const quote = delim => s => s.includes(delim) ? `"${s}"`: s;
+
+
+/**
  * @type {function(*): string}
  */
 const anyToLowerCase = compose(toLowerCase, toString);
@@ -1701,6 +1709,7 @@ export {
   toNumber,
   toUpperCase,
   negate,
+  quote,
   anyToLowerCase,
   makeRandomString,
   leftPadWithTo,
