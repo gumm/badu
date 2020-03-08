@@ -730,7 +730,7 @@ const negate = n => !n;
  * @param delim
  * @return {function(*): *}
  */
-const quote = delim => s => s.includes(delim) ? `"${s}"`: s;
+const quote = delim => s => (isString(s) && s.includes(delim)) ? `"${s}"`: s;
 
 
 /**

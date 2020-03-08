@@ -75,6 +75,7 @@ import * as F from '../src/badu.js'
  toNumber,
  toUpperCase,
  negate,
+ quote,
  anyToLowerCase,
  makeRandomString,
  leftPadWithTo,
@@ -1393,6 +1394,24 @@ describe('Number and math specific utils', () => {
 
   it('negate: the string "0" is truthy', () => {
     assert.deepStrictEqual(F.negate('0'), false)
+  });
+
+  it('quote: a string is quoted if it contains the delimiter', () => {
+    const s = 'Hello, there';
+    const f = F.quote(',');
+    assert.deepStrictEqual(f(s), '"Hello, there"')
+  });
+
+  it('quote: If s is not a string, it just falls through', () => {
+    const s = 123.456;
+    const f = F.quote(',');
+    assert.deepStrictEqual(f(s), s)
+  });
+
+  it('quote: If s does not contain the delimiter, it just falls through', () => {
+    const s = "Hello there";
+    const f = F.quote(',');
+    assert.deepStrictEqual(f(s), s)
   });
 
   it('divMod: the seed number is divided by the subsequent number', () => {
