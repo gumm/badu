@@ -1163,7 +1163,10 @@ const maybeNumber = s => {
     return s;
   }
   const p = 1 * s;
-  return Number.isNaN(p) ? s : p;
+  if (p > Number.MAX_SAFE_INTEGER) {
+    return s
+  }
+  return Number.isNaN(p)  ? s : p;
 };
 
 /**
