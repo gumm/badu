@@ -588,7 +588,8 @@ const filterOnlyIndexes = indexes => arr => {
  * @param vA {Array<*>} Array to use as values
  * @returns {Map<any, any>}
  */
-const arrToMap = (kA, vA) => kA.reduce((p, c, i) => p.set(c, vA[i]), new Map());
+const arrToMap = (kA, vA) =>
+    kA.reduce((p, c, i) => p.set(c, vA[i]), new Map());
 
 /**
  * Remove n elements from the array starting at the given index
@@ -726,7 +727,7 @@ const negate = n => !n;
  * @param delim
  * @return {function(*): *}
  */
-const quote = delim => s => (isString(s) && s.includes(delim)) ? `"${s}"`: s;
+const quote = delim => s => (isString(s) && s.includes(delim)) ? `"${s}"` : s;
 
 
 /**
@@ -977,6 +978,86 @@ const pathOr = (f, arr) => e => {
 const cloneObj = o => Object.assign({}, o);
 
 
+/**
+ * * Given an object, flatten it into an array of arrays of path and value.
+ * Example:
+ *  obj = {
+ *    a: 1,
+ *    b: 2,
+ *    c: {
+ *      d: 4,
+ *      e: 5,
+ *      f: {
+ *        g: 7,
+ *        h: 8
+ *      }
+ *    }
+ *  }
+ *  objToPaths(obj) ==>
+ *  [
+ *    [ [ 'a' ], 1 ],
+ *    [ [ 'b' ], 2 ],
+ *    [ [ 'c', 'd' ], 4 ],
+ *    [ [ 'c', 'e' ], 5 ],
+ *    [ [ 'c', 'f', 'g' ], 7 ],
+ *    [ [ 'c', 'f', 'h' ], 8 ]
+ *  ]
+ * @param obj
+ * @param path
+ * @param accl
+ * @return {*[]}
+ */
+const objToPaths = (obj, path = [], accl = []) => {
+    Object.entries(obj).forEach(([key, value]) => {
+      isObject(value) ? objToPaths(value, [...path, key], accl)
+          : accl.push([[...path, key], value]);
+    });
+  return accl;
+};
+
+
+/**
+ * Visit each node of a object, and execute the given function on that
+ * node. Returns a copy of the object with each leaf-node mutated by the
+ * given function.
+ * Example:
+ *    const mutate = x => [x, 'Mutated']
+ *    const obj = {
+ *    a: 1,
+ *    b: 2,
+ *    c: {
+ *      d: 4,
+ *      e: 5,
+ *      f: {
+ *        g: 7,
+ *        h: 8
+ *      }
+ *    }
+ *  }
+ *  visitObjDeep(obj, mutate) ==> {
+ *    a: [ 1, 'Mutated' ],
+ *    b: [ 2, 'Mutated' ],
+ *    c: {
+ *      d: [ 2, 'Mutated' ],
+ *      e: [ 4, 'Mutated' ],
+ *      f: {
+ *        g: [ 7, 'Mutated' ],
+ *        h: [ 8, 'Mutated' ]
+ *      }
+ *    }
+ *  }
+ *
+ * @param obj
+ * @param func
+ * @return {{}}
+ */
+const visitObjDeep = (obj, func) =>
+    Object.entries(obj).reduce((p, [key, value]) => {
+      p[key] = isObject(value) ? visitObjDeep(value, func) : func(value);
+      return p;
+    }, {});
+
+
 //--------------------------------------------------------------[ Time Utils ]--
 /**
  * This returns now in seconds.
@@ -1166,7 +1247,7 @@ const maybeNumber = s => {
   if (p > Number.MAX_SAFE_INTEGER) {
     return s
   }
-  return Number.isNaN(p)  ? s : p;
+  return Number.isNaN(p) ? s : p;
 };
 
 /**
@@ -1629,4 +1710,4 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-export { numericInt, numericString, alphaLower, alphaUpper, alphaNum, compose, identity, partial, alwaysUndef, alwaysFalse, alwaysTrue, alwaysNull, logInline, trace, whatType, boolMap, maybeBool, maybeFunc, isDef, isUndefined, isDefAndNotNull, isString, isNumber, isObject, isEven, isDivisibleBy, both, hasValue, isEmpty, sameAs, rangeGen, range, range2, iRange, clock, head, tail, reverse, truncate, flatten, elAt, columnAt, transpose, repeat, countOck, countByFunc, filterAtInc, sameArr, sameEls, allElementsEqual, map, filter, chunk, pairs, pairsToMap, maxInArr, minInArr, columnReduce, splitAt, zip, zipFlat, findShared, intersection, difference, union, symmetricDiff, filterOnlyIndexes, arrToMap, remove, removeAtIndex, removeRandom, push, toLowerCase, toString, toNumber, toUpperCase, negate, quote, anyToLowerCase, makeRandomString, leftPadWithTo, onlyIncludes, stripLeadingChar, stripTrailingChar, split, replace, replaceAll, join, join2, append, alwaysAppend, prepend, interleave, interleave2, countSubString, stringReverse, lcp, mergeDeep, pathOr, cloneObj, getNowSeconds, assumeDateFromTs, idGen, privateCounter, privateRandom, randomId, randIntBetween, randSubSet, randSign, isNegativeZero, toInt, isSignedInt, pRound, maybeNumber, numReverse, divMod, divMod2, factorize, luhn, imeisvToImei, shannon, englishNumber, extrapolate, formatBytes, numToBinString, binStringToNum, getBitAt, setBitAt, clearBitAt, invBitAt, hasBitAt, haversine, didRiseThroughBoundary, didFallThroughBoundary, didEnterBand, didExitBand, geoIsInside, geoFenceDidEnter, geoFenceDidExit, hexToByteArray, byteArrayToHex, stringToUtf8ByteArray, utf8ByteArrayToString };
+export { allElementsEqual, alphaLower, alphaNum, alphaUpper, alwaysAppend, alwaysFalse, alwaysNull, alwaysTrue, alwaysUndef, anyToLowerCase, append, arrToMap, assumeDateFromTs, binStringToNum, boolMap, both, byteArrayToHex, chunk, clearBitAt, clock, cloneObj, columnAt, columnReduce, compose, countByFunc, countOck, countSubString, didEnterBand, didExitBand, didFallThroughBoundary, didRiseThroughBoundary, difference, divMod, divMod2, elAt, englishNumber, extrapolate, factorize, filter, filterAtInc, filterOnlyIndexes, findShared, flatten, formatBytes, geoFenceDidEnter, geoFenceDidExit, geoIsInside, getBitAt, getNowSeconds, hasBitAt, hasValue, haversine, head, hexToByteArray, iRange, idGen, identity, imeisvToImei, interleave, interleave2, intersection, invBitAt, isDef, isDefAndNotNull, isDivisibleBy, isEmpty, isEven, isNegativeZero, isNumber, isObject, isSignedInt, isString, isUndefined, join, join2, lcp, leftPadWithTo, logInline, luhn, makeRandomString, map, maxInArr, maybeBool, maybeFunc, maybeNumber, mergeDeep, minInArr, negate, numReverse, numToBinString, numericInt, numericString, objToPaths, onlyIncludes, pRound, pairs, pairsToMap, partial, pathOr, prepend, privateCounter, privateRandom, push, quote, randIntBetween, randSign, randSubSet, randomId, range, range2, rangeGen, remove, removeAtIndex, removeRandom, repeat, replace, replaceAll, reverse, sameArr, sameAs, sameEls, setBitAt, shannon, split, splitAt, stringReverse, stringToUtf8ByteArray, stripLeadingChar, stripTrailingChar, symmetricDiff, tail, toInt, toLowerCase, toNumber, toString, toUpperCase, trace, transpose, truncate, union, utf8ByteArrayToString, visitObjDeep, whatType, zip, zipFlat };

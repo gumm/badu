@@ -592,7 +592,8 @@ const filterOnlyIndexes = indexes => arr => {
  * @param vA {Array<*>} Array to use as values
  * @returns {Map<any, any>}
  */
-const arrToMap = (kA, vA) => kA.reduce((p, c, i) => p.set(c, vA[i]), new Map());
+const arrToMap = (kA, vA) =>
+    kA.reduce((p, c, i) => p.set(c, vA[i]), new Map());
 
 /**
  * Remove n elements from the array starting at the given index
@@ -730,7 +731,7 @@ const negate = n => !n;
  * @param delim
  * @return {function(*): *}
  */
-const quote = delim => s => (isString(s) && s.includes(delim)) ? `"${s}"`: s;
+const quote = delim => s => (isString(s) && s.includes(delim)) ? `"${s}"` : s;
 
 
 /**
@@ -981,6 +982,86 @@ const pathOr = (f, arr) => e => {
 const cloneObj = o => Object.assign({}, o);
 
 
+/**
+ * * Given an object, flatten it into an array of arrays of path and value.
+ * Example:
+ *  obj = {
+ *    a: 1,
+ *    b: 2,
+ *    c: {
+ *      d: 4,
+ *      e: 5,
+ *      f: {
+ *        g: 7,
+ *        h: 8
+ *      }
+ *    }
+ *  }
+ *  objToPaths(obj) ==>
+ *  [
+ *    [ [ 'a' ], 1 ],
+ *    [ [ 'b' ], 2 ],
+ *    [ [ 'c', 'd' ], 4 ],
+ *    [ [ 'c', 'e' ], 5 ],
+ *    [ [ 'c', 'f', 'g' ], 7 ],
+ *    [ [ 'c', 'f', 'h' ], 8 ]
+ *  ]
+ * @param obj
+ * @param path
+ * @param accl
+ * @return {*[]}
+ */
+const objToPaths = (obj, path = [], accl = []) => {
+    Object.entries(obj).forEach(([key, value]) => {
+      isObject(value) ? objToPaths(value, [...path, key], accl)
+          : accl.push([[...path, key], value])
+    })
+  return accl;
+}
+
+
+/**
+ * Visit each node of a object, and execute the given function on that
+ * node. Returns a copy of the object with each leaf-node mutated by the
+ * given function.
+ * Example:
+ *    const mutate = x => [x, 'Mutated']
+ *    const obj = {
+ *    a: 1,
+ *    b: 2,
+ *    c: {
+ *      d: 4,
+ *      e: 5,
+ *      f: {
+ *        g: 7,
+ *        h: 8
+ *      }
+ *    }
+ *  }
+ *  visitObjDeep(obj, mutate) ==> {
+ *    a: [ 1, 'Mutated' ],
+ *    b: [ 2, 'Mutated' ],
+ *    c: {
+ *      d: [ 2, 'Mutated' ],
+ *      e: [ 4, 'Mutated' ],
+ *      f: {
+ *        g: [ 7, 'Mutated' ],
+ *        h: [ 8, 'Mutated' ]
+ *      }
+ *    }
+ *  }
+ *
+ * @param obj
+ * @param func
+ * @return {{}}
+ */
+const visitObjDeep = (obj, func) =>
+    Object.entries(obj).reduce((p, [key, value]) => {
+      p[key] = isObject(value) ? visitObjDeep(value, func) : func(value);
+      return p;
+    }, {});
+
+
 //--------------------------------------------------------------[ Time Utils ]--
 /**
  * This returns now in seconds.
@@ -1170,7 +1251,7 @@ const maybeNumber = s => {
   if (p > Number.MAX_SAFE_INTEGER) {
     return s
   }
-  return Number.isNaN(p)  ? s : p;
+  return Number.isNaN(p) ? s : p;
 };
 
 /**
@@ -1735,6 +1816,8 @@ export {
   mergeDeep,
   pathOr,
   cloneObj,
+  objToPaths,
+  visitObjDeep,
   getNowSeconds,
   assumeDateFromTs,
   idGen,

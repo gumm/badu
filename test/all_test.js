@@ -98,6 +98,7 @@ import * as F from '../src/badu.js'
  mergeDeep,
  pathOr,
  cloneObj,
+ flattenObj,
  getNowSeconds,
  idGen,
  privateCounter,
@@ -220,7 +221,7 @@ describe('Functions to debug and trace', () => {
 
   it('trace: the same tag for different values', () => {
     const trace1 = F.trace('The value is now:');
-    [1,2,3,4].forEach(trace1)
+    [1, 2, 3, 4].forEach(trace1)
   });
 
   it('trace: can be used to see what is passed around inside a ' +
@@ -448,7 +449,7 @@ describe('Assertion functions:', () => {
       () => assert.strictEqual(F.isEmpty({}), true));
 
   it('isEmpty: Check if an object has keys',
-      () => assert.strictEqual(F.isEmpty({a:1}), false));
+      () => assert.strictEqual(F.isEmpty({a: 1}), false));
 
   it('sameAs: given a marker, test that the given element is the same', () => {
     const marker = 'a';
@@ -541,12 +542,12 @@ describe('Array specific utils', () => {
 
   it('clock: Given size, return a function to give array starting at n', () => {
     const clock6 = F.clock(6);
-    assert.strictEqual(F.sameArr(clock6(1), [1,2,3,4,5,6]), true);
-    assert.strictEqual(F.sameArr(clock6(2), [2,3,4,5,6,1]), true);
-    assert.strictEqual(F.sameArr(clock6(3), [3,4,5,6,1,2]), true);
-    assert.strictEqual(F.sameArr(clock6(4), [4,5,6,1,2,3]), true);
-    assert.strictEqual(F.sameArr(clock6(5), [5,6,1,2,3,4]), true);
-    assert.strictEqual(F.sameArr(clock6(6), [6,1,2,3,4,5]), true);
+    assert.strictEqual(F.sameArr(clock6(1), [1, 2, 3, 4, 5, 6]), true);
+    assert.strictEqual(F.sameArr(clock6(2), [2, 3, 4, 5, 6, 1]), true);
+    assert.strictEqual(F.sameArr(clock6(3), [3, 4, 5, 6, 1, 2]), true);
+    assert.strictEqual(F.sameArr(clock6(4), [4, 5, 6, 1, 2, 3]), true);
+    assert.strictEqual(F.sameArr(clock6(5), [5, 6, 1, 2, 3, 4]), true);
+    assert.strictEqual(F.sameArr(clock6(6), [6, 1, 2, 3, 4, 5]), true);
   });
 
   // it('clock: can do multiple rotations from given input', () => {
@@ -910,7 +911,6 @@ describe('Array specific utils', () => {
   });
 
 
-
   it('filterOnlyIndexes: filters an array to only contain elements at given ' +
       'indexes', () => {
     const given = [10, 11, 12, 13, 14, 15];
@@ -988,12 +988,12 @@ describe('Array specific utils', () => {
   });
 
   it('push: Pushes, but returns the array not the pushed element.', () => {
-    const original = [1,2,3];
-    const expected = [1,2,3,4];
+    const original = [1, 2, 3];
+    const expected = [1, 2, 3, 4];
     assert.deepStrictEqual(F.push(original, 4), expected);
 
     // Also check the original remains unchanged
-    assert.deepStrictEqual([1,2,3], original);
+    assert.deepStrictEqual([1, 2, 3], original);
   });
 
 });
@@ -1064,8 +1064,66 @@ describe('Basic Object utils', () => {
     return assert.deepStrictEqual(clone, obj1);
   });
 
-});
+  it('objToPaths: turns a multilevel object into a list of paths', () => {
+    const data = {
+      a: 1,
+      b: 2,
+      c: {
+        d: 4,
+        e: 5,
+        f: {
+          g: 7,
+          h: 8
+        }
+      }
+    };
 
+    const expected = [
+      [['a'], 1],
+      [['b'], 2],
+      [['c', 'd'], 4],
+      [['c', 'e'], 5],
+      [['c', 'f', 'g'], 7],
+      [['c', 'f', 'h'], 8]
+    ];
+
+    const actual = F.objToPaths(data);
+    return assert.deepStrictEqual(actual, expected);
+  });
+
+  it('visitObjDeep: calls a function on each value in a nested object', () => {
+    const data = {
+      a: 1,
+      b: 2,
+      c: {
+        d: 4,
+        e: 5,
+        f: {
+          g: 7,
+          h: 8
+        }
+      }
+    };
+
+    const expected = {
+      a: [1, 'Mutated'],
+      b: [2, 'Mutated'],
+      c: {
+        d: [4, 'Mutated'],
+        e: [5, 'Mutated'],
+        f: {
+          g: [7, 'Mutated'],
+          h: [8, 'Mutated']
+        }
+      }
+    }
+
+    const actual = F.visitObjDeep(data, x => [x, 'Mutated']);
+    return assert.deepStrictEqual(actual, expected);
+  });
+
+
+});
 
 
 describe('Date and time utils', () => {
@@ -1076,12 +1134,12 @@ describe('Date and time utils', () => {
     const nowFromMilliseconds = F.assumeDateFromTs(nowSeconds * 1000);
     const tenSecAgo = F.assumeDateFromTs(-10);
     assert.strictEqual(
-        Math.floor((tenSecAgo.getTime() / 1000)) + 10 , nowSeconds);
+        Math.floor((tenSecAgo.getTime() / 1000)) + 10, nowSeconds);
     assert.deepStrictEqual(nowFromSeconds, nowFromMilliseconds);
   });
 
   it('assumeDateFromTs: assumes zero to be now', () => {
-    assert.strictEqual(F.assumeDateFromTs(0).getTime() , new Date().getTime());
+    assert.strictEqual(F.assumeDateFromTs(0).getTime(), new Date().getTime());
   });
 
   it('assumeDateFromTs: assumes negative numbers are seconds ago', () => {
@@ -1089,7 +1147,7 @@ describe('Date and time utils', () => {
     const nowSeconds = F.getNowSeconds();
     const tenSecAgo = F.assumeDateFromTs(-secondsAgo);
     assert.strictEqual(
-        Math.floor((tenSecAgo.getTime() / 1000)) + secondsAgo , nowSeconds);
+        Math.floor((tenSecAgo.getTime() / 1000)) + secondsAgo, nowSeconds);
   });
 
 });
@@ -1164,7 +1222,7 @@ describe('String related utils', () => {
     assert.throws(() => F.toLowerCase({}), TypeError)
   });
 
-  it('anyToLowerCase: is a sefe version of toLowerCase', () => {
+  it('anyToLowerCase: is a safe version of toLowerCase', () => {
     assert.strictEqual(F.anyToLowerCase({}), '[object object]')
   });
 
@@ -1598,11 +1656,11 @@ describe('Number and math specific utils', () => {
   });
 
   it('haversine: computes km distance between geo points', () => {
-    const cLat =36.12;
+    const cLat = 36.12;
     const cLon = -86.67;
     const pLat = 33.94;
     const pLon = -118.40;
-    assert.equal(F.haversine([cLat, cLon], [pLat, pLon]),  2887.26)
+    assert.equal(F.haversine([cLat, cLon], [pLat, pLon]), 2887.26)
   });
 
   it('geoIsInside: true if point inside circular geo-fence', () => {
@@ -1616,19 +1674,19 @@ describe('Number and math specific utils', () => {
 
     pLat = 33.94;
     pLon = -118.40;
-    assert.equal(isInside([pLat, pLon]),  false);
+    assert.equal(isInside([pLat, pLon]), false);
 
     pLat = 0;
     pLon = 0;
-    assert.equal(isInside([pLat, pLon]),  true);
+    assert.equal(isInside([pLat, pLon]), true);
 
     pLat = 0;
     pLon = 0.0001;
-    assert.equal(isInside([pLat, pLon]),  true);
+    assert.equal(isInside([pLat, pLon]), true);
 
     pLat = 0;
     pLon = 0.001;
-    assert.equal(isInside([pLat, pLon]),  false);
+    assert.equal(isInside([pLat, pLon]), false);
   });
 
   it('geoFenceDidEnter: true for inward boundary crossing', () => {
@@ -1641,24 +1699,24 @@ describe('Number and math specific utils', () => {
     let pCur;
 
     // Was inside, now outside
-    pPrev = [0,0];
-    pCur = [1,1];
-    assert.equal(testDidEnter(pPrev, pCur),  false);
+    pPrev = [0, 0];
+    pCur = [1, 1];
+    assert.equal(testDidEnter(pPrev, pCur), false);
 
     // Was inside, stayed inside
-    pPrev = [0,0];
-    pCur = [0.0001,0.0001];
-    assert.equal(testDidEnter(pPrev, pCur),  false);
+    pPrev = [0, 0];
+    pCur = [0.0001, 0.0001];
+    assert.equal(testDidEnter(pPrev, pCur), false);
 
     // Was outside, stayed outside
-    pPrev = [2,2];
-    pCur = [1,1];
-    assert.equal(testDidEnter(pPrev, pCur),  false);
+    pPrev = [2, 2];
+    pCur = [1, 1];
+    assert.equal(testDidEnter(pPrev, pCur), false);
 
     // Was outside, now inside
-    pPrev = [1,1];
-    pCur = [0,0];
-    assert.equal(testDidEnter(pPrev, pCur),  true);
+    pPrev = [1, 1];
+    pCur = [0, 0];
+    assert.equal(testDidEnter(pPrev, pCur), true);
   });
 
   it('geoFenceDidExit: true for outward boundary crossing', () => {
@@ -1671,34 +1729,34 @@ describe('Number and math specific utils', () => {
     let pCur;
 
     // Was inside, now outside
-    pPrev = [0,0];
-    pCur = [1,1];
-    assert.equal(testDidExit(pPrev, pCur),  true);
+    pPrev = [0, 0];
+    pCur = [1, 1];
+    assert.equal(testDidExit(pPrev, pCur), true);
 
     // Was inside, stayed inside
-    pPrev = [0,0];
-    pCur = [0.0001,0.0001];
-    assert.equal(testDidExit(pPrev, pCur),  false);
+    pPrev = [0, 0];
+    pCur = [0.0001, 0.0001];
+    assert.equal(testDidExit(pPrev, pCur), false);
 
     // Was outside, stayed outside
-    pPrev = [2,2];
-    pCur = [1,1];
-    assert.equal(testDidExit(pPrev, pCur),  false);
+    pPrev = [2, 2];
+    pCur = [1, 1];
+    assert.equal(testDidExit(pPrev, pCur), false);
 
     // Was outside, now inside
-    pPrev = [1,1];
-    pCur = [0,0];
-    assert.equal(testDidExit(pPrev, pCur),  false);
+    pPrev = [1, 1];
+    pCur = [0, 0];
+    assert.equal(testDidExit(pPrev, pCur), false);
   });
 
   it('geoFenceRealWorld...', () => {
-    const arr = [-26.182922,28.11948,30,-26.183341,28.118475,-26.181599,28.11805900000001];
+    const arr = [-26.182922, 28.11948, 30, -26.183341, 28.118475, -26.181599, 28.11805900000001];
     const [latF, lonF, rad, latC, lonC, latP, lonP] = arr;
 
     const pPoint = [latP, lonP]; // Previous position
     const cPoint = [latC, lonC]; // Current position
 
-    const testInside = F.geoIsInside([latF, lonF], rad/1000);
+    const testInside = F.geoIsInside([latF, lonF], rad / 1000);
     const wasInside = testInside(pPoint);
     const nowInside = testInside(cPoint);
 
@@ -1849,8 +1907,8 @@ describe('HEX manipulation', () => {
 
   const hexStr = 'AE4EE51905A95C63C03D90880B718F6E';
   const byteArr = [
-      174, 78, 229, 25, 5, 169, 92, 99,
-      192, 61, 144, 136, 11, 113, 143, 110 ];
+    174, 78, 229, 25, 5, 169, 92, 99,
+    192, 61, 144, 136, 11, 113, 143, 110];
 
   it('hexToByteArray: Convert Hex string to array of numbers', () => {
     const arr = F.hexToByteArray(hexStr);
@@ -1867,7 +1925,7 @@ describe('HEX manipulation', () => {
 
 describe('UTF8 Byte array manipulation', () => {
 
-  const byteArr = [ 226, 130, 172 ];
+  const byteArr = [226, 130, 172];
   const utf8String = '€';
 
   it('stringToUtf8ByteArray: Convert string to array of numbers', () => {

@@ -592,7 +592,8 @@ const filterOnlyIndexes = indexes => arr => {
  * @param vA {Array<*>} Array to use as values
  * @returns {Map<any, any>}
  */
-const arrToMap = (kA, vA) => kA.reduce((p, c, i) => p.set(c, vA[i]), new Map());
+const arrToMap = (kA, vA) =>
+    kA.reduce((p, c, i) => p.set(c, vA[i]), new Map());
 
 /**
  * Remove n elements from the array starting at the given index
@@ -730,7 +731,7 @@ const negate = n => !n;
  * @param delim
  * @return {function(*): *}
  */
-const quote = delim => s => (isString(s) && s.includes(delim)) ? `"${s}"`: s;
+const quote = delim => s => (isString(s) && s.includes(delim)) ? `"${s}"` : s;
 
 
 /**
@@ -981,6 +982,86 @@ const pathOr = (f, arr) => e => {
 const cloneObj = o => Object.assign({}, o);
 
 
+/**
+ * * Given an object, flatten it into an array of arrays of path and value.
+ * Example:
+ *  obj = {
+ *    a: 1,
+ *    b: 2,
+ *    c: {
+ *      d: 4,
+ *      e: 5,
+ *      f: {
+ *        g: 7,
+ *        h: 8
+ *      }
+ *    }
+ *  }
+ *  objToPaths(obj) ==>
+ *  [
+ *    [ [ 'a' ], 1 ],
+ *    [ [ 'b' ], 2 ],
+ *    [ [ 'c', 'd' ], 4 ],
+ *    [ [ 'c', 'e' ], 5 ],
+ *    [ [ 'c', 'f', 'g' ], 7 ],
+ *    [ [ 'c', 'f', 'h' ], 8 ]
+ *  ]
+ * @param obj
+ * @param path
+ * @param accl
+ * @return {*[]}
+ */
+const objToPaths = (obj, path = [], accl = []) => {
+    Object.entries(obj).forEach(([key, value]) => {
+      isObject(value) ? objToPaths(value, [...path, key], accl)
+          : accl.push([[...path, key], value]);
+    });
+  return accl;
+};
+
+
+/**
+ * Visit each node of a object, and execute the given function on that
+ * node. Returns a copy of the object with each leaf-node mutated by the
+ * given function.
+ * Example:
+ *    const mutate = x => [x, 'Mutated']
+ *    const obj = {
+ *    a: 1,
+ *    b: 2,
+ *    c: {
+ *      d: 4,
+ *      e: 5,
+ *      f: {
+ *        g: 7,
+ *        h: 8
+ *      }
+ *    }
+ *  }
+ *  visitObjDeep(obj, mutate) ==> {
+ *    a: [ 1, 'Mutated' ],
+ *    b: [ 2, 'Mutated' ],
+ *    c: {
+ *      d: [ 2, 'Mutated' ],
+ *      e: [ 4, 'Mutated' ],
+ *      f: {
+ *        g: [ 7, 'Mutated' ],
+ *        h: [ 8, 'Mutated' ]
+ *      }
+ *    }
+ *  }
+ *
+ * @param obj
+ * @param func
+ * @return {{}}
+ */
+const visitObjDeep = (obj, func) =>
+    Object.entries(obj).reduce((p, [key, value]) => {
+      p[key] = isObject(value) ? visitObjDeep(value, func) : func(value);
+      return p;
+    }, {});
+
+
 //--------------------------------------------------------------[ Time Utils ]--
 /**
  * This returns now in seconds.
@@ -1170,7 +1251,7 @@ const maybeNumber = s => {
   if (p > Number.MAX_SAFE_INTEGER) {
     return s
   }
-  return Number.isNaN(p)  ? s : p;
+  return Number.isNaN(p) ? s : p;
 };
 
 /**
@@ -1633,148 +1714,150 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-exports.numericInt = numericInt;
-exports.numericString = numericString;
+exports.allElementsEqual = allElementsEqual;
 exports.alphaLower = alphaLower;
-exports.alphaUpper = alphaUpper;
 exports.alphaNum = alphaNum;
-exports.compose = compose;
-exports.identity = identity;
-exports.partial = partial;
-exports.alwaysUndef = alwaysUndef;
+exports.alphaUpper = alphaUpper;
+exports.alwaysAppend = alwaysAppend;
 exports.alwaysFalse = alwaysFalse;
-exports.alwaysTrue = alwaysTrue;
 exports.alwaysNull = alwaysNull;
-exports.logInline = logInline;
-exports.trace = trace;
-exports.whatType = whatType;
+exports.alwaysTrue = alwaysTrue;
+exports.alwaysUndef = alwaysUndef;
+exports.anyToLowerCase = anyToLowerCase;
+exports.append = append;
+exports.arrToMap = arrToMap;
+exports.assumeDateFromTs = assumeDateFromTs;
+exports.binStringToNum = binStringToNum;
 exports.boolMap = boolMap;
-exports.maybeBool = maybeBool;
-exports.maybeFunc = maybeFunc;
+exports.both = both;
+exports.byteArrayToHex = byteArrayToHex;
+exports.chunk = chunk;
+exports.clearBitAt = clearBitAt;
+exports.clock = clock;
+exports.cloneObj = cloneObj;
+exports.columnAt = columnAt;
+exports.columnReduce = columnReduce;
+exports.compose = compose;
+exports.countByFunc = countByFunc;
+exports.countOck = countOck;
+exports.countSubString = countSubString;
+exports.didEnterBand = didEnterBand;
+exports.didExitBand = didExitBand;
+exports.didFallThroughBoundary = didFallThroughBoundary;
+exports.didRiseThroughBoundary = didRiseThroughBoundary;
+exports.difference = difference;
+exports.divMod = divMod;
+exports.divMod2 = divMod2;
+exports.elAt = elAt;
+exports.englishNumber = englishNumber;
+exports.extrapolate = extrapolate;
+exports.factorize = factorize;
+exports.filter = filter;
+exports.filterAtInc = filterAtInc;
+exports.filterOnlyIndexes = filterOnlyIndexes;
+exports.findShared = findShared;
+exports.flatten = flatten;
+exports.formatBytes = formatBytes;
+exports.geoFenceDidEnter = geoFenceDidEnter;
+exports.geoFenceDidExit = geoFenceDidExit;
+exports.geoIsInside = geoIsInside;
+exports.getBitAt = getBitAt;
+exports.getNowSeconds = getNowSeconds;
+exports.hasBitAt = hasBitAt;
+exports.hasValue = hasValue;
+exports.haversine = haversine;
+exports.head = head;
+exports.hexToByteArray = hexToByteArray;
+exports.iRange = iRange;
+exports.idGen = idGen;
+exports.identity = identity;
+exports.imeisvToImei = imeisvToImei;
+exports.interleave = interleave;
+exports.interleave2 = interleave2;
+exports.intersection = intersection;
+exports.invBitAt = invBitAt;
 exports.isDef = isDef;
-exports.isUndefined = isUndefined;
 exports.isDefAndNotNull = isDefAndNotNull;
-exports.isString = isString;
+exports.isDivisibleBy = isDivisibleBy;
+exports.isEmpty = isEmpty;
+exports.isEven = isEven;
+exports.isNegativeZero = isNegativeZero;
 exports.isNumber = isNumber;
 exports.isObject = isObject;
-exports.isEven = isEven;
-exports.isDivisibleBy = isDivisibleBy;
-exports.both = both;
-exports.hasValue = hasValue;
-exports.isEmpty = isEmpty;
-exports.sameAs = sameAs;
-exports.rangeGen = rangeGen;
-exports.range = range;
-exports.range2 = range2;
-exports.iRange = iRange;
-exports.clock = clock;
-exports.head = head;
-exports.tail = tail;
-exports.reverse = reverse;
-exports.truncate = truncate;
-exports.flatten = flatten;
-exports.elAt = elAt;
-exports.columnAt = columnAt;
-exports.transpose = transpose;
-exports.repeat = repeat;
-exports.countOck = countOck;
-exports.countByFunc = countByFunc;
-exports.filterAtInc = filterAtInc;
-exports.sameArr = sameArr;
-exports.sameEls = sameEls;
-exports.allElementsEqual = allElementsEqual;
+exports.isSignedInt = isSignedInt;
+exports.isString = isString;
+exports.isUndefined = isUndefined;
+exports.join = join;
+exports.join2 = join2;
+exports.lcp = lcp;
+exports.leftPadWithTo = leftPadWithTo;
+exports.logInline = logInline;
+exports.luhn = luhn;
+exports.makeRandomString = makeRandomString;
 exports.map = map;
-exports.filter = filter;
-exports.chunk = chunk;
+exports.maxInArr = maxInArr;
+exports.maybeBool = maybeBool;
+exports.maybeFunc = maybeFunc;
+exports.maybeNumber = maybeNumber;
+exports.mergeDeep = mergeDeep;
+exports.minInArr = minInArr;
+exports.negate = negate;
+exports.numReverse = numReverse;
+exports.numToBinString = numToBinString;
+exports.numericInt = numericInt;
+exports.numericString = numericString;
+exports.objToPaths = objToPaths;
+exports.onlyIncludes = onlyIncludes;
+exports.pRound = pRound;
 exports.pairs = pairs;
 exports.pairsToMap = pairsToMap;
-exports.maxInArr = maxInArr;
-exports.minInArr = minInArr;
-exports.columnReduce = columnReduce;
-exports.splitAt = splitAt;
-exports.zip = zip;
-exports.zipFlat = zipFlat;
-exports.findShared = findShared;
-exports.intersection = intersection;
-exports.difference = difference;
-exports.union = union;
-exports.symmetricDiff = symmetricDiff;
-exports.filterOnlyIndexes = filterOnlyIndexes;
-exports.arrToMap = arrToMap;
+exports.partial = partial;
+exports.pathOr = pathOr;
+exports.prepend = prepend;
+exports.privateCounter = privateCounter;
+exports.privateRandom = privateRandom;
+exports.push = push;
+exports.quote = quote;
+exports.randIntBetween = randIntBetween;
+exports.randSign = randSign;
+exports.randSubSet = randSubSet;
+exports.randomId = randomId;
+exports.range = range;
+exports.range2 = range2;
+exports.rangeGen = rangeGen;
 exports.remove = remove;
 exports.removeAtIndex = removeAtIndex;
 exports.removeRandom = removeRandom;
-exports.push = push;
-exports.toLowerCase = toLowerCase;
-exports.toString = toString;
-exports.toNumber = toNumber;
-exports.toUpperCase = toUpperCase;
-exports.negate = negate;
-exports.quote = quote;
-exports.anyToLowerCase = anyToLowerCase;
-exports.makeRandomString = makeRandomString;
-exports.leftPadWithTo = leftPadWithTo;
-exports.onlyIncludes = onlyIncludes;
-exports.stripLeadingChar = stripLeadingChar;
-exports.stripTrailingChar = stripTrailingChar;
-exports.split = split;
+exports.repeat = repeat;
 exports.replace = replace;
 exports.replaceAll = replaceAll;
-exports.join = join;
-exports.join2 = join2;
-exports.append = append;
-exports.alwaysAppend = alwaysAppend;
-exports.prepend = prepend;
-exports.interleave = interleave;
-exports.interleave2 = interleave2;
-exports.countSubString = countSubString;
-exports.stringReverse = stringReverse;
-exports.lcp = lcp;
-exports.mergeDeep = mergeDeep;
-exports.pathOr = pathOr;
-exports.cloneObj = cloneObj;
-exports.getNowSeconds = getNowSeconds;
-exports.assumeDateFromTs = assumeDateFromTs;
-exports.idGen = idGen;
-exports.privateCounter = privateCounter;
-exports.privateRandom = privateRandom;
-exports.randomId = randomId;
-exports.randIntBetween = randIntBetween;
-exports.randSubSet = randSubSet;
-exports.randSign = randSign;
-exports.isNegativeZero = isNegativeZero;
-exports.toInt = toInt;
-exports.isSignedInt = isSignedInt;
-exports.pRound = pRound;
-exports.maybeNumber = maybeNumber;
-exports.numReverse = numReverse;
-exports.divMod = divMod;
-exports.divMod2 = divMod2;
-exports.factorize = factorize;
-exports.luhn = luhn;
-exports.imeisvToImei = imeisvToImei;
-exports.shannon = shannon;
-exports.englishNumber = englishNumber;
-exports.extrapolate = extrapolate;
-exports.formatBytes = formatBytes;
-exports.numToBinString = numToBinString;
-exports.binStringToNum = binStringToNum;
-exports.getBitAt = getBitAt;
+exports.reverse = reverse;
+exports.sameArr = sameArr;
+exports.sameAs = sameAs;
+exports.sameEls = sameEls;
 exports.setBitAt = setBitAt;
-exports.clearBitAt = clearBitAt;
-exports.invBitAt = invBitAt;
-exports.hasBitAt = hasBitAt;
-exports.haversine = haversine;
-exports.didRiseThroughBoundary = didRiseThroughBoundary;
-exports.didFallThroughBoundary = didFallThroughBoundary;
-exports.didEnterBand = didEnterBand;
-exports.didExitBand = didExitBand;
-exports.geoIsInside = geoIsInside;
-exports.geoFenceDidEnter = geoFenceDidEnter;
-exports.geoFenceDidExit = geoFenceDidExit;
-exports.hexToByteArray = hexToByteArray;
-exports.byteArrayToHex = byteArrayToHex;
+exports.shannon = shannon;
+exports.split = split;
+exports.splitAt = splitAt;
+exports.stringReverse = stringReverse;
 exports.stringToUtf8ByteArray = stringToUtf8ByteArray;
+exports.stripLeadingChar = stripLeadingChar;
+exports.stripTrailingChar = stripTrailingChar;
+exports.symmetricDiff = symmetricDiff;
+exports.tail = tail;
+exports.toInt = toInt;
+exports.toLowerCase = toLowerCase;
+exports.toNumber = toNumber;
+exports.toString = toString;
+exports.toUpperCase = toUpperCase;
+exports.trace = trace;
+exports.transpose = transpose;
+exports.truncate = truncate;
+exports.union = union;
 exports.utf8ByteArrayToString = utf8ByteArrayToString;
+exports.visitObjDeep = visitObjDeep;
+exports.whatType = whatType;
+exports.zip = zip;
+exports.zipFlat = zipFlat;
 
 module.exports = Object.assign({}, module.exports, exports);
