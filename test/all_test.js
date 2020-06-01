@@ -451,6 +451,18 @@ describe('Assertion functions:', () => {
   it('isEmpty: Check if an object has keys',
       () => assert.strictEqual(F.isEmpty({a: 1}), false));
 
+  it('isEmpty: Check if an object has keys. Should not fail on null',
+      () => assert.strictEqual(F.isEmpty(null), true));
+
+  it('isEmpty: Check if an object has keys. Should not fail on undefined',
+      () => assert.strictEqual(F.isEmpty(undefined), true));
+
+  it('isEmpty: Check if an object has keys. Should not fail on strings',
+      () => assert.strictEqual(F.isEmpty(''), true));
+
+  it('isEmpty: Check if an object has keys. Should not fail on undefined',
+      () => assert.strictEqual(F.isEmpty(), true));
+
   it('sameAs: given a marker, test that the given element is the same', () => {
     const marker = 'a';
     const test = F.sameAs(marker);

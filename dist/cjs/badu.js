@@ -186,12 +186,12 @@ const isNumber = n => whatType(n) === 'number' &&
  * @returns {*|boolean}
  */
 const isObject = t => (
-    t
+    (t
     && typeof t === 'object'
     && !(t instanceof Array)
     && !(t instanceof Set)
     && !(t instanceof Map)
-    && !(t instanceof Date)
+    && !(t instanceof Date)) === true
 );
 
 
@@ -231,7 +231,7 @@ const hasValue = v => (!(v === undefined || Number.isNaN(v)));
  * @param o
  * @returns {boolean}
  */
-const isEmpty = o => o.constructor === Object && Object.keys(o).length === 0;
+const isEmpty = o => !isObject(o) || Object.keys(o).length === 0;
 
 
 /**
