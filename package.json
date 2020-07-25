@@ -1,6 +1,6 @@
 {
   "name": "badu",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "A set of boilerplate utility functions",
   "main": "main.js",
   "scripts": {
@@ -29,9 +29,9 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "esm": "^3.0.28",
+    "esm": "^3.2.25",
     "google-closure-compiler": "*",
-    "mocha": "^7.1.1",
-    "rollup": "^2.3.3"
+    "mocha": "^8.0.1",
+    "rollup": "^2.23.0"
   }
 }
