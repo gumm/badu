@@ -1070,6 +1070,18 @@ describe('Basic Object utils', () => {
     return assert.deepStrictEqual(findE(obj1), 'here I am');
   });
 
+  it('pathOr: matches when value is false', () => {
+    const obj1 = {a: {b: {c: false}}};
+    const findC = F.pathOr('default', ['a', 'b', 'c']);
+    return assert.deepStrictEqual(findC(obj1), false);
+  });
+
+  it('pathOr: matches when value is null', () => {
+    const obj1 = {a: {b: {c: null}}};
+    const findC = F.pathOr('default', ['a', 'b', 'c']);
+    return assert.deepStrictEqual(findC(obj1), null);
+  });
+
   it('cloneObj: is a utility around Object.assign', () => {
     const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
     const clone = F.cloneObj(obj1);
@@ -1672,7 +1684,7 @@ describe('Number and math specific utils', () => {
     const cLon = -86.67;
     const pLat = 33.94;
     const pLon = -118.40;
-    assert.equal(F.haversine([cLat, cLon], [pLat, pLon]), 2887.26)
+    assert.strictEqual(F.haversine([cLat, cLon], [pLat, pLon]), 2887.26)
   });
 
   it('geoIsInside: true if point inside circular geo-fence', () => {
@@ -1686,19 +1698,19 @@ describe('Number and math specific utils', () => {
 
     pLat = 33.94;
     pLon = -118.40;
-    assert.equal(isInside([pLat, pLon]), false);
+    assert.strictEqual(isInside([pLat, pLon]), false);
 
     pLat = 0;
     pLon = 0;
-    assert.equal(isInside([pLat, pLon]), true);
+    assert.strictEqual(isInside([pLat, pLon]), true);
 
     pLat = 0;
     pLon = 0.0001;
-    assert.equal(isInside([pLat, pLon]), true);
+    assert.strictEqual(isInside([pLat, pLon]), true);
 
     pLat = 0;
     pLon = 0.001;
-    assert.equal(isInside([pLat, pLon]), false);
+    assert.strictEqual(isInside([pLat, pLon]), false);
   });
 
   it('geoFenceDidEnter: true for inward boundary crossing', () => {
@@ -1713,22 +1725,22 @@ describe('Number and math specific utils', () => {
     // Was inside, now outside
     pPrev = [0, 0];
     pCur = [1, 1];
-    assert.equal(testDidEnter(pPrev, pCur), false);
+    assert.strictEqual(testDidEnter(pPrev, pCur), false);
 
     // Was inside, stayed inside
     pPrev = [0, 0];
     pCur = [0.0001, 0.0001];
-    assert.equal(testDidEnter(pPrev, pCur), false);
+    assert.strictEqual(testDidEnter(pPrev, pCur), false);
 
     // Was outside, stayed outside
     pPrev = [2, 2];
     pCur = [1, 1];
-    assert.equal(testDidEnter(pPrev, pCur), false);
+    assert.strictEqual(testDidEnter(pPrev, pCur), false);
 
     // Was outside, now inside
     pPrev = [1, 1];
     pCur = [0, 0];
-    assert.equal(testDidEnter(pPrev, pCur), true);
+    assert.strictEqual(testDidEnter(pPrev, pCur), true);
   });
 
   it('geoFenceDidExit: true for outward boundary crossing', () => {
@@ -1743,22 +1755,22 @@ describe('Number and math specific utils', () => {
     // Was inside, now outside
     pPrev = [0, 0];
     pCur = [1, 1];
-    assert.equal(testDidExit(pPrev, pCur), true);
+    assert.strictEqual(testDidExit(pPrev, pCur), true);
 
     // Was inside, stayed inside
     pPrev = [0, 0];
     pCur = [0.0001, 0.0001];
-    assert.equal(testDidExit(pPrev, pCur), false);
+    assert.strictEqual(testDidExit(pPrev, pCur), false);
 
     // Was outside, stayed outside
     pPrev = [2, 2];
     pCur = [1, 1];
-    assert.equal(testDidExit(pPrev, pCur), false);
+    assert.strictEqual(testDidExit(pPrev, pCur), false);
 
     // Was outside, now inside
     pPrev = [1, 1];
     pCur = [0, 0];
-    assert.equal(testDidExit(pPrev, pCur), false);
+    assert.strictEqual(testDidExit(pPrev, pCur), false);
   });
 
   it('geoFenceRealWorld...', () => {
@@ -1775,55 +1787,6 @@ describe('Number and math specific utils', () => {
     const didEnter = !wasInside && nowInside;
     const didExit = wasInside && !nowInside;
 
-    console.log(wasInside, nowInside, didEnter);
-    console.log(wasInside, nowInside, didExit);
-
-
-  });
-
-});
-
-describe('Bit-banging utils', () => {
-
-  it('numToBinString: given a number return a string of 0,1s', () => {
-    assert.deepStrictEqual(F.numToBinString(0), '0');
-    assert.deepStrictEqual(F.numToBinString(1), '1');
-    assert.deepStrictEqual(F.numToBinString(2), '10');
-    assert.deepStrictEqual(F.numToBinString(3), '11');
-    assert.deepStrictEqual(F.numToBinString(255), '11111111');
-    assert.deepStrictEqual(F.numToBinString(9876543210), '1001001100101100000001011011101010');
-  });
-
-  it('binStringToNum: a string of 0 and 1 is converted to a number', () => {
-    assert.deepStrictEqual(F.binStringToNum('0'), 0);
-    assert.deepStrictEqual(F.binStringToNum('1'), 1);
-    assert.deepStrictEqual(F.binStringToNum('10'), 2);
-    assert.deepStrictEqual(F.binStringToNum('11'), 3);
-    assert.deepStrictEqual(F.binStringToNum('11111111'), 255);
-    assert.deepStrictEqual(F.binStringToNum('10101100'), 172);
-    assert.deepStrictEqual(F.binStringToNum('1001001100101100000001011011101010'), 9876543210);
-  });
-
-  it('getBitAt: get either a 0 or a 1 from the position in the number', () => {
-    assert.deepStrictEqual(F.getBitAt(172, 0), 0);
-    assert.deepStrictEqual(F.getBitAt(172, 1), 0);
-    assert.deepStrictEqual(F.getBitAt(172, 2), 1);
-    assert.deepStrictEqual(F.getBitAt(172, 3), 1);
-    assert.deepStrictEqual(F.getBitAt(172, 4), 0);
-    assert.deepStrictEqual(F.getBitAt(172, 5), 1);
-    assert.deepStrictEqual(F.getBitAt(172, 6), 0);
-    assert.deepStrictEqual(F.getBitAt(172, 7), 1);
-  });
-
-  it('getBitAt: Sets the bit in the number and returns the resultant number', () => {
-    assert.deepStrictEqual(F.setBitAt(172, 0), 173);
-    assert.deepStrictEqual(F.setBitAt(172, 1), 174);
-    assert.deepStrictEqual(F.setBitAt(172, 2), 172);
-    assert.deepStrictEqual(F.setBitAt(172, 3), 172);
-    assert.deepStrictEqual(F.setBitAt(172, 4), 188);
-    assert.deepStrictEqual(F.setBitAt(172, 5), 172);
-    assert.deepStrictEqual(F.setBitAt(172, 6), 236);
-    assert.deepStrictEqual(F.setBitAt(172, 7), 172);
   });
 
 });
@@ -1952,6 +1915,121 @@ describe('UTF8 Byte array manipulation', () => {
   });
 
 });
+
+describe('Bit Banging', () => {
+
+  it('numToBinString: given a number return a string of 0,1s', () => {
+    assert.deepStrictEqual(F.numToBinString(0), '0');
+    assert.deepStrictEqual(F.numToBinString(1), '1');
+    assert.deepStrictEqual(F.numToBinString(2), '10');
+    assert.deepStrictEqual(F.numToBinString(3), '11');
+    assert.deepStrictEqual(F.numToBinString(255), '11111111');
+    assert.deepStrictEqual(F.numToBinString(9876543210), '1001001100101100000001011011101010');
+  });
+
+  it('binStringToNum: a string of 0 and 1 is converted to a number', () => {
+    assert.deepStrictEqual(F.binStringToNum('0'), 0);
+    assert.deepStrictEqual(F.binStringToNum('1'), 1);
+    assert.deepStrictEqual(F.binStringToNum('10'), 2);
+    assert.deepStrictEqual(F.binStringToNum('11'), 3);
+    assert.deepStrictEqual(F.binStringToNum('11111111'), 255);
+    assert.deepStrictEqual(F.binStringToNum('10101100'), 172);
+    assert.deepStrictEqual(F.binStringToNum('1001001100101100000001011011101010'), 9876543210);
+  });
+
+  it('getBitAt: get either a 0 or a 1 from the position in the number', () => {
+    assert.deepStrictEqual(F.getBitAt(172, 0), 0);
+    assert.deepStrictEqual(F.getBitAt(172, 1), 0);
+    assert.deepStrictEqual(F.getBitAt(172, 2), 1);
+    assert.deepStrictEqual(F.getBitAt(172, 3), 1);
+    assert.deepStrictEqual(F.getBitAt(172, 4), 0);
+    assert.deepStrictEqual(F.getBitAt(172, 5), 1);
+    assert.deepStrictEqual(F.getBitAt(172, 6), 0);
+    assert.deepStrictEqual(F.getBitAt(172, 7), 1);
+  });
+
+  it('setBitAt: Sets the bit in the number and returns the resultant number', () => {
+    assert.deepStrictEqual(F.setBitAt(172, 0), 173);
+    assert.deepStrictEqual(F.setBitAt(172, 1), 174);
+    assert.deepStrictEqual(F.setBitAt(172, 2), 172);
+    assert.deepStrictEqual(F.setBitAt(172, 3), 172);
+    assert.deepStrictEqual(F.setBitAt(172, 4), 188);
+    assert.deepStrictEqual(F.setBitAt(172, 5), 172);
+    assert.deepStrictEqual(F.setBitAt(172, 6), 236);
+    assert.deepStrictEqual(F.setBitAt(172, 7), 172);
+  });
+
+  it('clearBitAt: Sets the bit at n to zero', () => {
+    assert.deepStrictEqual(F.clearBitAt(255, 0), 254);
+    assert.deepStrictEqual(F.clearBitAt(255, 1), 253);
+    assert.deepStrictEqual(F.clearBitAt(255, 2), 251);
+    assert.deepStrictEqual(F.clearBitAt(255, 3), 247);
+    assert.deepStrictEqual(F.clearBitAt(255, 4), 239);
+    assert.deepStrictEqual(F.clearBitAt(255, 5), 223);
+    assert.deepStrictEqual(F.clearBitAt(255, 6), 191);
+    assert.deepStrictEqual(F.clearBitAt(255, 7), 127);
+  });
+
+  it('invBitAt: Inverts the bit at the given position', () => {
+    assert.deepStrictEqual(F.invBitAt(8, 0), 9);
+    assert.deepStrictEqual(F.invBitAt(8, 1), 10);
+    assert.deepStrictEqual(F.invBitAt(8, 2), 12);
+  });
+
+  it('hasBitAt: Checks if the bit at postion is set', () => {
+    assert.strictEqual(F.hasBitAt(8, 0), false);
+    assert.strictEqual(F.hasBitAt(8, 1), false);
+    assert.strictEqual(F.hasBitAt(8, 2), false);
+    assert.strictEqual(F.hasBitAt(8, 3), true);
+  });
+
+  it('zeroOut32: Zero out the lower bits of a 32-bit number', () => {
+    // Be aware. This works with and returns unsigned int32 by force!
+
+    const given = F.binStringToNum('10101010101010101010101010101010');
+    const expect = F.binStringToNum('10101010101010000000000000000000');
+    const keep = 13; // Keep the first 13 bits of the given number
+    assert.strictEqual(F.zeroOut32(given, keep), expect);
+  });
+
+
+});
+
+
+describe('IPv4 Address manipulation', () => {
+  const ipV4Address = '10.207.219.251';
+  const ipV4int = 181394427;
+
+  it('ipv4ToInt2: Convert ipv4 string to int', () => {
+    assert.strictEqual(F.ipv4ToInt2(ipV4Address), ipV4int);
+  });
+
+  it('intToIpv4: Convert int to ipv4 string', () => {
+    assert.strictEqual(F.intToIpv4(ipV4int), ipV4Address);
+  });
+
+  it('canonicalIpv4Pool: Convert a poorly formed IP pool definition into its canonical form', () => {
+    const test = ([k, v]) => assert.strictEqual(F.canonicalIpv4Pool(k), v);
+    const ipMap = {
+      '87.70.141.1/22': '87.70.140.0/22',
+      '36.18.154.103/12': '36.16.0.0/12',
+      '62.62.197.11/29': '62.62.197.8/29',
+      '67.137.119.181/4': '64.0.0.0/4',
+      '161.214.74.21/24': '161.214.74.0/24',
+      '184.232.176.184/18': '184.232.128.0/18',
+      '10.207.219.251/32': '10.207.219.251/32',
+      '10.207.219.251': '10.207.219.251/32',
+      '110.200.21/4': '96.0.0.0/4',
+      '10..55/8': '10.0.0.0/8',
+      '10.../8': '10.0.0.0/8',
+    };
+    [...Object.entries(ipMap)].forEach(test);
+  });
+
+
+});
+
+
 
 
 

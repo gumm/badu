@@ -183,11 +183,11 @@ const isNumber = n => whatType(n) === 'number' &&
  */
 const isObject = t => (
     (t
-    && typeof t === 'object'
-    && !(t instanceof Array)
-    && !(t instanceof Set)
-    && !(t instanceof Map)
-    && !(t instanceof Date)) === true
+        && typeof t === 'object'
+        && !(t instanceof Array)
+        && !(t instanceof Set)
+        && !(t instanceof Map)
+        && !(t instanceof Date)) === true
 );
 
 
@@ -1008,10 +1008,10 @@ const cloneObj = o => Object.assign({}, o);
  * @return {*[]}
  */
 const objToPaths = (obj, path = [], accl = []) => {
-    Object.entries(obj).forEach(([key, value]) => {
-      isObject(value) ? objToPaths(value, [...path, key], accl)
-          : accl.push([[...path, key], value]);
-    });
+  Object.entries(obj).forEach(([key, value]) => {
+    isObject(value) ? objToPaths(value, [...path, key], accl)
+        : accl.push([[...path, key], value]);
+  });
   return accl;
 };
 
@@ -1710,4 +1710,62 @@ const invBitAt = (b, n) => b ^ (1 << n);
  */
 const hasBitAt = (b, n) => getBitAt(b, n) === 1;
 
-export { allElementsEqual, alphaLower, alphaNum, alphaUpper, alwaysAppend, alwaysFalse, alwaysNull, alwaysTrue, alwaysUndef, anyToLowerCase, append, arrToMap, assumeDateFromTs, binStringToNum, boolMap, both, byteArrayToHex, chunk, clearBitAt, clock, cloneObj, columnAt, columnReduce, compose, countByFunc, countOck, countSubString, didEnterBand, didExitBand, didFallThroughBoundary, didRiseThroughBoundary, difference, divMod, divMod2, elAt, englishNumber, extrapolate, factorize, filter, filterAtInc, filterOnlyIndexes, findShared, flatten, formatBytes, geoFenceDidEnter, geoFenceDidExit, geoIsInside, getBitAt, getNowSeconds, hasBitAt, hasValue, haversine, head, hexToByteArray, iRange, idGen, identity, imeisvToImei, interleave, interleave2, intersection, invBitAt, isDef, isDefAndNotNull, isDivisibleBy, isEmpty, isEven, isNegativeZero, isNumber, isObject, isSignedInt, isString, isUndefined, join, join2, lcp, leftPadWithTo, logInline, luhn, makeRandomString, map, maxInArr, maybeBool, maybeFunc, maybeNumber, mergeDeep, minInArr, negate, numReverse, numToBinString, numericInt, numericString, objToPaths, onlyIncludes, pRound, pairs, pairsToMap, partial, pathOr, prepend, privateCounter, privateRandom, push, quote, randIntBetween, randSign, randSubSet, randomId, range, range2, rangeGen, remove, removeAtIndex, removeRandom, repeat, replace, replaceAll, reverse, sameArr, sameAs, sameEls, setBitAt, shannon, split, splitAt, stringReverse, stringToUtf8ByteArray, stripLeadingChar, stripTrailingChar, symmetricDiff, tail, toInt, toLowerCase, toNumber, toString, toUpperCase, trace, transpose, truncate, union, utf8ByteArrayToString, visitObjDeep, whatType, zip, zipFlat };
+
+/**
+ * Change the lower bits of a 32bit unsigned int to zeros,
+ * keeping only the k number of high bits unchanged.
+ * @param {number} n
+ * @param {number} k
+ * @returns {number} This returns an unsigned int by force.
+ */
+const zeroOut32 = (n, k) => k > 0 ? (((n >>> 0) >> 32 - k) << 32 - k) >>> 0 : 0;
+
+// -----------------------------------------------------------[ IP Addresses ]--
+/**
+ * Given a IPv4 Address, convert it to its integer value
+ * @param {string} ip
+ * @returns {number}
+ */
+const ipv4ToInt2 = ip => new DataView(
+    new Uint8Array(ip.split('.').map(e => parseInt(e || 0, 10))).buffer).getUint32(0);
+
+/**
+ * Given an int, convert it to a IPv4 address.
+ * @param {number} int
+ * @param {DataView} dv
+ * @returns {string}
+ */
+const intToIpv4 = (int, dv = new DataView(new ArrayBuffer(16))) => {
+  dv.setUint32(0, int);
+  return [0, 1, 2, 3].map(e => dv.getUint8(e)).join('.')
+};
+
+/**
+ * Canonical IP pool definitions.
+ * Example:
+ * 87.70.141.1/22 -> 87.70.140.0/22
+ * 36.18.154.103/12 -> 36.16.0.0/12
+ * 67.137.119.181/4 -> 64.0.0.0/4
+ * 10.207.219.251/32 -> 10.207.219.251/32
+ * 10.207.219.251 -> 10.207.219.251/32
+ * 110.200.21/4 -> 96.0.0.0/4
+ * 10..55/8 -> 10.0.0.0/8
+ * 10.../8 -> 10.0.0.0/8
+ *
+ * @param {string} s
+ * @returns {string}
+ */
+const canonicalIpv4Pool = s => {
+
+  const dv = new DataView(new ArrayBuffer(16));
+  const [ip, cidr] = s.split('/');
+  const cidrInt = parseInt(cidr || 32, 10);
+  ip.split('.').forEach(
+      (e, i) => dv.setUint8(i, parseInt(e || 0, 10))
+  );
+  dv.setUint32(0, (dv.getUint32(0) >> 32 - cidrInt) << 32 - cidrInt);
+  const canonIp = [0, 1, 2, 3].map(e => dv.getUint8(e)).join('.');
+  return [canonIp, cidrInt].join('/');
+};
+
+export { allElementsEqual, alphaLower, alphaNum, alphaUpper, alwaysAppend, alwaysFalse, alwaysNull, alwaysTrue, alwaysUndef, anyToLowerCase, append, arrToMap, assumeDateFromTs, binStringToNum, boolMap, both, byteArrayToHex, canonicalIpv4Pool, chunk, clearBitAt, clock, cloneObj, columnAt, columnReduce, compose, countByFunc, countOck, countSubString, didEnterBand, didExitBand, didFallThroughBoundary, didRiseThroughBoundary, difference, divMod, divMod2, elAt, englishNumber, extrapolate, factorize, filter, filterAtInc, filterOnlyIndexes, findShared, flatten, formatBytes, geoFenceDidEnter, geoFenceDidExit, geoIsInside, getBitAt, getNowSeconds, hasBitAt, hasValue, haversine, head, hexToByteArray, iRange, idGen, identity, imeisvToImei, intToIpv4, interleave, interleave2, intersection, invBitAt, ipv4ToInt2, isDef, isDefAndNotNull, isDivisibleBy, isEmpty, isEven, isNegativeZero, isNumber, isObject, isSignedInt, isString, isUndefined, join, join2, lcp, leftPadWithTo, logInline, luhn, makeRandomString, map, maxInArr, maybeBool, maybeFunc, maybeNumber, mergeDeep, minInArr, negate, numReverse, numToBinString, numericInt, numericString, objToPaths, onlyIncludes, pRound, pairs, pairsToMap, partial, pathOr, prepend, privateCounter, privateRandom, push, quote, randIntBetween, randSign, randSubSet, randomId, range, range2, rangeGen, remove, removeAtIndex, removeRandom, repeat, replace, replaceAll, reverse, sameArr, sameAs, sameEls, setBitAt, shannon, split, splitAt, stringReverse, stringToUtf8ByteArray, stripLeadingChar, stripTrailingChar, symmetricDiff, tail, toInt, toLowerCase, toNumber, toString, toUpperCase, trace, transpose, truncate, union, utf8ByteArrayToString, visitObjDeep, whatType, zeroOut32, zip, zipFlat };
