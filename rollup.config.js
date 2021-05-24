@@ -12,7 +12,7 @@ export default [
   {
     input: 'src/badu.js',
     output: {
-      file: 'dist/es/badu.js',
+      file: 'dist/es/badu.mjs',
       format: 'es',
       name: 'badu',
     }
