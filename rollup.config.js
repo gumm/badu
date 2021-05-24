@@ -9,14 +9,14 @@ export default [
       name: 'badu',
     }
   },
-  {
-    input: 'src/badu.js',
-    output: {
-      file: 'dist/es/badu.mjs',
-      format: 'es',
-      name: 'badu',
-    }
-  },
+  // {
+  //   input: 'src/badu.js',
+  //   output: {
+  //     file: 'dist/es/badu.mjs',
+  //     format: 'es',
+  //     name: 'badu',
+  //   }
+  // },
   {
     input: 'src/badu.js',
     output: {
