@@ -2,7 +2,7 @@
   "name": "badu",
   "version": "2.6.8",
   "description": "A set of boilerplate utility functions",
-  "main": "main.js",
+  "main": "badu.js",
   "module": "./dist/es/badu.mjs",
   "scripts": {
     "clean": "`rm dist/_temp.js`",
