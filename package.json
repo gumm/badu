@@ -3,7 +3,7 @@
   "version": "2.6.8",
   "description": "A set of boilerplate utility functions",
   "main": "badu.js",
-  "module": "./dist/es/badu.mjs",
+  "type": "module",
   "scripts": {
     "clean": "`rm dist/_temp.js`",
     "test": "mocha -r esm --recursive ./test/",
