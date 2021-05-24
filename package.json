@@ -1,8 +1,9 @@
 {
   "name": "badu",
-  "version": "2.6.5",
+  "version": "2.6.6",
   "description": "A set of boilerplate utility functions",
   "main": "main.js",
+  "module": "./dist/es/badu.js",
   "scripts": {
     "clean": "`rm dist/_temp.js`",
     "test": "mocha -r esm --recursive ./test/",
