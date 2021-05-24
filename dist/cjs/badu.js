@@ -301,7 +301,7 @@ const range2 = (m, n) => Array.from(
  * @param {!number} n
  * @returns {Array<!number>}
  */
-const iRange = n => Array(n).fill(0).map((_, i) => i);
+const iRange = n => [...Array(n).keys()];
 
 
 /**

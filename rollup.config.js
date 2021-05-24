@@ -12,6 +12,14 @@ export default [
   {
     input: 'src/badu.js',
     output: {
+      file: 'dist/mjs/badu.mjs',
+      format: 'es',
+      name: 'badu',
+    }
+  },
+  {
+    input: 'src/badu.js',
+    output: {
       file: 'dist/cjs/badu.js',
       format: 'cjs',
       name: 'badu',
