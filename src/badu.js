@@ -194,6 +194,12 @@ const isObject = t => (
         && !(t instanceof Date)) === true
 );
 
+/**
+ * @param t
+ * @returns {boolean}
+ */
+const isArray = t => t instanceof Array;
+
 
 /**
  * A strict even test that does not coerce values, and results in false if the
@@ -1801,6 +1807,7 @@ export {
   isString,
   isNumber,
   isObject,
+  isArray,
   isEven,
   isDivisibleBy,
   both,

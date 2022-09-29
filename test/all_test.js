@@ -1,4 +1,4 @@
-const assert = require('assert');
+import { strict as assert } from 'node:assert';
 import * as F from '../src/badu.js'
 
 /**
@@ -382,6 +382,12 @@ describe('Assertion functions:', () => {
 
   it('isObject: handles Date as not-an-object',
       () => assert.strictEqual(F.isObject(new Date()), false));
+
+  it('isArray: identifies arrays',
+      () => assert.strictEqual(F.isArray([]), true));
+
+  it('isArray: handles strings as not-an-array',
+      () => assert.strictEqual(F.isArray('hello'), false));
 
   it('isEven: returns true if given a number that can be divided by 2',
       () => assert.strictEqual(F.isEven(2), true));

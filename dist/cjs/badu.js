@@ -194,6 +194,12 @@ const isObject = t => (
         && !(t instanceof Date)) === true
 );
 
+/**
+ * @param t
+ * @returns {boolean}
+ */
+const isArray = t => t instanceof Array;
+
 
 /**
  * A strict even test that does not coerce values, and results in false if the
@@ -1837,6 +1843,7 @@ exports.interleave2 = interleave2;
 exports.intersection = intersection;
 exports.invBitAt = invBitAt;
 exports.ipv4ToInt2 = ipv4ToInt2;
+exports.isArray = isArray;
 exports.isDef = isDef;
 exports.isDefAndNotNull = isDefAndNotNull;
 exports.isDivisibleBy = isDivisibleBy;
