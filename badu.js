@@ -1507,10 +1507,10 @@ const haversine = ([lat1, lon1], [lat2, lon2]) => {
 
   return Math.round(
       radius * 2 * Math.asin(
-      Math.sqrt(
-          Math.pow(Math.sin(dLat / 2), 2) +
-          Math.pow(Math.sin(dLon / 2), 2) *
-          Math.cos(rlat1) * Math.cos(rlat2))
+          Math.sqrt(
+              Math.pow(Math.sin(dLat / 2), 2) +
+              Math.pow(Math.sin(dLon / 2), 2) *
+              Math.cos(rlat1) * Math.cos(rlat2))
       ) * 100
   ) / 100;
 };
