@@ -200,6 +200,11 @@ const isObject = t => (
  */
 const isArray = t => t instanceof Array;
 
+/**
+ * @param {*} n
+ * @return {boolean}
+ */
+const isFunction = n => whatType(n) === 'function';
 
 /**
  * A strict even test that does not coerce values, and results in false if the
@@ -1808,6 +1813,7 @@ export {
   isNumber,
   isObject,
   isArray,
+  isFunction,
   isEven,
   isDivisibleBy,
   both,
@@ -1917,11 +1923,11 @@ export {
   clearBitAt,
   invBitAt,
   hasBitAt,
-  haversine,
   didRiseThroughBoundary,
   didFallThroughBoundary,
   didEnterBand,
   didExitBand,
+  haversine,
   geoIsInside,
   geoFenceDidEnter,
   geoFenceDidExit,

@@ -1,4 +1,4 @@
-import { strict as assert } from 'node:assert';
+import {strict as assert} from 'node:assert';
 import * as F from '../src/badu.js'
 
 /**
@@ -153,13 +153,13 @@ describe('Functional tools', () => {
   });
 
   it('identity: returns whatever it was given',
-      () => assert.strictEqual(F.identity(1), 1));
+    () => assert.strictEqual(F.identity(1), 1));
 
   it('identity: strings',
-      () => assert.strictEqual(F.identity('s'), 's'));
+    () => assert.strictEqual(F.identity('s'), 's'));
 
   it('identity: array',
-      () => assert.deepStrictEqual(F.identity([1, 2, 3]), [1, 2, 3]));
+    () => assert.deepStrictEqual(F.identity([1, 2, 3]), [1, 2, 3]));
 
   it('partial: returns a partially applied function', () => {
     const test = (a, b, c, d) => `${a} ${b} ${c} ${d}`;
@@ -186,28 +186,28 @@ describe('Functional tools', () => {
 describe('Some functions always return the same thing', () => {
 
   it('alwaysUndef: returns "undefined"',
-      () => assert.strictEqual(F.alwaysUndef(), undefined));
+    () => assert.strictEqual(F.alwaysUndef(), undefined));
 
   it('alwaysUndef: regardless of what is passed in',
-      () => assert.strictEqual(F.alwaysUndef(1, false, 'hello'), undefined));
+    () => assert.strictEqual(F.alwaysUndef(1, false, 'hello'), undefined));
 
   it('alwaysFalse: returns "false" ',
-      () => assert.strictEqual(F.alwaysFalse(), false));
+    () => assert.strictEqual(F.alwaysFalse(), false));
 
   it('alwaysFalse: regardless of what is passed in',
-      () => assert.strictEqual(F.alwaysFalse(true), false));
+    () => assert.strictEqual(F.alwaysFalse(true), false));
 
   it('alwaysTrue: returns "false" ',
-      () => assert.strictEqual(F.alwaysTrue(), true));
+    () => assert.strictEqual(F.alwaysTrue(), true));
 
   it('alwaysTrue: regardless of what is passed in',
-      () => assert.strictEqual(F.alwaysTrue(true), true));
+    () => assert.strictEqual(F.alwaysTrue(true), true));
 
   it('alwaysNull: returns "false" ',
-      () => assert.strictEqual(F.alwaysNull(), null));
+    () => assert.strictEqual(F.alwaysNull(), null));
 
   it('alwaysNull: regardless of what is passed in',
-      () => assert.strictEqual(F.alwaysNull(true), null));
+    () => assert.strictEqual(F.alwaysNull(true), null));
 
 });
 
@@ -225,7 +225,7 @@ describe('Functions to debug and trace', () => {
   });
 
   it('trace: can be used to see what is passed around inside a ' +
-      'composed function. Trace is partially applied logInline', () => {
+    'composed function. Trace is partially applied logInline', () => {
     const plusOne = x => x + 1;
     const timesTwo = x => x * 2;
     const trace1 = F.trace('First this:');
@@ -239,43 +239,43 @@ describe('Functions to debug and trace', () => {
 describe('Type interrogation function:', () => {
 
   it('whatType: returns "string" if a string is given',
-      () => assert.strictEqual(F.whatType('s'), 'string'));
+    () => assert.strictEqual(F.whatType('s'), 'string'));
 
   it('whatType: returns "number" if a number is given',
-      () => assert.strictEqual(F.whatType(12.3), 'number'));
+    () => assert.strictEqual(F.whatType(12.3), 'number'));
 
   it('whatType: returns "number" if a NaN is given',
-      () => assert.strictEqual(F.whatType(NaN), 'number'));
+    () => assert.strictEqual(F.whatType(NaN), 'number'));
 
   it('whatType: returns "object" if an object is given',
-      () => assert.strictEqual(F.whatType({a: 1}), 'object'));
+    () => assert.strictEqual(F.whatType({a: 1}), 'object'));
 
   it('whatType: returns "object" if an array is given',
-      () => assert.strictEqual(F.whatType([1, 2]), 'object'));
+    () => assert.strictEqual(F.whatType([1, 2]), 'object'));
 
   it('whatType: returns "object" if a Map is given',
-      () => assert.strictEqual(F.whatType(new Map()), 'object'));
+    () => assert.strictEqual(F.whatType(new Map()), 'object'));
 
   it('whatType: returns "object" if a Set is given',
-      () => assert.strictEqual(F.whatType(new Set()), 'object'));
+    () => assert.strictEqual(F.whatType(new Set()), 'object'));
 
   it('maybeBool: converts string "true" to boolean true',
-      () => assert.strictEqual(F.maybeBool('true'), true));
+    () => assert.strictEqual(F.maybeBool('true'), true));
 
   it('maybeBool: converts string "false" to boolean false',
-      () => assert.strictEqual(F.maybeBool('false'), false));
+    () => assert.strictEqual(F.maybeBool('false'), false));
 
   it('maybeBool: returns what it was given if it could not be converted',
-      () => assert.strictEqual(F.maybeBool(123), 123));
+    () => assert.strictEqual(F.maybeBool(123), 123));
 
   it('maybeBool: handles nulls',
-      () => assert.strictEqual(F.maybeBool(null), null));
+    () => assert.strictEqual(F.maybeBool(null), null));
 
   it('maybeBool: handles zero',
-      () => assert.strictEqual(F.maybeBool(0), 0));
+    () => assert.strictEqual(F.maybeBool(0), 0));
 
   it('maybeBool: is case sensitive',
-      () => assert.strictEqual(F.maybeBool('True'), 'True'));
+    () => assert.strictEqual(F.maybeBool('True'), 'True'));
 
   it('maybeFunc: executes its argument if a function', () => {
     const aFunc = () => 2;
@@ -291,16 +291,16 @@ describe('Type interrogation function:', () => {
 describe('Assertion functions:', () => {
 
   it('isDef: returns true if it was given something other than "undefined"',
-      () => assert.strictEqual(F.isDef(0), true));
+    () => assert.strictEqual(F.isDef(0), true));
 
   it('isDef: handles null',
-      () => assert.strictEqual(F.isDef(null), true));
+    () => assert.strictEqual(F.isDef(null), true));
 
   it('isDef: handles NaN',
-      () => assert.strictEqual(F.isDef(NaN), true));
+    () => assert.strictEqual(F.isDef(NaN), true));
 
   it('isDef: handles undefined',
-      () => assert.strictEqual(F.isDef(undefined), false));
+    () => assert.strictEqual(F.isDef(undefined), false));
 
   it('isUndefined: returns true if given something that is not defined', () => {
     let uDef;
@@ -323,151 +323,175 @@ describe('Assertion functions:', () => {
   });
 
   it('isDefAndNotNull: returns true if it was given something other ' +
-      'than "undefined" or null',
-      () => assert.strictEqual(F.isDefAndNotNull(undefined), false));
+    'than "undefined" or null',
+    () => assert.strictEqual(F.isDefAndNotNull(undefined), false));
 
   it('isDefAndNotNull: null returns false',
-      () => assert.strictEqual(F.isDefAndNotNull(null), false));
+    () => assert.strictEqual(F.isDefAndNotNull(null), false));
 
   it('isDefAndNotNull: NaN is considered defined',
-      () => assert.strictEqual(F.isDefAndNotNull(NaN), true));
+    () => assert.strictEqual(F.isDefAndNotNull(NaN), true));
 
   it('isDefAndNotNull: false is considered defined',
-      () => assert.strictEqual(F.isDefAndNotNull(false), true));
+    () => assert.strictEqual(F.isDefAndNotNull(false), true));
 
   it('isDefAndNotNull: zero is considered defined',
-      () => assert.strictEqual(F.isDefAndNotNull(0), true));
+    () => assert.strictEqual(F.isDefAndNotNull(0), true));
 
   it('isDefAndNotNull: empty string is considered defined',
-      () => assert.strictEqual(F.isDefAndNotNull(''), true));
+    () => assert.strictEqual(F.isDefAndNotNull(''), true));
 
   it('isString: returns true if given a string',
-      () => assert.strictEqual(F.isString('s'), true));
+    () => assert.strictEqual(F.isString('s'), true));
 
   it('isString: handles null',
-      () => assert.strictEqual(F.isString(null), false));
+    () => assert.strictEqual(F.isString(null), false));
 
   it('isString: handles undefined',
-      () => assert.strictEqual(F.isString(undefined), false));
+    () => assert.strictEqual(F.isString(undefined), false));
 
   it('isString: handles NaN',
-      () => assert.strictEqual(F.isString(NaN), false));
+    () => assert.strictEqual(F.isString(NaN), false));
 
   it('isNumber: returns true if given a number',
-      () => assert.strictEqual(F.isNumber(1), true));
+    () => assert.strictEqual(F.isNumber(1), true));
 
   it('isNumber: handles NaN in sane way',
-      () => assert.strictEqual(F.isNumber(NaN), false));
+    () => assert.strictEqual(F.isNumber(NaN), false));
 
   it('isNumber: handles infinity',
-      () => assert.strictEqual(F.isNumber(Infinity), true));
+    () => assert.strictEqual(F.isNumber(Infinity), true));
 
   it('isNumber: handles Number.POSITIVE_INFINITY',
-      () => assert.strictEqual(F.isNumber(Number.POSITIVE_INFINITY), true));
+    () => assert.strictEqual(F.isNumber(Number.POSITIVE_INFINITY), true));
 
   it('isNumber: handles Number.NEGATIVE_INFINITY',
-      () => assert.strictEqual(F.isNumber(Number.NEGATIVE_INFINITY), true));
+    () => assert.strictEqual(F.isNumber(Number.NEGATIVE_INFINITY), true));
 
   it('isObject: returns true if given an object',
-      () => assert.strictEqual(F.isObject({a: 1}), true));
+    () => assert.strictEqual(F.isObject({a: 1}), true));
 
   it('isObject: handles array as not-an-object',
-      () => assert.strictEqual(F.isObject([1, 2]), false));
+    () => assert.strictEqual(F.isObject([1, 2]), false));
 
   it('isObject: handles Maps as not-an-object',
-      () => assert.strictEqual(F.isObject(new Map()), false));
+    () => assert.strictEqual(F.isObject(new Map()), false));
 
   it('isObject: handles Sets as not-an-object',
-      () => assert.strictEqual(F.isObject(new Set()), false));
+    () => assert.strictEqual(F.isObject(new Set()), false));
 
   it('isObject: handles Date as not-an-object',
-      () => assert.strictEqual(F.isObject(new Date()), false));
+    () => assert.strictEqual(F.isObject(new Date()), false));
 
   it('isArray: identifies arrays',
-      () => assert.strictEqual(F.isArray([]), true));
+    () => assert.strictEqual(F.isArray([]), true));
+
+  it('isFunction: identifies functions (arrow)',
+    () => assert.strictEqual(F.isFunction((a => a)), true));
+
+  it('isFunction: identifies functions (prototype)',
+    () => {
+      assert.strictEqual(F.isFunction((Math.floor)), true)
+    });
+
+  it('isFunction: identifies functions (function)',
+    () => {
+      function test() {
+        return "this"
+      }
+      assert.strictEqual(F.isFunction(test), true)
+    });
+
+  it('isFunction: identifies functions (expression)',
+    () => {
+      const test = function() {
+        return "this"
+      }
+      assert.strictEqual(F.isFunction(test), true)
+    });
 
   it('isArray: handles strings as not-an-array',
-      () => assert.strictEqual(F.isArray('hello'), false));
+    () => assert.strictEqual(F.isArray('hello'), false));
 
   it('isEven: returns true if given a number that can be divided by 2',
-      () => assert.strictEqual(F.isEven(2), true));
+    () => assert.strictEqual(F.isEven(2), true));
 
   it('isEven: returns false if given a number that cant be divided by 2',
-      () => assert.strictEqual(F.isEven(3), false));
+    () => assert.strictEqual(F.isEven(3), false));
 
   it('isEven: it returns false if the given thing is not a number',
-      () => assert.strictEqual(F.isEven('hello'), false));
+    () => assert.strictEqual(F.isEven('hello'), false));
 
   it('isEven: handles NaN',
-      () => assert.strictEqual(F.isEven(NaN), false));
+    () => assert.strictEqual(F.isEven(NaN), false));
 
   it('isEven: handles Undefined',
-      () => assert.strictEqual(F.isEven(undefined), false));
+    () => assert.strictEqual(F.isEven(undefined), false));
 
   it('isEven: handles null',
-      () => assert.strictEqual(F.isEven(null), false));
+    () => assert.strictEqual(F.isEven(null), false));
 
   it('isEven: handles Number.POSITIVE_INFINITY',
-      () => assert.strictEqual(F.isEven(Number.POSITIVE_INFINITY), true));
+    () => assert.strictEqual(F.isEven(Number.POSITIVE_INFINITY), true));
 
   it('isEven: handles Number.NEGATIVE_INFINITY',
-      () => assert.strictEqual(F.isEven(Number.NEGATIVE_INFINITY), true));
+    () => assert.strictEqual(F.isEven(Number.NEGATIVE_INFINITY), true));
 
   it('isDivisibleBy: returns a function to test divisibility',
-      () => {
-        const t = F.isDivisibleBy(2);
-        assert.strictEqual(t(2), true);
-        assert.strictEqual(t(3), false);
-      });
+    () => {
+      const t = F.isDivisibleBy(2);
+      assert.strictEqual(t(2), true);
+      assert.strictEqual(t(3), false);
+    });
 
   it('both: returns a function to test if both the given functions return true',
-      () => {
-        const t = F.both(F.isNumber, F.isEven);
-        assert.strictEqual(t(123), false);
-        assert.strictEqual(t(124), true);
-      });
+    () => {
+      const t = F.both(F.isNumber, F.isEven);
+      assert.strictEqual(t(123), false);
+      assert.strictEqual(t(124), true);
+    });
 
   it('hasValue: is defined and not null',
-      () => assert.strictEqual(F.hasValue(1), true));
+    () => assert.strictEqual(F.hasValue(1), true));
 
   it('hasValue: empty string has value',
-      () => assert.strictEqual(F.hasValue(''), true));
+    () => assert.strictEqual(F.hasValue(''), true));
 
   it('hasValue: number 0 has value',
-      () => assert.strictEqual(F.hasValue(0), true));
+    () => assert.strictEqual(F.hasValue(0), true));
 
   it('hasValue: empty array has value',
-      () => assert.strictEqual(F.hasValue([]), true));
+    () => assert.strictEqual(F.hasValue([]), true));
 
   it('hasValue: empty object has value',
-      () => assert.strictEqual(F.hasValue({}), true));
+    () => assert.strictEqual(F.hasValue({}), true));
 
   it('hasValue: null has value',
-      () => assert.strictEqual(F.hasValue(null), true));
+    () => assert.strictEqual(F.hasValue(null), true));
 
   it('hasValue: undefined does not have value',
-      () => assert.strictEqual(F.hasValue(undefined), false));
+    () => assert.strictEqual(F.hasValue(undefined), false));
 
   it('hasValue: NaN does not have value',
-      () => assert.strictEqual(F.hasValue(NaN), false));
+    () => assert.strictEqual(F.hasValue(NaN), false));
 
   it('isEmpty: Check if an object has keys',
-      () => assert.strictEqual(F.isEmpty({}), true));
+    () => assert.strictEqual(F.isEmpty({}), true));
 
   it('isEmpty: Check if an object has keys',
-      () => assert.strictEqual(F.isEmpty({a: 1}), false));
+    () => assert.strictEqual(F.isEmpty({a: 1}), false));
 
   it('isEmpty: Check if an object has keys. Should not fail on null',
-      () => assert.strictEqual(F.isEmpty(null), true));
+    () => assert.strictEqual(F.isEmpty(null), true));
 
   it('isEmpty: Check if an object has keys. Should not fail on undefined',
-      () => assert.strictEqual(F.isEmpty(undefined), true));
+    () => assert.strictEqual(F.isEmpty(undefined), true));
 
   it('isEmpty: Check if an object has keys. Should not fail on strings',
-      () => assert.strictEqual(F.isEmpty(''), true));
+    () => assert.strictEqual(F.isEmpty(''), true));
 
   it('isEmpty: Check if an object has keys. Should not fail on undefined',
-      () => assert.strictEqual(F.isEmpty(), true));
+    () => assert.strictEqual(F.isEmpty(), true));
 
   it('sameAs: given a marker, test that the given element is the same', () => {
     const marker = 'a';
@@ -576,33 +600,33 @@ describe('Array specific utils', () => {
   // });
 
   it('allElementsEqual: returns true if all the elements ' +
-      'in the array are the same',
-      () => assert.strictEqual(F.allElementsEqual([1, 1, 1, 1, 1]), true));
+    'in the array are the same',
+    () => assert.strictEqual(F.allElementsEqual([1, 1, 1, 1, 1]), true));
 
   it('allElementsEqual: returns false if any element differs',
-      () => assert.strictEqual(F.allElementsEqual([1, 1, '1', 1, 1]), false));
+    () => assert.strictEqual(F.allElementsEqual([1, 1, '1', 1, 1]), false));
 
   it('allElementsEqual: returns true an empty array is given',
-      () => assert.strictEqual(F.allElementsEqual([]), true));
+    () => assert.strictEqual(F.allElementsEqual([]), true));
 
   it('sameArr: returns true if both arrays have the ' +
-      'same elements in the same order',
-      () => assert.strictEqual(F.sameArr([1, 2], [1, 2]), true));
+    'same elements in the same order',
+    () => assert.strictEqual(F.sameArr([1, 2], [1, 2]), true));
 
   it('sameArr: if the order differs the test fails',
-      () => assert.strictEqual(F.sameArr([1, 2], [2, 1]), false));
+    () => assert.strictEqual(F.sameArr([1, 2], [2, 1]), false));
 
   it('sameArr: if the elements differs the test fails',
-      () => assert.strictEqual(F.sameArr([1, 2], [1, 1]), false));
+    () => assert.strictEqual(F.sameArr([1, 2], [1, 1]), false));
 
   it('sameEls: returns true if both arrays have the same elements',
-      () => assert.strictEqual(F.sameEls([1, 2], [1, 2]), true));
+    () => assert.strictEqual(F.sameEls([1, 2], [1, 2]), true));
 
   it('sameEls: order does not matter',
-      () => assert.strictEqual(F.sameEls([1, 2], [2, 1]), true));
+    () => assert.strictEqual(F.sameEls([1, 2], [2, 1]), true));
 
   it('sameEls: when elements differ it fails',
-      () => assert.strictEqual(F.sameEls([1, 2], [2, 1, 1]), false));
+    () => assert.strictEqual(F.sameEls([1, 2], [2, 1, 1]), false));
 
   it('iRange: takes a single argument and ranges from 0 up', () => {
     const r = F.iRange(10);
@@ -611,19 +635,19 @@ describe('Array specific utils', () => {
   });
 
   it('head: returns the first element of an array',
-      () => assert.strictEqual(F.head([1, 2, 3]), 1)
+    () => assert.strictEqual(F.head([1, 2, 3]), 1)
   );
 
   it('head: returns undefined when the array is empty',
-      () => assert.strictEqual(F.head([]), undefined)
+    () => assert.strictEqual(F.head([]), undefined)
   );
 
   it('tail: returns the last element of an array',
-      () => assert.strictEqual(F.tail([1, 2, 3]), 3)
+    () => assert.strictEqual(F.tail([1, 2, 3]), 3)
   );
 
   it('tail: returns undefined when the array is empty',
-      () => assert.strictEqual(F.tail([]), undefined)
+    () => assert.strictEqual(F.tail([]), undefined)
   );
 
   it('reverse: reverses an array', () => {
@@ -631,14 +655,14 @@ describe('Array specific utils', () => {
   });
 
   it('reverse: given a string, it returns an array with ' +
-      'the string reversed', () => {
+    'the string reversed', () => {
     assert.strictEqual(F.sameArr(F.reverse('abc'), ['c', 'b', 'a']), true)
   });
 
   it('flatten: flattens a multi dimensional arr', () => {
     assert.strictEqual(F.sameArr(
-        F.flatten([[1], [2, [[[3, 4], 5]], [[[]]], [[[6]]], 7, 8, []]]),
-        [1, 2, 3, 4, 5, 6, 7, 8]
+      F.flatten([[1], [2, [[[3, 4], 5]], [[[]]], [[[6]]], 7, 8, []]]),
+      [1, 2, 3, 4, 5, 6, 7, 8]
     ), true)
   });
 
@@ -647,7 +671,7 @@ describe('Array specific utils', () => {
     assert.strictEqual(F.sameArr(
         truncTo3([1, 2, 3, 4, 5, 6, 7, 8]),
         [1, 2, 3]),
-        true)
+      true)
   });
 
   it('elAt: returns the element of an array at the given position', () => {
@@ -720,20 +744,20 @@ describe('Array specific utils', () => {
   it('countOck: handles undefined', () => {
     const countundefineds = F.countOck(undefined);
     assert.deepStrictEqual(
-        countundefineds([undefined, 1, undefined, 1, null, 0, NaN, 1]), 2);
+      countundefineds([undefined, 1, undefined, 1, null, 0, NaN, 1]), 2);
   });
 
   it('countOck: handles null', () => {
     const countnulls = F.countOck(null);
     assert.deepStrictEqual(
-        countnulls([undefined, 1, undefined, 1, null, 0, NaN, 1]), 1);
+      countnulls([undefined, 1, undefined, 1, null, 0, NaN, 1]), 1);
   });
 
   it('countByFunc:  Counts the occurrence of something that ' +
-      'satisfies the predicate', () => {
+    'satisfies the predicate', () => {
     const countArr = F.countByFunc(e => Array.isArray(e));
     assert.deepStrictEqual(
-        countArr([[], [], NaN, {}, 1, {length: 1}]), 2);
+      countArr([[], [], NaN, {}, 1, {length: 1}]), 2);
   });
 
   it('filterAtInc: Remove every n-th element from the given array', () => {
@@ -755,63 +779,63 @@ describe('Array specific utils', () => {
     const chunkToThree = F.chunk(3);
     const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     assert.deepStrictEqual(
-        chunkToThree(testArr),
-        [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
+      chunkToThree(testArr),
+      [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
     );
   });
 
   it('pairs: split an array into set of arrays of size 2', () => {
     const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     assert.deepStrictEqual(
-        F.pairs(testArr),
-        [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]
+      F.pairs(testArr),
+      [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9]]
     );
   });
 
   it('pairs: empty input is OK', () => {
     const testArr = [];
     assert.deepStrictEqual(
-        F.pairs(testArr),
-        []
+      F.pairs(testArr),
+      []
     );
   });
 
   it('pairs: uneven input is OK and results in final singleton', () => {
     const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     assert.deepStrictEqual(
-        F.pairs(testArr),
-        [[0, 1], [2, 3], [4, 5], [6, 7], [8]]
+      F.pairs(testArr),
+      [[0, 1], [2, 3], [4, 5], [6, 7], [8]]
     );
   });
 
   it('pairsToMap: returns a Map of kv-pairs from a flat array', () => {
     const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
     assert.deepStrictEqual(
-        F.pairsToMap(testArr),
-        new Map().set(0, 1).set(2, 3).set(4, 5).set(6, 7).set(8, 9)
+      F.pairsToMap(testArr),
+      new Map().set(0, 1).set(2, 3).set(4, 5).set(6, 7).set(8, 9)
     );
   });
 
   it('pairsToMap: Uneven array result in undefined last element', () => {
     const testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     assert.deepStrictEqual(
-        F.pairsToMap(testArr),
-        new Map().set(0, 1).set(2, 3).set(4, 5).set(6, 7).set(8, undefined)
+      F.pairsToMap(testArr),
+      new Map().set(0, 1).set(2, 3).set(4, 5).set(6, 7).set(8, undefined)
     );
   });
 
   it('maxInArr: returns max value of array',
-      () => assert.strictEqual(F.maxInArr([1, 2, 3, 2, 1]), 3)
+    () => assert.strictEqual(F.maxInArr([1, 2, 3, 2, 1]), 3)
   );
 
   it('minInArr: returns min value of array',
-      () => assert.strictEqual(F.minInArr([1, 2, 3, 2, 1]), 1)
+    () => assert.strictEqual(F.minInArr([1, 2, 3, 2, 1]), 1)
   );
 
   it('columnReduce: Reduce the columns in an array of arrays.', () => {
     assert.deepStrictEqual(
-        F.columnReduce([[1, 2, 3], [4, 5, 6]], (p, c) => p + c),
-        [5, 7, 9])
+      F.columnReduce([[1, 2, 3], [4, 5, 6]], (p, c) => p + c),
+      [5, 7, 9])
   });
 
   it('splitAt: Split an array into two arrays at the given position.', () => {
@@ -820,9 +844,9 @@ describe('Array specific utils', () => {
     const expected3 = [[0, 1, 2], [3, 4, 5, 6, 7, 8, 9]];
     const expected6 = [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9]];
     assert.deepStrictEqual(
-        spitAt3(F.numericInt), expected3);
+      spitAt3(F.numericInt), expected3);
     assert.deepStrictEqual(
-        spitAt6(F.numericInt), expected6);
+      spitAt6(F.numericInt), expected6);
   });
 
   it('zip: Combine two arrays into array of tuples', () => {
@@ -830,19 +854,19 @@ describe('Array specific utils', () => {
       [0, 'A'], [1, 'B'], [2, 'C'], [3, 'D'], [4, 'E'],
       [5, 'F'], [6, 'G'], [7, 'H'], [8, 'I'], [9, 'J'],];
     assert.deepStrictEqual(
-        F.zip(F.numericInt, F.alphaUpper), expected);
+      F.zip(F.numericInt, F.alphaUpper), expected);
   });
 
   it('zip: Shorter Array drives result. Shorter first', () => {
     const expected = [[0, 'A'], [1, 'B'], [2, 'C']];
     assert.deepStrictEqual(
-        F.zip([0, 1, 2], F.alphaUpper), expected);
+      F.zip([0, 1, 2], F.alphaUpper), expected);
   });
 
   it('zip: Shorter Array drives result. Shorter second', () => {
     const expected = [[0, 'A'], [1, 'B'], [2, 'C']];
     assert.deepStrictEqual(
-        F.zip(F.numericInt, ['A', 'B', 'C']), expected);
+      F.zip(F.numericInt, ['A', 'B', 'C']), expected);
   });
 
   it('zipFlat: Combine two arrays flat consecutive pairs', () => {
@@ -850,19 +874,19 @@ describe('Array specific utils', () => {
       0, 'A', 1, 'B', 2, 'C', 3, 'D', 4, 'E',
       5, 'F', 6, 'G', 7, 'H', 8, 'I', 9, 'J'];
     assert.deepStrictEqual(
-        F.zipFlat(F.numericInt, F.alphaUpper), expected);
+      F.zipFlat(F.numericInt, F.alphaUpper), expected);
   });
 
   it('zipFlat: Shorter Array drives result. Shorter first', () => {
     const expected = [0, 'A', 1, 'B', 2, 'C'];
     assert.deepStrictEqual(
-        F.zipFlat([0, 1, 2], F.alphaUpper), expected);
+      F.zipFlat([0, 1, 2], F.alphaUpper), expected);
   });
 
   it('zipFlat: Shorter Array drives result. Shorter second', () => {
     const expected = [0, 'A', 1, 'B', 2, 'C'];
     assert.deepStrictEqual(
-        F.zipFlat(F.numericInt, ['A', 'B', 'C']), expected);
+      F.zipFlat(F.numericInt, ['A', 'B', 'C']), expected);
   });
 
   it('findShared: find elements shared amongst an array of arrays', () => {
@@ -871,8 +895,8 @@ describe('Array specific utils', () => {
     const test3 = [4, 6, 7, 8, 2, 9];
     const expected = [2, 9, 4];
     assert.deepStrictEqual(
-        F.findShared([test1, test2, test3]),
-        expected
+      F.findShared([test1, test2, test3]),
+      expected
     );
   });
 
@@ -882,8 +906,8 @@ describe('Array specific utils', () => {
     const test3 = [4, 6, 7, 8, 2, 9, 6, 7];
     const expected = [0, 2, 9, 3, 4, 6, 7];
     assert.deepStrictEqual(
-        F.findShared([test1, test2, test3]),
-        expected
+      F.findShared([test1, test2, test3]),
+      expected
     );
   });
 
@@ -892,8 +916,8 @@ describe('Array specific utils', () => {
     const test2 = [2, 3, 3, 4, 5];
     const expected = [2, 4];
     assert.deepStrictEqual(
-        F.intersection(test1, test2),
-        expected
+      F.intersection(test1, test2),
+      expected
     );
   });
 
@@ -902,8 +926,8 @@ describe('Array specific utils', () => {
     const test2 = [2, 3, 3, 4, 5];
     const expected = [0, 1, 2, 4, 9, 3, 5];
     assert.deepStrictEqual(
-        F.union(test1, test2),
-        expected
+      F.union(test1, test2),
+      expected
     );
   });
 
@@ -912,8 +936,8 @@ describe('Array specific utils', () => {
     const test2 = [2, 3, 3, 4, 5];
     const expected = [0, 1, 9];
     assert.deepStrictEqual(
-        F.difference(test1, test2),
-        expected
+      F.difference(test1, test2),
+      expected
     );
   });
 
@@ -923,21 +947,21 @@ describe('Array specific utils', () => {
     const test2 = [2, 3, 3, 4, 5];
     const expected = [0, 1, 9, 3, 5];
     assert.deepStrictEqual(
-        F.symmetricDiff(test1, test2),
-        expected
+      F.symmetricDiff(test1, test2),
+      expected
     );
   });
 
 
   it('filterOnlyIndexes: filters an array to only contain elements at given ' +
-      'indexes', () => {
+    'indexes', () => {
     const given = [10, 11, 12, 13, 14, 15];
     const indexes = [0, 2, 5];
     const expected = [10, 12, 15];
     const func = F.filterOnlyIndexes(indexes);
     assert.deepStrictEqual(
-        func(given),
-        expected
+      func(given),
+      expected
     );
   });
 
@@ -946,8 +970,8 @@ describe('Array specific utils', () => {
     const values = ['a', 'b', 'c', 'd'];
     const expected = new Map().set(1, 'a').set(2, 'b').set(3, 'c').set(4, 'd');
     assert.deepStrictEqual(
-        F.arrToMap(keys, values),
-        expected
+      F.arrToMap(keys, values),
+      expected
     );
   });
 
@@ -956,8 +980,8 @@ describe('Array specific utils', () => {
     const values = ['a', 'b', 'c', 'd'];
     const expected = new Map().set(1, 'a').set(2, 'b').set(3, 'c');
     assert.deepStrictEqual(
-        F.arrToMap(keys, values),
-        expected
+      F.arrToMap(keys, values),
+      expected
     );
   });
 
@@ -965,22 +989,22 @@ describe('Array specific utils', () => {
     const keys = [1, 2, 3, 4];
     const values = ['a', 'b', 'c'];
     const expected = new Map().set(1, 'a').set(2, 'b')
-        .set(3, 'c').set(4, undefined);
+      .set(3, 'c').set(4, undefined);
     assert.deepStrictEqual(
-        F.arrToMap(keys, values),
-        expected
+      F.arrToMap(keys, values),
+      expected
     );
   });
 
   it('remove: Remove n elements from the array starting at the given index', () => {
     assert.deepStrictEqual(
-        F.remove(4, 3, F.numericInt), [[4, 5, 6], [0, 1, 2, 3, 7, 8, 9]]
+      F.remove(4, 3, F.numericInt), [[4, 5, 6], [0, 1, 2, 3, 7, 8, 9]]
     );
   });
 
   it('removeAtIndex: Remove a single element at index', () => {
     assert.deepStrictEqual(
-        F.removeAtIndex(4, F.numericInt), [4, [0, 1, 2, 3, 5, 6, 7, 8, 9]]
+      F.removeAtIndex(4, F.numericInt), [4, [0, 1, 2, 3, 5, 6, 7, 8, 9]]
     );
   });
 
@@ -1070,7 +1094,7 @@ describe('Basic Object utils', () => {
   });
 
   it('pathOr: converts string numbers to numbers when ' +
-      'trying to find things in an array', () => {
+    'trying to find things in an array', () => {
     const obj1 = {a: {b: {c: [0, 1, [2, {d: 'here I am'}]]}}};
     const findE = F.pathOr('default', ['a', 'b', 'c', '2', '1', 'd']);
     return assert.deepStrictEqual(findE(obj1), 'here I am');
@@ -1155,7 +1179,6 @@ describe('Basic Object utils', () => {
 
 });
 
-
 describe('Date and time utils', () => {
 
   it('assumeDateFromTs: assumes the date from a timestamp', () => {
@@ -1164,7 +1187,7 @@ describe('Date and time utils', () => {
     const nowFromMilliseconds = F.assumeDateFromTs(nowSeconds * 1000);
     const tenSecAgo = F.assumeDateFromTs(-10);
     assert.strictEqual(
-        Math.floor((tenSecAgo.getTime() / 1000)) + 10, nowSeconds);
+      Math.floor((tenSecAgo.getTime() / 1000)) + 10, nowSeconds);
     assert.deepStrictEqual(nowFromSeconds, nowFromMilliseconds);
   });
 
@@ -1177,16 +1200,15 @@ describe('Date and time utils', () => {
     const nowSeconds = F.getNowSeconds();
     const tenSecAgo = F.assumeDateFromTs(-secondsAgo);
     assert.strictEqual(
-        Math.floor((tenSecAgo.getTime() / 1000)) + secondsAgo, nowSeconds);
+      Math.floor((tenSecAgo.getTime() / 1000)) + secondsAgo, nowSeconds);
   });
 
 });
 
-
 describe('String related utils', () => {
 
   it('leftPadWithTo: left-pad a string with the given ' +
-      'char to a total length of n', () => {
+    'char to a total length of n', () => {
     const pad = F.leftPadWithTo('-', 10);
     assert.strictEqual(pad('hello'), '-----hello');
   });
@@ -1202,7 +1224,7 @@ describe('String related utils', () => {
   });
 
   it('onlyIncludes: checks that a string only contains ' +
-      'elements from a. If it passes it returns the string, else false', () => {
+    'elements from a. If it passes it returns the string, else false', () => {
     const only = F.onlyIncludes(['a', 'b', 'c']);
     assert.strictEqual(only('abc'), 'abc');
   });
@@ -1213,13 +1235,13 @@ describe('String related utils', () => {
   });
 
   it('stripLeadingChar: make function that strips the leading ' +
-      'char if it matches', () => {
+    'char if it matches', () => {
     const stripSlash = F.stripLeadingChar('/');
     assert.strictEqual(stripSlash('/hello'), 'hello')
   });
 
   it('stripLeadingChar: does not strip if the leading char does ' +
-      'not match', () => {
+    'not match', () => {
     const stripSlash = F.stripLeadingChar('/');
     assert.strictEqual(stripSlash('hello'), 'hello')
   });
@@ -1334,13 +1356,13 @@ describe('String related utils', () => {
   });
 
   it('interleave: interleave a string with the joiner ' +
-      '- starting with the joiner', () => {
+    '- starting with the joiner', () => {
     const interleaveP = F.interleave('|');
     assert.deepStrictEqual(interleaveP('hello'), '|h|e|l|l|o')
   });
 
   it('interleave2: interleave a string with the joiner ' +
-      '- staring with the string', () => {
+    '- staring with the string', () => {
     const interleaveP = F.interleave2('|');
     assert.deepStrictEqual(interleaveP('hello'), 'h|e|l|l|o')
   });
@@ -1420,7 +1442,7 @@ describe('Number and math specific utils', () => {
   });
 
   it('maybeNumber: return a number if you can - else ' +
-      'whatever you were given', () => {
+    'whatever you were given', () => {
     assert.strictEqual(F.maybeNumber('123'), 123)
   });
 
@@ -1554,9 +1576,9 @@ describe('Number and math specific utils', () => {
 
   it('englishNumber: handles negitive numbers', () => {
     assert.deepStrictEqual(
-        F.englishNumber(-12345678),
-        'negative twelve million, three hundred and forty five thousand, ' +
-        'six hundred and seventy eight')
+      F.englishNumber(-12345678),
+      'negative twelve million, three hundred and forty five thousand, ' +
+      'six hundred and seventy eight')
   });
 
   it('englishNumber: can not do fractions', () => {
@@ -1883,7 +1905,6 @@ describe('Random Numbers and IDs', () => {
 
 });
 
-
 describe('HEX manipulation', () => {
 
   const hexStr = 'AE4EE51905A95C63C03D90880B718F6E';
@@ -2000,7 +2021,6 @@ describe('Bit Banging', () => {
 
 
 });
-
 
 describe('IPv4 Address manipulation', () => {
   const ipV4Address = '10.207.219.251';
