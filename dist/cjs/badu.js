@@ -15,6 +15,16 @@ const numericString = '0123456789'.split('');
 /**
  * @type {Array<string>}
  */
+const signedNumericString = ['-', ...numericString];
+
+/**
+ * @type {Array<string>}
+ */
+const floatString = ['.', ...signedNumericString];
+
+/**
+ * @type {Array<string>}
+ */
 const alphaLower = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
 /**
@@ -31,8 +41,8 @@ const alphaNum = [...alphaLower, ...alphaUpper, ...numericString];
  * @type {Map<string, boolean>}
  */
 const boolMap = new Map()
-    .set('true', true)
-    .set('false', false);
+  .set('true', true)
+  .set('false', false);
 
 
 /**
@@ -172,24 +182,32 @@ const isDefAndNotNull = t => t != null;
  */
 const isString = n => whatType(n) === 'string';
 
+
+/**
+ * @param {*} def
+ * @return {function(string):*}
+ */
+const isStringElse = def => n => isString(n) ? n : def;
+
+
 /**
  * @param {*} n
  * @return {boolean}
  */
 const isNumber = n => whatType(n) === 'number' &&
-    !Number.isNaN(/** @type number */(n));
+  !Number.isNaN(/** @type number */(n));
 
 /**
  * @param t
  * @returns {*|boolean}
  */
 const isObject = t => (
-    (t
-        && typeof t === 'object'
-        && !(t instanceof Array)
-        && !(t instanceof Set)
-        && !(t instanceof Map)
-        && !(t instanceof Date)) === true
+  (t
+    && typeof t === 'object'
+    && !(t instanceof Array)
+    && !(t instanceof Set)
+    && !(t instanceof Map)
+    && !(t instanceof Date)) === true
 );
 
 /**
@@ -300,8 +318,8 @@ const range = (b, e, s) => [...(rangeGen(b, e, s))];
  * @returns {Array<!number>}
  */
 const range2 = (m, n) => Array.from(
-    {length: Math.floor(n - m) + 1},
-    (_, i) => m + i
+  {length: Math.floor(n - m) + 1},
+  (_, i) => m + i
 );
 
 
@@ -365,7 +383,7 @@ const truncate = n => arr => arr.filter((_, i) => i < n);
  * @return {Array<*>}
  */
 const flatten = a => a.reduce(
-    (p, c) => c.reduce ? flatten([...p, ...c]) : [...p, c], []);
+  (p, c) => c.reduce ? flatten([...p, ...c]) : [...p, c], []);
 
 
 /**
@@ -419,7 +437,7 @@ const repeat = (v, n) => new Array(parseInt(n, 10)).fill(v);
  * @return {function(!Array<*>): *}
  */
 const countOck = t => arr =>
-    arr.filter(e => Number.isNaN(t) ? Number.isNaN(e) : e === t).length;
+  arr.filter(e => Number.isNaN(t) ? Number.isNaN(e) : e === t).length;
 
 
 /**
@@ -454,7 +472,7 @@ const sameArr = (a, b) => a.length === b.length && a.every((c, i) => b[i] === c)
  * @returns {boolean}
  */
 const sameEls = (a, b) => a.length === b.length &&
-    a.every(c => b.includes(c)) && b.every(c => a.includes(c));
+  a.every(c => b.includes(c)) && b.every(c => a.includes(c));
 
 
 /**
@@ -486,8 +504,8 @@ const filter = func => n => n.filter(func);
  * @returns {function(!Array<*>): !Array<!Array<*>>}
  */
 const chunk = n => a => a.reduce(
-    (p, c, i) => (!(i % n)) ? p.push([c]) && p : p[p.length - 1].push(c) && p,
-    []);
+  (p, c, i) => (!(i % n)) ? p.push([c]) && p : p[p.length - 1].push(c) && p,
+  []);
 
 /**
  * A special implementation of 'chunks' where the chunk size is 2.
@@ -576,8 +594,8 @@ const zipFlat = (a, b) => flatten(zip(a, b));
  * @returns {Array}
  */
 const findShared = a => [...flatten(a).reduce((p, c) =>
-        p.has(c) ? p.set(c, [...p.get(c), c]) : p.set(c, [c]),
-    new Map()).values()].filter(e => e.length > 1).map(e => e[0]);
+    p.has(c) ? p.set(c, [...p.get(c), c]) : p.set(c, [c]),
+  new Map()).values()].filter(e => e.length > 1).map(e => e[0]);
 
 
 /**
@@ -602,7 +620,7 @@ const filterOnlyIndexes = indexes => arr => {
  * @returns {Map<any, any>}
  */
 const arrToMap = (kA, vA) =>
-    kA.reduce((p, c, i) => p.set(c, vA[i]), new Map());
+  kA.reduce((p, c, i) => p.set(c, vA[i]), new Map());
 
 /**
  * Remove n elements from the array starting at the given index
@@ -686,7 +704,7 @@ const difference = (arr1, arr2) => {
  * @returns {Array<*>}
  */
 const union = (arr1, arr2) => [...new Set(
-    [...new Set(arr1), ...new Set(arr2)])];
+  [...new Set(arr1), ...new Set(arr2)])];
 
 /**
  * Find elements unique to each of the arrays
@@ -697,7 +715,7 @@ const union = (arr1, arr2) => [...new Set(
  * @returns {Array<*>}
  */
 const symmetricDiff = (arr1, arr2) => difference(
-    union(arr1, arr2), intersection(arr1, arr2));
+  union(arr1, arr2), intersection(arr1, arr2));
 
 
 //--------------------------------------------------------------[ Conversion ]--
@@ -762,7 +780,7 @@ const anyToLowerCase = compose(toLowerCase, toString);
 const makeRandomString = () => {
   let x = 2147483648;
   return Math.floor(Math.random() * x).toString(36) +
-      Math.abs(Math.floor(Math.random() * x) ^ Date.now()).toString(36);
+    Math.abs(Math.floor(Math.random() * x) ^ Date.now()).toString(36);
 };
 
 /**
@@ -793,6 +811,43 @@ const onlyIncludes = (a, retBool = false) => s => {
 };
 
 /**
+ * Given a default value, return a function that takes a string and returns it if it is not empty.
+ * Else it returns the given value.
+ * @param {*} def
+ * @return {function(string): string|*}
+ */
+const stringIfNotEmptyElse = def => s => s === '' ? def : s;
+
+/**
+ * Return true only if what has been passed in is a string with nothing but Digit chars
+ * @param {*} val
+ * @return {function(*): *}
+ */
+const stringIsOnlyDigits = val => compose(
+  onlyIncludes(numericString, true),
+  stringIfNotEmptyElse("_"),
+  isStringElse("_"))(val);
+
+
+/**
+ * Return true only if what has been passed in is a string with nothing but Alphanumeric chars
+ * @param {*} val
+ * @return {function(*): boolean}
+ */
+const stringIsAlphaNumeric = val => compose(
+  onlyIncludes(alphaNum, true),
+  stringIfNotEmptyElse("_"),
+  isStringElse("_"))(val);
+
+/**
+ * Strip all non-number chars from a string
+ * @param {string} s
+ * @return {number|string|*}
+ */
+const stringStripNonFloatDigits = s => [...s].filter((e) => floatString.includes(e)).join('');
+
+
+/**
  * Strip the leading char if it is the same as c
  * @param {string} c
  * @return {function(string): string}
@@ -807,9 +862,9 @@ const stripLeadingChar = c => s => s.startsWith(c) ? s.slice(c.length) : s;
  */
 const stripTrailingChar = c => {
   const f = compose(
-      stringReverse,
-      stripLeadingChar(stringReverse(c)),
-      stringReverse);
+    stringReverse,
+    stripLeadingChar(stringReverse(c)),
+    stringReverse);
   return s => f(s);
 };
 
@@ -1023,7 +1078,7 @@ const cloneObj = o => Object.assign({}, o);
 const objToPaths = (obj, path = [], accl = []) => {
   Object.entries(obj).forEach(([key, value]) => {
     isObject(value) ? objToPaths(value, [...path, key], accl)
-        : accl.push([[...path, key], value]);
+      : accl.push([[...path, key], value]);
   });
   return accl;
 };
@@ -1065,10 +1120,10 @@ const objToPaths = (obj, path = [], accl = []) => {
  * @return {{}}
  */
 const visitObjDeep = (obj, func) =>
-    Object.entries(obj).reduce((p, [key, value]) => {
-      p[key] = isObject(value) ? visitObjDeep(value, func) : func(value);
-      return p;
-    }, {});
+  Object.entries(obj).reduce((p, [key, value]) => {
+    p[key] = isObject(value) ? visitObjDeep(value, func) : func(value);
+    return p;
+  }, {});
 
 
 //--------------------------------------------------------------[ Time Utils ]--
@@ -1193,7 +1248,39 @@ const randSign = () => [-1, 1][(Math.random() * 2) | 0];
 
 //--------------------------------------------------------[ Math and Numbers ]--
 /**
- * Given desimal degrees, return radians
+ * Given a value, check if it will parse as a Number (either float or int)
+ * @param {*} val
+ * @return {boolean}
+ */
+const willParseAsNum = val => {
+  // DID YOU KNOW?
+  // Number.parseFloat([123]]) === 123
+  if (isArray(val)) { return false }
+  if (Number.isNaN(+val)) { return false }
+  const n = Number.parseFloat(val);
+  return Number.isFinite(n)
+};
+
+/**
+ * Given a value check if it will parse as an Int intact.
+ * @param {*} val
+ * @return {boolean}
+ */
+const willParseAsInt = val => {
+  return willParseAsNum(val) && Number.isInteger(Number.parseFloat(val))
+};
+
+/**
+ * Given a value check if it will parse as a floating point number with decimal places intact.
+ * @param {*} val
+ * @return {boolean}
+ */
+const willParseAsFloatWithDecimals = val => {
+  return willParseAsNum(val) && Number.parseFloat(val) % 1 !== 0
+};
+
+/**
+ * Given decimal degrees, return radians
  * @param {!number} x
  * @returns {number}
  */
@@ -1251,9 +1338,9 @@ const maybeNumber = s => {
     return s;
   }
   if (whatType(s) === 'string' &&
-      s.length > 1 &&
-      s.startsWith('0') &&
-      !s.startsWith('0.')) {
+    s.length > 1 &&
+    s.startsWith('0') &&
+    !s.startsWith('0.')) {
     return s;
   }
   const p = 1 * s;
@@ -1311,18 +1398,18 @@ const factorize = (a, b, c) => (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * (-c))) /
  */
 const luhn = n => {
   let result = n.toString()
-      .split('')
-      .reverse()
-      .reduce((p, e, i) => {
-        let n = Number(e);
-        // noinspection JSUnusedAssignment
-        return p += (!(i % 2))
-            ? n
-            : (n * 2)
-                .toString()
-                .split('')
-                .reduce((a, b) => Number(a) + Number(b), 0);
-      }, 0);
+    .split('')
+    .reverse()
+    .reduce((p, e, i) => {
+      let n = Number(e);
+      // noinspection JSUnusedAssignment
+      return p += (!(i % 2))
+        ? n
+        : (n * 2)
+          .toString()
+          .split('')
+          .reduce((a, b) => Number(a) + Number(b), 0);
+    }, 0);
   return [!(result % 10), result / 10];
 };
 
@@ -1373,11 +1460,11 @@ const imeisvToImei = n => {
  * @returns {number}
  */
 const shannon = s =>
-    [...s.split('').reduce((p, c) => p.set(c, p.has(c) ? p.get(c) + 1 : 1),
-        new Map()
-    ).values()]
-        .map(v => v / s.length)
-        .reduce((p, c) => p -= c * Math.log(c) / Math.log(2), 0);
+  [...s.split('').reduce((p, c) => p.set(c, p.has(c) ? p.get(c) + 1 : 1),
+    new Map()
+  ).values()]
+    .map(v => v / s.length)
+    .reduce((p, c) => p -= c * Math.log(c) / Math.log(2), 0);
 
 
 /**
@@ -1506,19 +1593,19 @@ const didExitBand = (u, l) => {
 const haversine = ([lat1, lon1], [lat2, lon2]) => {
 
   const [rlat1, rlat2, rlon1, rlon2] =
-      [lat1, lat2, lon1, lon2].map(degreesToRadians);
+    [lat1, lat2, lon1, lon2].map(degreesToRadians);
 
   const dLat = rlat2 - rlat1;
   const dLon = rlon2 - rlon1;
   const radius = 6372.8; // Earth's radius in km
 
   return Math.round(
-      radius * 2 * Math.asin(
-          Math.sqrt(
-              Math.pow(Math.sin(dLat / 2), 2) +
-              Math.pow(Math.sin(dLon / 2), 2) *
-              Math.cos(rlat1) * Math.cos(rlat2))
-      ) * 100
+    radius * 2 * Math.asin(
+      Math.sqrt(
+        Math.pow(Math.sin(dLat / 2), 2) +
+        Math.pow(Math.sin(dLon / 2), 2) *
+        Math.cos(rlat1) * Math.cos(rlat2))
+    ) * 100
   ) / 100;
 };
 
@@ -1548,9 +1635,9 @@ const geoFenceDidExit = (centerPoint, radius) => (p, c) => {
 const hexToByteArray = hexString => {
   if (hexString.length % 2 === 0) {
     return [...hexString].reduce(
-        (p, c, i) => i % 2 === 0
-            ? [...p, parseInt(hexString.substring(i, i + 2), 16)]
-            : p, []);
+      (p, c, i) => i % 2 === 0
+        ? [...p, parseInt(hexString.substring(i, i + 2), 16)]
+        : p, []);
   } else {
     throw new Error('Key string length must be multiple of 2');
   }
@@ -1566,10 +1653,10 @@ const hexToByteArray = hexString => {
  * @return {string} Hex string.
  */
 const byteArrayToHex = (arr, opt_separator) => arr.map(
-    numByte => {
-      const hexByte = numByte.toString(16).toUpperCase();
-      return hexByte.length > 1 ? hexByte : `0${hexByte}`;
-    }).join(opt_separator || '');
+  numByte => {
+    const hexByte = numByte.toString(16).toUpperCase();
+    return hexByte.length > 1 ? hexByte : `0${hexByte}`;
+  }).join(opt_separator || '');
 
 
 // -------------------------------------------------------[ UTF-8 Conversion ]--
@@ -1589,8 +1676,8 @@ const stringToUtf8ByteArray = (str) => {
       out[p++] = (c >> 6) | 192;
       out[p++] = (c & 63) | 128;
     } else if (
-        ((c & 0xFC00) === 0xD800) && (i + 1) < str.length &&
-        ((str.charCodeAt(i + 1) & 0xFC00) === 0xDC00)) {
+      ((c & 0xFC00) === 0xD800) && (i + 1) < str.length &&
+      ((str.charCodeAt(i + 1) & 0xFC00) === 0xDC00)) {
       // Surrogate Pair
       c = 0x10000 + ((c & 0x03FF) << 10) + (str.charCodeAt(++i) & 0x03FF);
       out[p++] = (c >> 18) | 240;
@@ -1629,14 +1716,14 @@ const utf8ByteArrayToString = bytes => {
       const c3 = bytes[pos++];
       const c4 = bytes[pos++];
       const u = ((c1 & 7) << 18 | (c2 & 63) << 12 | (c3 & 63) << 6 | c4 & 63) -
-          0x10000;
+        0x10000;
       out[c++] = String.fromCharCode(0xD800 + (u >> 10));
       out[c++] = String.fromCharCode(0xDC00 + (u & 1023));
     } else {
       const c2 = bytes[pos++];
       const c3 = bytes[pos++];
       out[c++] =
-          String.fromCharCode((c1 & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
+        String.fromCharCode((c1 & 15) << 12 | (c2 & 63) << 6 | c3 & 63);
     }
   }
   return out.join('');
@@ -1740,7 +1827,7 @@ const zeroOut32 = (n, k) => k > 0 ? (((n >>> 0) >> 32 - k) << 32 - k) >>> 0 : 0;
  * @returns {number}
  */
 const ipv4ToInt2 = ip => new DataView(
-    new Uint8Array(ip.split('.').map(e => parseInt(e || 0, 10))).buffer).getUint32(0);
+  new Uint8Array(ip.split('.').map(e => parseInt(e || 0, 10))).buffer).getUint32(0);
 
 /**
  * Given an int, convert it to a IPv4 address.
@@ -1774,7 +1861,7 @@ const canonicalIpv4Pool = s => {
   const [ip, cidr] = s.split('/');
   const cidrInt = parseInt(cidr || 32, 10);
   ip.split('.').forEach(
-      (e, i) => dv.setUint8(i, parseInt(e || 0, 10))
+    (e, i) => dv.setUint8(i, parseInt(e || 0, 10))
   );
   dv.setUint32(0, (dv.getUint32(0) >> 32 - cidrInt) << 32 - cidrInt);
   const canonIp = [0, 1, 2, 3].map(e => dv.getUint8(e)).join('.');
@@ -1825,6 +1912,7 @@ exports.filterAtInc = filterAtInc;
 exports.filterOnlyIndexes = filterOnlyIndexes;
 exports.findShared = findShared;
 exports.flatten = flatten;
+exports.floatString = floatString;
 exports.formatBytes = formatBytes;
 exports.geoFenceDidEnter = geoFenceDidEnter;
 exports.geoFenceDidExit = geoFenceDidExit;
@@ -1858,6 +1946,7 @@ exports.isNumber = isNumber;
 exports.isObject = isObject;
 exports.isSignedInt = isSignedInt;
 exports.isString = isString;
+exports.isStringElse = isStringElse;
 exports.isUndefined = isUndefined;
 exports.join = join;
 exports.join2 = join2;
@@ -1909,9 +1998,14 @@ exports.sameAs = sameAs;
 exports.sameEls = sameEls;
 exports.setBitAt = setBitAt;
 exports.shannon = shannon;
+exports.signedNumericString = signedNumericString;
 exports.split = split;
 exports.splitAt = splitAt;
+exports.stringIfNotEmptyElse = stringIfNotEmptyElse;
+exports.stringIsAlphaNumeric = stringIsAlphaNumeric;
+exports.stringIsOnlyDigits = stringIsOnlyDigits;
 exports.stringReverse = stringReverse;
+exports.stringStripNonFloatDigits = stringStripNonFloatDigits;
 exports.stringToUtf8ByteArray = stringToUtf8ByteArray;
 exports.stripLeadingChar = stripLeadingChar;
 exports.stripTrailingChar = stripTrailingChar;
@@ -1929,6 +2023,9 @@ exports.union = union;
 exports.utf8ByteArrayToString = utf8ByteArrayToString;
 exports.visitObjDeep = visitObjDeep;
 exports.whatType = whatType;
+exports.willParseAsFloatWithDecimals = willParseAsFloatWithDecimals;
+exports.willParseAsInt = willParseAsInt;
+exports.willParseAsNum = willParseAsNum;
 exports.zeroOut32 = zeroOut32;
 exports.zip = zip;
 exports.zipFlat = zipFlat;

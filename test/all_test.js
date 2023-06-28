@@ -80,6 +80,10 @@ import * as F from '../src/badu.js'
  makeRandomString,
  leftPadWithTo,
  onlyIncludes,
+ stringIfNotEmptyElse,
+ stringIsOnlyDigits,
+ stringIsAlphaNumeric,
+ stringStripNonFloatDigits,
  stripLeadingChar,
  stripTrailingChar,
  split,
@@ -107,6 +111,9 @@ import * as F from '../src/badu.js'
  randIntBetween,
  randSubSet,
  randSign,
+ willParseAsNum,
+ willParseAsInt,
+ willParseAsFloatWithDecimals,
  toInt,
  pRound,
  maybeNumber,
@@ -399,12 +406,13 @@ describe('Assertion functions:', () => {
       function test() {
         return "this"
       }
+
       assert.strictEqual(F.isFunction(test), true)
     });
 
   it('isFunction: identifies functions (expression)',
     () => {
-      const test = function() {
+      const test = function () {
         return "this"
       }
       assert.strictEqual(F.isFunction(test), true)
@@ -1234,6 +1242,77 @@ describe('String related utils', () => {
     assert.strictEqual(only('abce'), false);
   });
 
+  it('stringIfNotEmptyElse: returns the given string if it is not the empty string', () => {
+    const DEFAULT = 12345
+    const func = F.stringIfNotEmptyElse(DEFAULT);
+    assert.strictEqual(func('1234567890'), '1234567890');
+  });
+  it('stringIfNotEmptyElse: returns the given string if it is not the empty string', () => {
+    const DEFAULT = 12345
+    const func = F.stringIfNotEmptyElse(DEFAULT);
+    assert.strictEqual(func(''), DEFAULT);
+  });
+
+  it('stringIsOnlyDigits: checks that the given is a string that only includes digits', () => {
+    const result = F.stringIsOnlyDigits('1234567890');
+    assert.strictEqual(result, true);
+  });
+
+  it('stringIsOnlyDigits: should be false for strings with nin digit chars', () => {
+    const result = F.stringIsOnlyDigits('1234567890ABC');
+    assert.strictEqual(result, false);
+  });
+
+  it('stringIsOnlyDigits: should be false for empty strings', () => {
+    const result = F.stringIsOnlyDigits('');
+    assert.strictEqual(result, false);
+  });
+
+  it('stringIsOnlyDigits: should be false things that are not strings', () => {
+    const result = F.stringIsOnlyDigits()
+      || F.stringIsOnlyDigits({})
+      || F.stringIsOnlyDigits([])
+      || F.stringIsOnlyDigits(123)
+      || F.stringIsOnlyDigits(new Date())
+      || F.stringIsOnlyDigits(undefined)
+      || F.stringIsOnlyDigits(NaN)
+      || F.stringIsOnlyDigits(null);
+    assert.strictEqual(result, false);
+  });
+
+  it('stringIsAlphaNumeric: checks that the given is a string that only includes alphanumeric chars', () => {
+    const result = F.stringIsAlphaNumeric('ABCdef123');
+    assert.strictEqual(result, true);
+  });
+
+  it('stringIsAlphaNumeric: should be false for strings with nin digit chars', () => {
+    const result = F.stringIsAlphaNumeric('./@#$%^&*()_+=|}{][=-!~`"');
+    assert.strictEqual(result, false);
+  });
+
+  it('stringIsAlphaNumeric: should be false for empty strings', () => {
+    const result = F.stringIsAlphaNumeric('');
+    assert.strictEqual(result, false);
+  });
+
+  it('stringIsAlphaNumeric: should be false things that are not strings', () => {
+    const result = F.stringIsAlphaNumeric()
+      || F.stringIsOnlyDigits({})
+      || F.stringIsOnlyDigits([])
+      || F.stringIsOnlyDigits(123)
+      || F.stringIsOnlyDigits(new Date())
+      || F.stringIsOnlyDigits(undefined)
+      || F.stringIsOnlyDigits(NaN)
+      || F.stringIsOnlyDigits(null);
+    assert.strictEqual(result, false);
+  });
+
+  it('stringStripNonFloatDigits: returns the given string stripped ' +
+    'of all non floating number chars', () => {
+    assert.strictEqual(F.stringStripNonFloatDigits('A-B1C2D.E3F'), '-12.3')
+  });
+
+
   it('stripLeadingChar: make function that strips the leading ' +
     'char if it matches', () => {
     const stripSlash = F.stripLeadingChar('/');
@@ -1902,6 +1981,128 @@ describe('Random Numbers and IDs', () => {
     }
   });
 
+  it('willParseAsNum: checks if the given value will parse as a number', () => {
+    // 255; // two-hundred and fifty-five
+    // 255.0; // same number
+    // 255 === 255.0; // true
+    // 255 === 0xff; // true (hexadecimal notation)
+    // 255 === 0b11111111; // true (binary notation)
+    // 255 === 0.255e3; // true (decimal exponential notation)
+    const result = F.willParseAsNum(255)
+      && F.willParseAsNum(255.0)
+      && F.willParseAsNum(255.255)
+      && F.willParseAsNum(0xff)
+      && F.willParseAsNum(0b11111111)
+      && F.willParseAsNum(0.255e3)
+      && F.willParseAsNum('255')
+      && F.willParseAsNum('255.0')
+      && F.willParseAsNum('255.255')
+      && F.willParseAsNum('0xff')
+      && F.willParseAsNum('0b11111111')
+      && F.willParseAsNum('0.255e3')
+      && F.willParseAsNum('1.2');
+    assert.strictEqual(result, true);
+  });
+
+  it('willParseAsNum: is false for anything that can not parse as a number', () => {
+    const result = F.willParseAsNum('')
+      || F.willParseAsNum(undefined)
+      || F.willParseAsNum(void 0)
+      || F.willParseAsNum(null)
+      || F.willParseAsNum(NaN)
+      || F.willParseAsNum(new Date())
+      || F.willParseAsNum(new Map())
+      || F.willParseAsNum(new Set())
+      || F.willParseAsNum({})
+      || F.willParseAsNum([123])
+      || F.willParseAsNum('BLAH')
+      || F.willParseAsNum('--123')
+      || F.willParseAsNum('1.2.3')
+      || F.willParseAsNum('1..2')
+      || F.willParseAsNum('..2')
+      || F.willParseAsNum('1+2')
+      || F.willParseAsNum(Number.NEGATIVE_INFINITY)
+      || F.willParseAsNum(Number.POSITIVE_INFINITY)
+    assert.strictEqual(result, false);
+  });
+
+  it('willParseAsInt: checks if the given value will parse as a integer safely', () => {
+    const result = F.willParseAsInt(255)
+      && F.willParseAsInt(255.0)
+      && F.willParseAsInt(0xff)
+      && F.willParseAsInt(0b11111111)
+      && F.willParseAsInt(0.255e3)
+      && F.willParseAsInt('255')
+      && F.willParseAsInt('255.0')
+      && F.willParseAsInt('0xff')
+      && F.willParseAsInt('0b11111111')
+      && F.willParseAsInt('0.255e3');
+    assert.strictEqual(result, true);
+  });
+
+  it('willParseAsInt: is false for anything that can not parse as a int', () => {
+    const result = F.willParseAsInt('')
+      || F.willParseAsInt(undefined)
+      || F.willParseAsInt(void 0)
+      || F.willParseAsInt(null)
+      || F.willParseAsInt(NaN)
+      || F.willParseAsInt(new Date())
+      || F.willParseAsInt(new Map())
+      || F.willParseAsInt(new Set())
+      || F.willParseAsInt({})
+      || F.willParseAsInt([123])
+      || F.willParseAsInt('BLAH')
+      || F.willParseAsInt('--123')
+      || F.willParseAsInt('1.2.3')
+      || F.willParseAsInt('1..2')
+      || F.willParseAsInt('..2')
+      || F.willParseAsInt('1+2')
+      || F.willParseAsInt(Number.NEGATIVE_INFINITY)
+      || F.willParseAsInt(Number.POSITIVE_INFINITY)
+      || F.willParseAsInt(123.4)
+      || F.willParseAsInt('123.4')
+    assert.strictEqual(result, false);
+  });
+
+  it('willParseAsFloatWithDecimals: only passes when the given ' +
+    'value will parse to a float with decimals', () => {
+    const result = F.willParseAsFloatWithDecimals(255.1)
+      && F.willParseAsFloatWithDecimals('255.1')
+    assert.strictEqual(result, true);
+  });
+
+  it('willParseAsInt: is false for anything that does not parse as a decimal float', () => {
+    const result = F.willParseAsInt('')
+      || F.willParseAsFloatWithDecimals(undefined)
+      || F.willParseAsFloatWithDecimals(void 0)
+      || F.willParseAsFloatWithDecimals(null)
+      || F.willParseAsFloatWithDecimals(NaN)
+      || F.willParseAsFloatWithDecimals(new Date())
+      || F.willParseAsFloatWithDecimals(new Map())
+      || F.willParseAsFloatWithDecimals(new Set())
+      || F.willParseAsFloatWithDecimals({})
+      || F.willParseAsFloatWithDecimals([123])
+      || F.willParseAsFloatWithDecimals('BLAH')
+      || F.willParseAsFloatWithDecimals('--123')
+      || F.willParseAsFloatWithDecimals('1.2.3')
+      || F.willParseAsFloatWithDecimals('1..2')
+      || F.willParseAsFloatWithDecimals('..2')
+      || F.willParseAsFloatWithDecimals('1+2')
+      || F.willParseAsFloatWithDecimals(Number.NEGATIVE_INFINITY)
+      || F.willParseAsFloatWithDecimals(Number.POSITIVE_INFINITY)
+      || F.willParseAsFloatWithDecimals(123)
+      || F.willParseAsFloatWithDecimals('123')
+      || F.willParseAsFloatWithDecimals(255.0)
+      || F.willParseAsFloatWithDecimals(0xff)
+      || F.willParseAsFloatWithDecimals(0b11111111)
+      || F.willParseAsFloatWithDecimals(0.255e3)
+      || F.willParseAsFloatWithDecimals('255')
+      || F.willParseAsFloatWithDecimals('255.0')
+      || F.willParseAsFloatWithDecimals('0xff')
+      || F.willParseAsFloatWithDecimals('0b11111111')
+      || F.willParseAsFloatWithDecimals('0.255e3');
+    assert.strictEqual(result, false);
+  });
 
 });
 
