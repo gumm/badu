@@ -114,6 +114,8 @@ import * as F from '../src/badu.js'
  willParseAsNum,
  willParseAsInt,
  willParseAsFloatWithDecimals,
+ parseAsNumElse,
+ parseAsIntElse,
  toInt,
  pRound,
  maybeNumber,
@@ -538,8 +540,7 @@ describe('Assertion functions:', () => {
   });
 
   it('sameAs: marker can *NOT* be NaN!', () => {
-    const marker = NaN;
-    const test = F.sameAs(marker);
+    const test = F.sameAs(NaN);
     assert.strictEqual(test(NaN), false);
   });
 
@@ -1881,18 +1882,21 @@ describe('Number and math specific utils', () => {
   });
 
   it('geoFenceRealWorld...', () => {
-    const arr = [-26.182922, 28.11948, 30, -26.183341, 28.118475, -26.181599, 28.11805900000001];
+    const arr = [-26.182922, 28.11948, 30, -26.182922, 28.11948, -26.19, 28.12];
     const [latF, lonF, rad, latC, lonC, latP, lonP] = arr;
 
     const pPoint = [latP, lonP]; // Previous position
     const cPoint = [latC, lonC]; // Current position
 
-    const testInside = F.geoIsInside([latF, lonF], rad / 1000);
+    const testInside = F.geoIsInside([latF, lonF], rad / 100);
     const wasInside = testInside(pPoint);
     const nowInside = testInside(cPoint);
 
     const didEnter = !wasInside && nowInside;
     const didExit = wasInside && !nowInside;
+
+    assert.strictEqual(didEnter, true);
+    assert.strictEqual(didExit, false);
 
   });
 
@@ -1981,6 +1985,38 @@ describe('Random Numbers and IDs', () => {
     }
   });
 
+  it('parseExpoStringToNum: Parse a string to a number of it conforms to a exponent notation', () => {
+    assert.strictEqual(F.parseExpoStringToNum('1.2e3'), 1.2e3);
+    assert.strictEqual(F.parseExpoStringToNum('123E3'), 123e3);
+    assert.strictEqual(F.parseExpoStringToNum('-123E3'), -123e3);
+    assert.strictEqual(F.parseExpoStringToNum('123e-3'), 123e-3);
+    assert.strictEqual(F.parseExpoStringToNum('-12.3e-3'), -12.3e-3);
+    assert.strictEqual(F.parseExpoStringToNum('_1.2e3'), NaN);
+    assert.strictEqual(F.parseExpoStringToNum('1.2e3_'), NaN);
+    assert.strictEqual(F.parseHexStringToNum('Blah'), NaN);
+  });
+
+  it('parseHexStringToNum: Parse a string to a number of it conforms to HEX notation', () => {
+    assert.strictEqual(F.parseHexStringToNum('0xC0FFEE'), 0xC0FFEE);
+    assert.strictEqual(F.parseHexStringToNum('0Xc0ffee'), 0xC0FFEE);
+    assert.strictEqual(F.parseHexStringToNum('0xC0ffEE'), 0xC0FFEE);
+    assert.strictEqual(F.parseHexStringToNum('-0xC0ffEE'), -0xC0FFEE);
+    assert.strictEqual(F.parseHexStringToNum('Blah'), NaN);
+    assert.strictEqual(F.parseHexStringToNum('_0xC0FFEE'), NaN);
+    assert.strictEqual(F.parseHexStringToNum('0xC0FFEE_'), NaN);
+  });
+
+  it('parseBinaryStringToNum: Parse a string to a number of it conforms to binary notation', () => {
+    assert.strictEqual(F.parseBinaryStringToNum('0b1010'), 0b1010);
+    assert.strictEqual(F.parseBinaryStringToNum('0B1010'), 0b1010);
+    assert.strictEqual(F.parseBinaryStringToNum('-0b1010'), -0b1010);
+    assert.strictEqual(F.parseBinaryStringToNum('Blah'), NaN);
+    assert.strictEqual(F.parseBinaryStringToNum('_0b01010'), NaN);
+    assert.strictEqual(F.parseBinaryStringToNum('0b01010_'), NaN);
+    assert.strictEqual(F.parseBinaryStringToNum('0b21010'), NaN);
+  });
+
+
   it('willParseAsNum: checks if the given value will parse as a number', () => {
     // 255; // two-hundred and fifty-five
     // 255.0; // same number
@@ -1988,126 +2024,148 @@ describe('Random Numbers and IDs', () => {
     // 255 === 0xff; // true (hexadecimal notation)
     // 255 === 0b11111111; // true (binary notation)
     // 255 === 0.255e3; // true (decimal exponential notation)
-    const result = F.willParseAsNum(255)
-      && F.willParseAsNum(255.0)
-      && F.willParseAsNum(255.255)
-      && F.willParseAsNum(0xff)
-      && F.willParseAsNum(0b11111111)
-      && F.willParseAsNum(0.255e3)
-      && F.willParseAsNum('255')
-      && F.willParseAsNum('255.0')
-      && F.willParseAsNum('255.255')
-      && F.willParseAsNum('0xff')
-      && F.willParseAsNum('0b11111111')
-      && F.willParseAsNum('0.255e3')
-      && F.willParseAsNum('1.2');
-    assert.strictEqual(result, true);
+    assert.strictEqual(F.willParseAsNum(255), true);
+    assert.strictEqual(F.willParseAsNum(255.0), true);
+    assert.strictEqual(F.willParseAsNum(255.255), true);
+    assert.strictEqual(F.willParseAsNum(0xff), true);
+    assert.strictEqual(F.willParseAsNum(0b11111111), true);
+    assert.strictEqual(F.willParseAsNum(0.255e3), true);
+    assert.strictEqual(F.willParseAsNum('255'), true);
+    assert.strictEqual(F.willParseAsNum('255.0'), true);
+    assert.strictEqual(F.willParseAsNum('255.255'), true);
+    assert.strictEqual(F.willParseAsNum('0xff'), true);
+    assert.strictEqual(F.willParseAsNum('0b11111111'), true);
+    assert.strictEqual(F.willParseAsNum('0.255e3'), true);
+    assert.strictEqual(F.willParseAsNum('1.2'), true);
   });
 
   it('willParseAsNum: is false for anything that can not parse as a number', () => {
-    const result = F.willParseAsNum('')
-      || F.willParseAsNum(undefined)
-      || F.willParseAsNum(void 0)
-      || F.willParseAsNum(null)
-      || F.willParseAsNum(NaN)
-      || F.willParseAsNum(new Date())
-      || F.willParseAsNum(new Map())
-      || F.willParseAsNum(new Set())
-      || F.willParseAsNum({})
-      || F.willParseAsNum([123])
-      || F.willParseAsNum('BLAH')
-      || F.willParseAsNum('--123')
-      || F.willParseAsNum('1.2.3')
-      || F.willParseAsNum('1..2')
-      || F.willParseAsNum('..2')
-      || F.willParseAsNum('1+2')
-      || F.willParseAsNum(Number.NEGATIVE_INFINITY)
-      || F.willParseAsNum(Number.POSITIVE_INFINITY)
-    assert.strictEqual(result, false);
+    assert.strictEqual(F.willParseAsNum(''), false);
+    assert.strictEqual(F.willParseAsNum(undefined), false);
+    assert.strictEqual(F.willParseAsNum(void 0), false);
+    assert.strictEqual(F.willParseAsNum(null), false);
+    assert.strictEqual(F.willParseAsNum(NaN), false);
+    assert.strictEqual(F.willParseAsNum(new Date()), false);
+    assert.strictEqual(F.willParseAsNum(new Map()), false);
+    assert.strictEqual(F.willParseAsNum(new Set()), false);
+    assert.strictEqual(F.willParseAsNum({}), false);
+    assert.strictEqual(F.willParseAsNum([123]), false);
+    assert.strictEqual(F.willParseAsNum('BLAH'), false);
+    assert.strictEqual(F.willParseAsNum('--123'), false);
+    assert.strictEqual(F.willParseAsNum('1.2.3'), false);
+    assert.strictEqual(F.willParseAsNum('1..2'), false);
+    assert.strictEqual(F.willParseAsNum('..2'), false);
+    assert.strictEqual(F.willParseAsNum('1+2'), false);
+    assert.strictEqual(F.willParseAsNum(Number.NEGATIVE_INFINITY), false);
+    assert.strictEqual(F.willParseAsNum(Number.POSITIVE_INFINITY), false);
+  });
+
+  it('parseAsNumElse: parse as a number, else return the given default', () => {
+    const DEFAULT = Symbol('DEFAULT');
+    const f = F.parseAsNumElse(DEFAULT)
+    assert.strictEqual(f(123), 123);
+    assert.strictEqual(f(123.3), 123.3);
+    assert.strictEqual(f('123'), 123);
+    assert.strictEqual(f('123.3'), 123.3);
+    assert.strictEqual(f(0xC0FFEE), 0xC0FFEE);
+    assert.strictEqual(f('0xC0FFEE'), 0xC0FFEE);
+    assert.strictEqual(f('0XC0FFEE'), 0xC0FFEE);
+    assert.strictEqual(f(0b101), 0b101);
+    assert.strictEqual(f('0b101'), 0b101);
+    assert.strictEqual(f('0B101'), 0b101);
+    assert.strictEqual(f(0.255e3), 0.255e3);
+    assert.strictEqual(f('0.255e3'), 0.255e3);
+    assert.strictEqual(f(255e3), 255e3);
+    assert.strictEqual(f('255e3'), 255e3);
+    assert.strictEqual(f('BLAH'), DEFAULT);
   });
 
   it('willParseAsInt: checks if the given value will parse as a integer safely', () => {
-    const result = F.willParseAsInt(255)
-      && F.willParseAsInt(255.0)
-      && F.willParseAsInt(0xff)
-      && F.willParseAsInt(0b11111111)
-      && F.willParseAsInt(0.255e3)
-      && F.willParseAsInt('255')
-      && F.willParseAsInt('255.0')
-      && F.willParseAsInt('0xff')
-      && F.willParseAsInt('0b11111111')
-      && F.willParseAsInt('0.255e3');
-    assert.strictEqual(result, true);
+    assert.strictEqual(F.willParseAsInt(255), true);
+    assert.strictEqual(F.willParseAsInt(255.0), true);
+    assert.strictEqual(F.willParseAsInt(0xff), true);
+    assert.strictEqual(F.willParseAsInt(0b11111111), true);
+    assert.strictEqual(F.willParseAsInt(0.255e3), true);
+    assert.strictEqual(F.willParseAsInt('255'), true);
+    assert.strictEqual(F.willParseAsInt('255.0'), true);
+    assert.strictEqual(F.willParseAsInt('0xff'), true);
+    assert.strictEqual(F.willParseAsInt('0b11111111'), true);
+    assert.strictEqual(F.willParseAsInt('0.255e3'), true);
   });
 
   it('willParseAsInt: is false for anything that can not parse as a int', () => {
-    const result = F.willParseAsInt('')
-      || F.willParseAsInt(undefined)
-      || F.willParseAsInt(void 0)
-      || F.willParseAsInt(null)
-      || F.willParseAsInt(NaN)
-      || F.willParseAsInt(new Date())
-      || F.willParseAsInt(new Map())
-      || F.willParseAsInt(new Set())
-      || F.willParseAsInt({})
-      || F.willParseAsInt([123])
-      || F.willParseAsInt('BLAH')
-      || F.willParseAsInt('--123')
-      || F.willParseAsInt('1.2.3')
-      || F.willParseAsInt('1..2')
-      || F.willParseAsInt('..2')
-      || F.willParseAsInt('1+2')
-      || F.willParseAsInt(Number.NEGATIVE_INFINITY)
-      || F.willParseAsInt(Number.POSITIVE_INFINITY)
-      || F.willParseAsInt(123.4)
-      || F.willParseAsInt('123.4')
-    assert.strictEqual(result, false);
+    assert.strictEqual(F.willParseAsInt(''), false);
+    assert.strictEqual(F.willParseAsInt(undefined), false);
+    assert.strictEqual(F.willParseAsInt(void 0), false);
+    assert.strictEqual(F.willParseAsInt(null), false);
+    assert.strictEqual(F.willParseAsInt(NaN), false);
+    assert.strictEqual(F.willParseAsInt(new Date()), false);
+    assert.strictEqual(F.willParseAsInt(new Map()), false);
+    assert.strictEqual(F.willParseAsInt(new Set()), false);
+    assert.strictEqual(F.willParseAsInt({}), false);
+    assert.strictEqual(F.willParseAsInt([123]), false);
+    assert.strictEqual(F.willParseAsInt('BLAH'), false);
+    assert.strictEqual(F.willParseAsInt('--123'), false);
+    assert.strictEqual(F.willParseAsInt('1.2.3'), false);
+    assert.strictEqual(F.willParseAsInt('1..2'), false);
+    assert.strictEqual(F.willParseAsInt('..2'), false);
+    assert.strictEqual(F.willParseAsInt('1+2'), false);
+    assert.strictEqual(F.willParseAsInt(Number.NEGATIVE_INFINITY), false);
+    assert.strictEqual(F.willParseAsInt(Number.POSITIVE_INFINITY), false);
+    assert.strictEqual(F.willParseAsInt(123.4), false);
+    assert.strictEqual(F.willParseAsInt('123.4'), false);
   });
+
+  it('parseAsIntElse: safely parse as an int, else return default', () => {
+    const DEFAULT = Symbol('DEFAULT');
+    const f = F.parseAsIntElse(DEFAULT)
+    assert.strictEqual(f(123), 123);
+    assert.strictEqual(f(123.3), DEFAULT);
+    assert.strictEqual(f('123'), 123);
+    assert.strictEqual(f('123.3'), DEFAULT);
+    assert.strictEqual(f(0xC0FFEE), 0xC0FFEE);
+    assert.strictEqual(f('0xC0FFEE'), 0xC0FFEE);
+    assert.strictEqual(f('0XC0FFEE'), 0xC0FFEE);
+    assert.strictEqual(f(-0b101), -0b101);
+    assert.strictEqual(f('-0b101'), -0b101);
+    assert.strictEqual(f('0B101'), 0b101);
+    assert.strictEqual(f(0.255e3), 0.255e3);
+    assert.strictEqual(f('0.255e3'), 0.255e3);
+    assert.strictEqual(f(255e3), 255e3);
+    assert.strictEqual(f('255e3'), 255e3);
+    assert.strictEqual(f('BLAH'), DEFAULT);
+    assert.strictEqual(f(''), DEFAULT);
+    assert.strictEqual(f(undefined), DEFAULT);
+    assert.strictEqual(f(void 0), DEFAULT);
+    assert.strictEqual(f(null), DEFAULT);
+    assert.strictEqual(f(NaN), DEFAULT);
+    assert.strictEqual(f(new Date()), DEFAULT);
+    assert.strictEqual(f(new Map()), DEFAULT);
+    assert.strictEqual(f(new Set()), DEFAULT);
+    assert.strictEqual(f({}), DEFAULT);
+    assert.strictEqual(f([123]), DEFAULT);
+    assert.strictEqual(f('BLAH'), DEFAULT);
+    assert.strictEqual(f('--123'), DEFAULT);
+    assert.strictEqual(f('1.2.3'), DEFAULT);
+    assert.strictEqual(f('1..2'), DEFAULT);
+    assert.strictEqual(f('..2'), DEFAULT);
+    assert.strictEqual(f('1+2'), DEFAULT);
+    assert.strictEqual(f(Number.NEGATIVE_INFINITY), DEFAULT);
+    assert.strictEqual(f(Number.POSITIVE_INFINITY), DEFAULT);
+    assert.strictEqual(f(123.4), DEFAULT);
+    assert.strictEqual(f('123.4'), DEFAULT);
+  });
+
 
   it('willParseAsFloatWithDecimals: only passes when the given ' +
     'value will parse to a float with decimals', () => {
-    const result = F.willParseAsFloatWithDecimals(255.1)
-      && F.willParseAsFloatWithDecimals('255.1')
-    assert.strictEqual(result, true);
+    assert.strictEqual(F.willParseAsFloatWithDecimals('255.1'), true);
+    assert.strictEqual(F.willParseAsFloatWithDecimals('255'), false);
+    assert.strictEqual(F.willParseAsFloatWithDecimals('Blah'), false);
   });
-
-  it('willParseAsInt: is false for anything that does not parse as a decimal float', () => {
-    const result = F.willParseAsInt('')
-      || F.willParseAsFloatWithDecimals(undefined)
-      || F.willParseAsFloatWithDecimals(void 0)
-      || F.willParseAsFloatWithDecimals(null)
-      || F.willParseAsFloatWithDecimals(NaN)
-      || F.willParseAsFloatWithDecimals(new Date())
-      || F.willParseAsFloatWithDecimals(new Map())
-      || F.willParseAsFloatWithDecimals(new Set())
-      || F.willParseAsFloatWithDecimals({})
-      || F.willParseAsFloatWithDecimals([123])
-      || F.willParseAsFloatWithDecimals('BLAH')
-      || F.willParseAsFloatWithDecimals('--123')
-      || F.willParseAsFloatWithDecimals('1.2.3')
-      || F.willParseAsFloatWithDecimals('1..2')
-      || F.willParseAsFloatWithDecimals('..2')
-      || F.willParseAsFloatWithDecimals('1+2')
-      || F.willParseAsFloatWithDecimals(Number.NEGATIVE_INFINITY)
-      || F.willParseAsFloatWithDecimals(Number.POSITIVE_INFINITY)
-      || F.willParseAsFloatWithDecimals(123)
-      || F.willParseAsFloatWithDecimals('123')
-      || F.willParseAsFloatWithDecimals(255.0)
-      || F.willParseAsFloatWithDecimals(0xff)
-      || F.willParseAsFloatWithDecimals(0b11111111)
-      || F.willParseAsFloatWithDecimals(0.255e3)
-      || F.willParseAsFloatWithDecimals('255')
-      || F.willParseAsFloatWithDecimals('255.0')
-      || F.willParseAsFloatWithDecimals('0xff')
-      || F.willParseAsFloatWithDecimals('0b11111111')
-      || F.willParseAsFloatWithDecimals('0.255e3');
-    assert.strictEqual(result, false);
-  });
-
 });
 
 describe('HEX manipulation', () => {
-
   const hexStr = 'AE4EE51905A95C63C03D90880B718F6E';
   const byteArr = [
     174, 78, 229, 25, 5, 169, 92, 99,

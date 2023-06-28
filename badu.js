@@ -20,6 +20,7 @@ const signedNumericString = ['-', ...numericString];
  */
 const floatString = ['.', ...signedNumericString];
 
+
 /**
  * @type {Array<string>}
  */
@@ -1245,19 +1246,73 @@ const randSign = () => [-1, 1][(Math.random() * 2) | 0];
 
 
 //--------------------------------------------------------[ Math and Numbers ]--
+const expoRegex = new RegExp(/^([+-]?[0-9]+\.?[0-9]+)[eE]([+-]?[0-9]+)$/i);
+const hexRegex = new RegExp(/^([-+]?)0[xX]([0-9A-F]+)$/i);
+const binaryRegex = new RegExp(/^([-+]?)0[bB]([0-1]+)$/i);
+const numberRegex = new RegExp(/^[-+]?[0-9]*\\.?[0-9]+$/i);
+
+
+/**
+ * Given an exponent string in the form '1.2e5+5' parse this to a number
+ * Returns NaN if it can't do it.
+ * @param {string} s
+ * @return {number}
+ */
+const parseExpoStringToNum = s => {
+  if (expoRegex.test(s)) {
+    const [_, v, ex] = s.match(expoRegex);
+    return (+v) * Math.pow(10, +ex)
+  }
+  return NaN
+};
+
+const parseHexStringToNum = s => {
+  if (hexRegex.test(s)) {
+    const [_, sign, st] = s.match(hexRegex);
+    return Number.parseInt(st, 16) * (sign === "-" ? -1 : 1)
+  }
+  return NaN
+};
+
+const parseBinaryStringToNum = s => {
+  if (binaryRegex.test(s)) {
+    const [_, sign, st] = s.match(binaryRegex);
+    return Number.parseInt(st, 2) * (sign === "-" ? -1 : 1)
+  }
+  return NaN
+};
+
 /**
  * Given a value, check if it will parse as a Number (either float or int)
  * @param {*} val
  * @return {boolean}
  */
 const willParseAsNum = val => {
+  if (isString(val)) {
+    if (numberRegex.test(val) || hexRegex.test(val) || binaryRegex.test(val) || expoRegex.test(val)) {
+      return true;
+    }
+  }
   // DID YOU KNOW?
   // Number.parseFloat([123]]) === 123
   if (isArray(val)) { return false }
   if (Number.isNaN(+val)) { return false }
-  const n = Number.parseFloat(val);
-  return Number.isFinite(n)
+  return Number.isFinite(Number.parseFloat(val))
 };
+
+/**
+ * The given thing will be parsed as a number (float) or return the given default.
+ * @param def
+ * @return {function(*): number|*}
+ */
+const parseAsNumElse = (def = NaN) => val => {
+  if (!willParseAsNum(val)) { return def }
+  return parseBinaryStringToNum(val)
+    || parseHexStringToNum(val)
+    || parseExpoStringToNum(val)
+    || Number.parseFloat(val);
+};
+
 
 /**
  * Given a value check if it will parse as an Int intact.
@@ -1265,7 +1320,12 @@ const willParseAsNum = val => {
  * @return {boolean}
  */
 const willParseAsInt = val => {
-  return willParseAsNum(val) && Number.isInteger(Number.parseFloat(val))
+  return willParseAsNum(val) && Number.isInteger(parseAsNumElse(NaN)(val));
+};
+
+const parseAsIntElse = (def = NaN) => val => {
+  if (!willParseAsInt(val)) { return def }
+  return parseAsNumElse(NaN)(val);
 };
 
 /**
@@ -1472,8 +1532,7 @@ const shannon = s =>
  * @returns {string}
  */
 const englishNumber = value => {
-  let name = '';
-  let quotient, remainder;
+  let name, quotient, remainder;
   const dm = divMod(value);
   const units = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
     'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen',
@@ -1866,4 +1925,4 @@ const canonicalIpv4Pool = s => {
   return [canonIp, cidrInt].join('/');
 };
 
-export { allElementsEqual, alphaLower, alphaNum, alphaUpper, alwaysAppend, alwaysFalse, alwaysNull, alwaysTrue, alwaysUndef, anyToLowerCase, append, arrToMap, assumeDateFromTs, binStringToNum, boolMap, both, byteArrayToHex, canonicalIpv4Pool, chunk, clearBitAt, clock, cloneObj, columnAt, columnReduce, compose, countByFunc, countOck, countSubString, didEnterBand, didExitBand, didFallThroughBoundary, didRiseThroughBoundary, difference, divMod, divMod2, elAt, englishNumber, extrapolate, factorize, filter, filterAtInc, filterOnlyIndexes, findShared, flatten, floatString, formatBytes, geoFenceDidEnter, geoFenceDidExit, geoIsInside, getBitAt, getNowSeconds, hasBitAt, hasValue, haversine, head, hexToByteArray, iRange, idGen, identity, imeisvToImei, intToIpv4, interleave, interleave2, intersection, invBitAt, ipv4ToInt2, isArray, isDef, isDefAndNotNull, isDivisibleBy, isEmpty, isEven, isFunction, isNegativeZero, isNumber, isObject, isSignedInt, isString, isStringElse, isUndefined, join, join2, lcp, leftPadWithTo, logInline, luhn, makeRandomString, map, maxInArr, maybeBool, maybeFunc, maybeNumber, mergeDeep, minInArr, negate, numReverse, numToBinString, numericInt, numericString, objToPaths, onlyIncludes, pRound, pairs, pairsToMap, partial, pathOr, prepend, privateCounter, privateRandom, push, quote, randIntBetween, randSign, randSubSet, randomId, range, range2, rangeGen, remove, removeAtIndex, removeRandom, repeat, replace, replaceAll, reverse, sameArr, sameAs, sameEls, setBitAt, shannon, signedNumericString, split, splitAt, stringIfNotEmptyElse, stringIsAlphaNumeric, stringIsOnlyDigits, stringReverse, stringStripNonFloatDigits, stringToUtf8ByteArray, stripLeadingChar, stripTrailingChar, symmetricDiff, tail, toInt, toLowerCase, toNumber, toString, toUpperCase, trace, transpose, truncate, union, utf8ByteArrayToString, visitObjDeep, whatType, willParseAsFloatWithDecimals, willParseAsInt, willParseAsNum, zeroOut32, zip, zipFlat };
+export { allElementsEqual, alphaLower, alphaNum, alphaUpper, alwaysAppend, alwaysFalse, alwaysNull, alwaysTrue, alwaysUndef, anyToLowerCase, append, arrToMap, assumeDateFromTs, binStringToNum, boolMap, both, byteArrayToHex, canonicalIpv4Pool, chunk, clearBitAt, clock, cloneObj, columnAt, columnReduce, compose, countByFunc, countOck, countSubString, didEnterBand, didExitBand, didFallThroughBoundary, didRiseThroughBoundary, difference, divMod, divMod2, elAt, englishNumber, extrapolate, factorize, filter, filterAtInc, filterOnlyIndexes, findShared, flatten, floatString, formatBytes, geoFenceDidEnter, geoFenceDidExit, geoIsInside, getBitAt, getNowSeconds, hasBitAt, hasValue, haversine, head, hexToByteArray, iRange, idGen, identity, imeisvToImei, intToIpv4, interleave, interleave2, intersection, invBitAt, ipv4ToInt2, isArray, isDef, isDefAndNotNull, isDivisibleBy, isEmpty, isEven, isFunction, isNegativeZero, isNumber, isObject, isSignedInt, isString, isStringElse, isUndefined, join, join2, lcp, leftPadWithTo, logInline, luhn, makeRandomString, map, maxInArr, maybeBool, maybeFunc, maybeNumber, mergeDeep, minInArr, negate, numReverse, numToBinString, numericInt, numericString, objToPaths, onlyIncludes, pRound, pairs, pairsToMap, parseAsIntElse, parseAsNumElse, parseBinaryStringToNum, parseExpoStringToNum, parseHexStringToNum, partial, pathOr, prepend, privateCounter, privateRandom, push, quote, randIntBetween, randSign, randSubSet, randomId, range, range2, rangeGen, remove, removeAtIndex, removeRandom, repeat, replace, replaceAll, reverse, sameArr, sameAs, sameEls, setBitAt, shannon, signedNumericString, split, splitAt, stringIfNotEmptyElse, stringIsAlphaNumeric, stringIsOnlyDigits, stringReverse, stringStripNonFloatDigits, stringToUtf8ByteArray, stripLeadingChar, stripTrailingChar, symmetricDiff, tail, toInt, toLowerCase, toNumber, toString, toUpperCase, trace, transpose, truncate, union, utf8ByteArrayToString, visitObjDeep, whatType, willParseAsFloatWithDecimals, willParseAsInt, willParseAsNum, zeroOut32, zip, zipFlat };
