@@ -377,6 +377,54 @@ describe('Assertion functions:', () => {
   it('isNumber: handles Number.NEGATIVE_INFINITY',
     () => assert.strictEqual(F.isNumber(Number.NEGATIVE_INFINITY), true));
 
+  it('isInt: Is only true for ints', () => {
+    assert.strictEqual(F.isInt(1), true)
+    assert.strictEqual(F.isInt(1.00), true)
+    assert.strictEqual(F.isInt(-1), true)
+    assert.strictEqual(F.isInt(-1.0), true)
+    assert.strictEqual(F.isInt(-1.01), false)
+    assert.strictEqual(F.isInt(1.01), false)
+    assert.strictEqual(F.isInt(NaN), false)
+  });
+
+  it('isInt: Zeros are considered ints',
+    () => assert.strictEqual(F.isInt(0), true));
+
+  it('isInt: Negative Zeros are considered ints',
+    () => assert.strictEqual(F.isInt(-0), true));
+
+  it('isIntPos: Is only true for ints bigger or equal to 0', () => {
+    assert.strictEqual(F.isIntPos(1), true)
+    assert.strictEqual(F.isIntPos(1.00), true)
+    assert.strictEqual(F.isIntPos(-1), false)
+    assert.strictEqual(F.isIntPos(-1.0), false)
+    assert.strictEqual(F.isIntPos(-1.01), false)
+    assert.strictEqual(F.isIntPos(1.01), false)
+    assert.strictEqual(F.isIntPos(NaN), false)
+  });
+
+  it('isIntPos: Zeros are considered positive',
+    () => assert.strictEqual(F.isIntPos(0), true));
+
+  it('isIntPos: Negative Zeros are considered ints',
+    () => assert.strictEqual(F.isIntPos(-0), false));
+
+  it('isIntNeg: Is only true for ints smaller than 0', () => {
+    assert.strictEqual(F.isIntNeg(1), false)
+    assert.strictEqual(F.isIntNeg(1.00), false)
+    assert.strictEqual(F.isIntNeg(-1), true)
+    assert.strictEqual(F.isIntNeg(-1.0), true)
+    assert.strictEqual(F.isIntNeg(-1.01), false)
+    assert.strictEqual(F.isIntNeg(1.01), false)
+    assert.strictEqual(F.isIntNeg(NaN), false)
+  });
+
+  it('isIntNeg: Zeros are considered positive',
+    () => assert.strictEqual(F.isIntNeg(0), false));
+
+  it('isIntNeg: Negative Zeros are considered negative ints',
+    () => assert.strictEqual(F.isIntNeg(-0), true));
+
   it('isObject: returns true if given an object',
     () => assert.strictEqual(F.isObject({a: 1}), true));
 
