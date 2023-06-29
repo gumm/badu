@@ -198,6 +198,28 @@ const isStringElse = def => n => isString(n) ? n : def;
 const isNumber = n => whatType(n) === 'number' &&
   !Number.isNaN(/** @type number */(n));
 
+
+/**
+ * @param {*} n
+ * @return {boolean}
+ */
+const isInt = n => isNumber(n) && Number.isInteger(n);
+
+
+/**
+ * @param {*} n
+ * @return {boolean}
+ */
+const isIntPos = n => isNumber(n) && Number.isInteger(n) && !Object.is(n, -0) && n >= 0;
+
+
+/**
+ * @param {*} n
+ * @return {boolean}
+ */
+const isIntNeg = n => isNumber(n) && Number.isInteger(n) && (Object.is(n, -0) || n < 0);
+
+
 /**
  * @param t
  * @returns {*|boolean}
@@ -2000,6 +2022,9 @@ exports.isDivisibleBy = isDivisibleBy;
 exports.isEmpty = isEmpty;
 exports.isEven = isEven;
 exports.isFunction = isFunction;
+exports.isInt = isInt;
+exports.isIntNeg = isIntNeg;
+exports.isIntPos = isIntPos;
 exports.isNegativeZero = isNegativeZero;
 exports.isNumber = isNumber;
 exports.isObject = isObject;
