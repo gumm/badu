@@ -457,6 +457,16 @@ const repeat = (v, n) => new Array(parseInt(n, 10)).fill(v);
 
 
 /**
+ * Generates unique combination pairs from the input array
+ * Example:
+ * comboPairs([1,2,3]) -> [ [ 1, 2 ], [ 1, 3 ], [ 2, 3 ] ]
+ * @param {Array} arr - The input array.
+ * @returns {Array} - The generated pairs.
+ */
+const comboPairs = arr => arr.reduce(
+  (p, c, i) => p.concat(arr.slice(i + 1).map(e => [c, e])), []);
+
+/**
  * Counts the occurrence of an element in an array.
  * @param {*} t
  * @return {function(!Array<*>): *}
@@ -2008,6 +2018,7 @@ export {
   columnAt,
   transpose,
   repeat,
+  comboPairs,
   countOck,
   countByFunc,
   filterAtInc,
