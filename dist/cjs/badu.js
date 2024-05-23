@@ -1,6 +1,9 @@
 'use strict';
 
 // noinspection JSUnusedLocalSymbols
+/**
+ * @typedef {(Uint8Array | Int32Array | Uint16Array | Uint32Array | Float64Array | Int8Array | Float32Array | Uint8ClampedArray | Int16Array)}
+ */
 
 /**
  * @type {Array<number>}
@@ -142,6 +145,15 @@ const whatType = x => typeof x;
  */
 const maybeBool = s => isDef(boolMap.get(s)) ? boolMap.get(s) : s;
 
+
+/**
+ * Convert the given thing to a boolean if it can. Else return it as is.
+ * @returns {*|boolean}
+ * @param {Map} boolDefMap
+ */
+const maybeCustomBool = boolDefMap => s => isDef(boolDefMap.get(s)) ? boolDefMap.get(s) : s;
+
+
 /**
  * @param {*} func
  * @return {function(): undefined}
@@ -182,6 +194,14 @@ const isDefAndNotNull = t => t != null;
  * @return {boolean}
  */
 const isString = n => whatType(n) === 'string';
+
+
+/**
+ * Return true if the thing passed in is really of type boolean
+ * @param {*} n
+ * @returns {boolean}
+ */
+const isBoolean = n => whatType(n) === 'boolean';
 
 
 /**
@@ -2027,6 +2047,7 @@ exports.intersection = intersection;
 exports.invBitAt = invBitAt;
 exports.ipv4ToInt2 = ipv4ToInt2;
 exports.isArray = isArray;
+exports.isBoolean = isBoolean;
 exports.isDef = isDef;
 exports.isDefAndNotNull = isDefAndNotNull;
 exports.isDivisibleBy = isDivisibleBy;
@@ -2053,6 +2074,7 @@ exports.makeRandomString = makeRandomString;
 exports.map = map;
 exports.maxInArr = maxInArr;
 exports.maybeBool = maybeBool;
+exports.maybeCustomBool = maybeCustomBool;
 exports.maybeFunc = maybeFunc;
 exports.maybeNumber = maybeNumber;
 exports.mergeDeep = mergeDeep;

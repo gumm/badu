@@ -1,4 +1,7 @@
 // noinspection JSUnusedLocalSymbols
+/**
+ * @typedef {(Uint8Array | Int32Array | Uint16Array | Uint32Array | Float64Array | Int8Array | Float32Array | Uint8ClampedArray | Int16Array)}
+ */
 
 /**
  * @type {Array<number>}
@@ -140,6 +143,15 @@ const whatType = x => typeof x;
  */
 const maybeBool = s => isDef(boolMap.get(s)) ? boolMap.get(s) : s;
 
+
+/**
+ * Convert the given thing to a boolean if it can. Else return it as is.
+ * @returns {*|boolean}
+ * @param {Map} boolDefMap
+ */
+const maybeCustomBool = boolDefMap => s => isDef(boolDefMap.get(s)) ? boolDefMap.get(s) : s;
+
+
 /**
  * @param {*} func
  * @return {function(): undefined}
@@ -180,6 +192,14 @@ const isDefAndNotNull = t => t != null;
  * @return {boolean}
  */
 const isString = n => whatType(n) === 'string';
+
+
+/**
+ * Return true if the thing passed in is really of type boolean
+ * @param {*} n
+ * @returns {boolean}
+ */
+const isBoolean = n => whatType(n) === 'boolean';
 
 
 /**
@@ -1957,4 +1977,4 @@ const canonicalIpv4Pool = s => {
   return [canonIp, cidrInt].join('/');
 };
 
-export { allElementsEqual, alphaLower, alphaNum, alphaUpper, alwaysAppend, alwaysFalse, alwaysNull, alwaysTrue, alwaysUndef, anyToLowerCase, append, arrToMap, assumeDateFromTs, binStringToNum, boolMap, both, byteArrayToHex, canonicalIpv4Pool, chunk, clearBitAt, clock, cloneObj, columnAt, columnReduce, comboPairs, compose, countByFunc, countOck, countSubString, didEnterBand, didExitBand, didFallThroughBoundary, didRiseThroughBoundary, difference, divMod, divMod2, elAt, englishNumber, extrapolate, factorize, filter, filterAtInc, filterOnlyIndexes, findShared, flatten, floatString, formatBytes, geoFenceDidEnter, geoFenceDidExit, geoIsInside, getBitAt, getNowSeconds, hasBitAt, hasValue, haversine, head, hexToByteArray, iRange, idGen, identity, imeisvToImei, intToIpv4, interleave, interleave2, intersection, invBitAt, ipv4ToInt2, isArray, isDef, isDefAndNotNull, isDivisibleBy, isEmpty, isEven, isFunction, isInt, isIntNeg, isIntPos, isNegativeZero, isNumber, isObject, isSignedInt, isString, isStringElse, isUndefined, join, join2, lcp, leftPadWithTo, logInline, luhn, makeRandomString, map, maxInArr, maybeBool, maybeFunc, maybeNumber, mergeDeep, minInArr, negate, numReverse, numToBinString, numericInt, numericString, objToPaths, onlyIncludes, pRound, pairs, pairsToMap, parseAsIntElse, parseAsNumElse, parseBinaryStringToNum, parseExpoStringToNum, parseHexStringToNum, partial, pathOr, prepend, privateCounter, privateRandom, push, quote, randIntBetween, randSign, randSubSet, randomId, range, range2, rangeGen, remove, removeAtIndex, removeRandom, repeat, replace, replaceAll, reverse, sameArr, sameAs, sameEls, setBitAt, shannon, signedNumericString, split, splitAt, stringIfNotEmptyElse, stringIsAlphaNumeric, stringIsOnlyDigits, stringReverse, stringStripNonFloatDigits, stringToUtf8ByteArray, stripLeadingChar, stripTrailingChar, symmetricDiff, tail, toInt, toLowerCase, toNumber, toString, toUpperCase, trace, transpose, truncate, union, utf8ByteArrayToString, visitObjDeep, whatType, willParseAsFloatWithDecimals, willParseAsInt, willParseAsNum, zeroOut32, zip, zipFlat };
+export { allElementsEqual, alphaLower, alphaNum, alphaUpper, alwaysAppend, alwaysFalse, alwaysNull, alwaysTrue, alwaysUndef, anyToLowerCase, append, arrToMap, assumeDateFromTs, binStringToNum, boolMap, both, byteArrayToHex, canonicalIpv4Pool, chunk, clearBitAt, clock, cloneObj, columnAt, columnReduce, comboPairs, compose, countByFunc, countOck, countSubString, didEnterBand, didExitBand, didFallThroughBoundary, didRiseThroughBoundary, difference, divMod, divMod2, elAt, englishNumber, extrapolate, factorize, filter, filterAtInc, filterOnlyIndexes, findShared, flatten, floatString, formatBytes, geoFenceDidEnter, geoFenceDidExit, geoIsInside, getBitAt, getNowSeconds, hasBitAt, hasValue, haversine, head, hexToByteArray, iRange, idGen, identity, imeisvToImei, intToIpv4, interleave, interleave2, intersection, invBitAt, ipv4ToInt2, isArray, isBoolean, isDef, isDefAndNotNull, isDivisibleBy, isEmpty, isEven, isFunction, isInt, isIntNeg, isIntPos, isNegativeZero, isNumber, isObject, isSignedInt, isString, isStringElse, isUndefined, join, join2, lcp, leftPadWithTo, logInline, luhn, makeRandomString, map, maxInArr, maybeBool, maybeCustomBool, maybeFunc, maybeNumber, mergeDeep, minInArr, negate, numReverse, numToBinString, numericInt, numericString, objToPaths, onlyIncludes, pRound, pairs, pairsToMap, parseAsIntElse, parseAsNumElse, parseBinaryStringToNum, parseExpoStringToNum, parseHexStringToNum, partial, pathOr, prepend, privateCounter, privateRandom, push, quote, randIntBetween, randSign, randSubSet, randomId, range, range2, rangeGen, remove, removeAtIndex, removeRandom, repeat, replace, replaceAll, reverse, sameArr, sameAs, sameEls, setBitAt, shannon, signedNumericString, split, splitAt, stringIfNotEmptyElse, stringIsAlphaNumeric, stringIsOnlyDigits, stringReverse, stringStripNonFloatDigits, stringToUtf8ByteArray, stripLeadingChar, stripTrailingChar, symmetricDiff, tail, toInt, toLowerCase, toNumber, toString, toUpperCase, trace, transpose, truncate, union, utf8ByteArrayToString, visitObjDeep, whatType, willParseAsFloatWithDecimals, willParseAsInt, willParseAsNum, zeroOut32, zip, zipFlat };
