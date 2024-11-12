@@ -625,6 +625,7 @@ const splitAt = n => arr => [arr.slice(0, n), arr.slice(n)];
  */
 const zip = (a, b) => a.reduce((p, c, i) => b[i] ? push(p, [c, b[i]]) : p, []);
 
+
 /**
  * Creates a new flat list out of the two supplied by pairing up
  * equally-positioned items from both lists. The pairing is limited to
@@ -637,6 +638,27 @@ const zip = (a, b) => a.reduce((p, c, i) => b[i] ? push(p, [c, b[i]]) : p, []);
  * @returns {Array<*>}
  */
 const zipFlat = (a, b) => flatten(zip(a, b));
+
+
+/**
+ * Splits an array into two separate arrays based on element
+ * positions (even/odd indices).
+ *
+ * @param {Array<*>} array - The input array to be split
+ * @returns {[Array<*>, Array<*>]} A tuple containing:
+ *                                 [0] - Array with elements from even indices (0, 2, 4, ...)
+ *                                 [1] - Array with elements from odd indices (1, 3, 5, ...)
+ *
+ * @example
+ * unZip([0, 1, 2, 3])     // returns [[0, 2], [1, 3]]
+ * unZip(['a', 'b', 'c'])  // returns [['a', 'c'], ['b']]
+ * unZip([])               // returns [[], []]
+ */
+const unZip = array => array.reduce((p, c, i) =>
+  p[i % 2].push(c) && p,
+  [[], []]
+);
+
 
 /**
  * Given an array of arrays, find the elements that appear in more than
@@ -2001,4 +2023,4 @@ const canonicalIpv4Pool = s => {
   return [canonIp, cidrInt].join('/');
 };
 
-export { allElementsEqual, alphaLower, alphaNum, alphaUpper, alwaysAppend, alwaysFalse, alwaysNull, alwaysTrue, alwaysUndef, anyToLowerCase, append, arrToMap, assumeDateFromTs, binStringToNum, boolMap, both, byteArrayToHex, canonicalIpv4Pool, chunk, clearBitAt, clock, cloneObj, columnAt, columnReduce, comboPairs, compose, countByFunc, countOck, countSubString, didEnterBand, didExitBand, didFallThroughBoundary, didRiseThroughBoundary, difference, divMod, divMod2, elAt, englishNumber, extrapolate, factorize, filter, filterAtInc, filterOnlyIndexes, findShared, flatten, floatString, formatBytes, geoFenceDidEnter, geoFenceDidExit, geoIsInside, getBitAt, getNowSeconds, gtin, hasBitAt, hasValue, haversine, head, hexToByteArray, iRange, idGen, identity, imeisvToImei, intToIpv4, interleave, interleave2, intersection, invBitAt, ipv4ToInt2, isArray, isBoolean, isDef, isDefAndNotNull, isDivisibleBy, isEmpty, isEven, isFunction, isInt, isIntNeg, isIntPos, isNegativeZero, isNumber, isObject, isSignedInt, isString, isStringElse, isUndefined, join, join2, lcp, leftPadWithTo, logInline, luhn, makeRandomString, map, maxInArr, maybeBool, maybeCustomBool, maybeFunc, maybeNumber, mergeDeep, minInArr, negate, numReverse, numToBinString, numericInt, numericString, objToPaths, onlyIncludes, pRound, pairs, pairsToMap, parseAsIntElse, parseAsNumElse, parseBinaryStringToNum, parseExpoStringToNum, parseHexStringToNum, partial, pathOr, prepend, privateCounter, privateRandom, push, quote, randIntBetween, randSign, randSubSet, randomId, range, range2, rangeGen, remove, removeAtIndex, removeRandom, repeat, replace, replaceAll, reverse, sameArr, sameAs, sameEls, setBitAt, shannon, signedNumericString, split, splitAt, stringIfNotEmptyElse, stringIsAlphaNumeric, stringIsOnlyDigits, stringReverse, stringStripNonFloatDigits, stringToUtf8ByteArray, stripLeadingChar, stripTrailingChar, symmetricDiff, tail, toInt, toLowerCase, toNumber, toString, toUpperCase, trace, transpose, truncate, union, utf8ByteArrayToString, visitObjDeep, whatType, willParseAsFloatWithDecimals, willParseAsInt, willParseAsNum, zeroOut32, zip, zipFlat };
+export { allElementsEqual, alphaLower, alphaNum, alphaUpper, alwaysAppend, alwaysFalse, alwaysNull, alwaysTrue, alwaysUndef, anyToLowerCase, append, arrToMap, assumeDateFromTs, binStringToNum, boolMap, both, byteArrayToHex, canonicalIpv4Pool, chunk, clearBitAt, clock, cloneObj, columnAt, columnReduce, comboPairs, compose, countByFunc, countOck, countSubString, didEnterBand, didExitBand, didFallThroughBoundary, didRiseThroughBoundary, difference, divMod, divMod2, elAt, englishNumber, extrapolate, factorize, filter, filterAtInc, filterOnlyIndexes, findShared, flatten, floatString, formatBytes, geoFenceDidEnter, geoFenceDidExit, geoIsInside, getBitAt, getNowSeconds, gtin, hasBitAt, hasValue, haversine, head, hexToByteArray, iRange, idGen, identity, imeisvToImei, intToIpv4, interleave, interleave2, intersection, invBitAt, ipv4ToInt2, isArray, isBoolean, isDef, isDefAndNotNull, isDivisibleBy, isEmpty, isEven, isFunction, isInt, isIntNeg, isIntPos, isNegativeZero, isNumber, isObject, isSignedInt, isString, isStringElse, isUndefined, join, join2, lcp, leftPadWithTo, logInline, luhn, makeRandomString, map, maxInArr, maybeBool, maybeCustomBool, maybeFunc, maybeNumber, mergeDeep, minInArr, negate, numReverse, numToBinString, numericInt, numericString, objToPaths, onlyIncludes, pRound, pairs, pairsToMap, parseAsIntElse, parseAsNumElse, parseBinaryStringToNum, parseExpoStringToNum, parseHexStringToNum, partial, pathOr, prepend, privateCounter, privateRandom, push, quote, randIntBetween, randSign, randSubSet, randomId, range, range2, rangeGen, remove, removeAtIndex, removeRandom, repeat, replace, replaceAll, reverse, sameArr, sameAs, sameEls, setBitAt, shannon, signedNumericString, split, splitAt, stringIfNotEmptyElse, stringIsAlphaNumeric, stringIsOnlyDigits, stringReverse, stringStripNonFloatDigits, stringToUtf8ByteArray, stripLeadingChar, stripTrailingChar, symmetricDiff, tail, toInt, toLowerCase, toNumber, toString, toUpperCase, trace, transpose, truncate, unZip, union, utf8ByteArrayToString, visitObjDeep, whatType, willParseAsFloatWithDecimals, willParseAsInt, willParseAsNum, zeroOut32, zip, zipFlat };

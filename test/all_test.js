@@ -946,6 +946,18 @@ describe('Array specific utils', () => {
       F.zipFlat(F.numericInt, ['A', 'B', 'C']), expected);
   });
 
+  it('unZip: Split an array into a tuple of arrays', () => {
+    const [a, b] = F.unZip(F.numericInt);
+    assert.deepStrictEqual(a, [0,2,4,6,8]);
+    assert.deepStrictEqual(b, [1,3,5,7,9]);
+  });
+
+  it('unZip: The content of the array can be anything', () => {
+    const [a, b] = F.unZip([NaN, undefined, true, null]);
+    assert.deepStrictEqual(a, [NaN, true]);
+    assert.deepStrictEqual(b, [undefined, null]);
+  });
+
   it('findShared: find elements shared amongst an array of arrays', () => {
     const test1 = [0, 1, 2, 9];
     const test2 = [2, 3, 4, 5];

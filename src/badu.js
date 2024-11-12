@@ -626,6 +626,7 @@ const splitAt = n => arr => [arr.slice(0, n), arr.slice(n)];
  */
 const zip = (a, b) => a.reduce((p, c, i) => b[i] ? push(p, [c, b[i]]) : p, []);
 
+
 /**
  * Creates a new flat list out of the two supplied by pairing up
  * equally-positioned items from both lists. The pairing is limited to
@@ -638,6 +639,27 @@ const zip = (a, b) => a.reduce((p, c, i) => b[i] ? push(p, [c, b[i]]) : p, []);
  * @returns {Array<*>}
  */
 const zipFlat = (a, b) => flatten(zip(a, b));
+
+
+/**
+ * Splits an array into two separate arrays based on element
+ * positions (even/odd indices).
+ *
+ * @param {Array<*>} array - The input array to be split
+ * @returns {[Array<*>, Array<*>]} A tuple containing:
+ *                                 [0] - Array with elements from even indices (0, 2, 4, ...)
+ *                                 [1] - Array with elements from odd indices (1, 3, 5, ...)
+ *
+ * @example
+ * unZip([0, 1, 2, 3])     // returns [[0, 2], [1, 3]]
+ * unZip(['a', 'b', 'c'])  // returns [['a', 'c'], ['b']]
+ * unZip([])               // returns [[], []]
+ */
+const unZip = array => array.reduce((p, c, i) =>
+  p[i % 2].push(c) && p,
+  [[], []]
+);
+
 
 /**
  * Given an array of arrays, find the elements that appear in more than
@@ -2079,6 +2101,7 @@ export {
   splitAt,
   zip,
   zipFlat,
+  unZip,
   findShared,
   intersection,
   difference,
