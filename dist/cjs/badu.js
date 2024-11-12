@@ -1556,6 +1556,30 @@ const imeisvToImei = n => {
   return r[0] ? t + r[1] : toString(n);
 };
 
+// noinspection JSUnusedAssignment
+/**
+ * Validate that the given string of digits
+ * is a valid GTIN number.
+ * https://en.wikipedia.org/wiki/Global_Trade_Item_Number
+ * This calculates and checks the GS1 Check Digit according to section:
+ * 7.9.1 Standard check digit calculations for GS1 data structures
+ * of
+ * https://ref.gs1.org/standards/genspecs/
+ * @param {string} s
+ * @returns {boolean} True if the given string is a GS1 GTIN number
+ */
+const gtin = s => {
+  const _multiply = (e, i) => i % 2 ? e * 1 : e * 3;
+  const _sum = (p, c) => p + c;
+  const arr = [...s.replaceAll('-', '')
+    .replaceAll(' ', '')];
+  if ([8, 12, 13, 14, 17, 18].includes(arr.length)) {
+    const [last, ...rest] = [...arr].reverse();
+    const result = rest.map(_multiply).reduce(_sum, last * 1);
+    return result % 10 === 0;
+  }
+  return false;
+};
 
 // noinspection JSUnusedAssignment
 /**
@@ -2031,6 +2055,7 @@ exports.geoFenceDidExit = geoFenceDidExit;
 exports.geoIsInside = geoIsInside;
 exports.getBitAt = getBitAt;
 exports.getNowSeconds = getNowSeconds;
+exports.gtin = gtin;
 exports.hasBitAt = hasBitAt;
 exports.hasValue = hasValue;
 exports.haversine = haversine;

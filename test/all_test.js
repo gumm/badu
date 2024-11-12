@@ -1690,6 +1690,18 @@ describe('Number and math specific utils', () => {
     assert.deepStrictEqual(F.imeisvToImei('3595680510841401'), '359568051084146')
   });
 
+  it('gtin: identifies valid GTIN numbers', () => {
+    assert.deepStrictEqual(F.gtin("9780596528126"), true);
+  });
+
+  it('gtin: identifies valid GTIN numbers with dashes, like ISBN numbers', () => {
+    assert.deepStrictEqual(F.gtin("978-1788399081 "), true);
+  });
+
+  it('gtin: identifies invalid GTIN numbers', () => {
+    assert.deepStrictEqual(F.gtin("9770596528126"), false);
+  });
+
   it('shannon: only accepts strings', () => {
     assert.deepStrictEqual(F.shannon('0123'), 2)
   });
