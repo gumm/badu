@@ -1122,6 +1122,43 @@ const cloneObj = o => Object.assign({}, o);
 
 
 /**
+ * Creates a new object by removing specified keys from the original object.
+ *
+ * @param {string[]} keys - An array of keys to exclude from the resulting object.
+ * @returns {function(Object): Object} A function that takes an object and returns a new object excluding the specified keys.
+ */
+const omit = (keys) => obj => Object.fromEntries(
+  Object.entries(obj).filter(([key]) => !keys.includes(key))
+);
+
+
+/**
+ * A higher-order function that creates a new function to pick specific keys 
+ * exclusively from an object.
+ *
+ * @param {string[]} keys - An array of strings representing the keys to pick.
+ * @returns {Function} A function that takes an object and returns a new 
+ * object containing only the specified keys which exist in the original object.
+ */
+const pickExclusive  = (keys) => obj => Object.fromEntries(
+  keys.filter(key => key in obj).map(key => [key, obj[key]])
+);
+
+
+/**
+ * Creates a function that takes an object and returns a new object
+ * including only the specified keys and their corresponding values.
+ *
+ * @param {string[]} keys - The array of keys to include in the new object.
+ * @returns {Function} A function that takes an object and returns a new object
+ *                     containing only the specified keys.
+ */
+const pickInclusive  = (keys) => obj => Object.fromEntries(
+  keys.map(key => [key, obj[key]])
+);
+
+
+/**
  * * Given an object, flatten it into an array of arrays of path and value.
  * Example:
  *  obj = {
@@ -2132,6 +2169,7 @@ exports.numToBinString = numToBinString;
 exports.numericInt = numericInt;
 exports.numericString = numericString;
 exports.objToPaths = objToPaths;
+exports.omit = omit;
 exports.onlyIncludes = onlyIncludes;
 exports.pRound = pRound;
 exports.pairs = pairs;
@@ -2143,6 +2181,8 @@ exports.parseExpoStringToNum = parseExpoStringToNum;
 exports.parseHexStringToNum = parseHexStringToNum;
 exports.partial = partial;
 exports.pathOr = pathOr;
+exports.pickExclusive = pickExclusive;
+exports.pickInclusive = pickInclusive;
 exports.prepend = prepend;
 exports.privateCounter = privateCounter;
 exports.privateRandom = privateRandom;
