@@ -948,8 +948,8 @@ describe('Array specific utils', () => {
 
   it('unZip: Split an array into a tuple of arrays', () => {
     const [a, b] = F.unZip(F.numericInt);
-    assert.deepStrictEqual(a, [0,2,4,6,8]);
-    assert.deepStrictEqual(b, [1,3,5,7,9]);
+    assert.deepStrictEqual(a, [0, 2, 4, 6, 8]);
+    assert.deepStrictEqual(b, [1, 3, 5, 7, 9]);
   });
 
   it('unZip: The content of the array can be anything', () => {
@@ -1186,6 +1186,27 @@ describe('Basic Object utils', () => {
     const clone = F.cloneObj(obj1);
     return assert.deepStrictEqual(clone, obj1);
   });
+
+  it('omit: get a copy of an object with the specified keys omitted', () => {
+    const obj1 = {a: 1, b: 2, c: 3, d: 4};
+    const omit = F.omit(['a', 'b'])(obj1);
+    return assert.deepStrictEqual(omit, {c: 3, d: 4});
+  });
+
+  it('pickExclusive: get a copy of an object that only includes the ' +
+    'specified keys if they existed in the original object', () => {
+    const obj1 = {a: 1, b: 2, c: 3, d: 4};
+    const picked = F.pickExclusive(['c', 'd', 'e'])(obj1);
+    return assert.deepStrictEqual(picked, {c: 3, d: 4});
+  });
+
+  it('pickInclusive: get a copy of an object with the specified even if ' +
+    'those keys does not exist in the original object', () => {
+    const obj1 = {a: 1, b: 2, c: 3, d: 4};
+    const picked = F.pickInclusive(['c', 'd', 'e'])(obj1);
+    return assert.deepStrictEqual(picked, {c: 3, d: 4, e: undefined});
+  });
+  
 
   it('objToPaths: turns a multilevel object into a list of paths', () => {
     const data = {
