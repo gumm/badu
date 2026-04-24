@@ -1206,7 +1206,7 @@ describe('Basic Object utils', () => {
     const picked = F.pickInclusive(['c', 'd', 'e'])(obj1);
     return assert.deepStrictEqual(picked, {c: 3, d: 4, e: undefined});
   });
-  
+
 
   it('objToPaths: turns a multilevel object into a list of paths', () => {
     const data = {
@@ -1625,6 +1625,42 @@ describe('Number and math specific utils', () => {
 
   it('maybeNumber: handles null', () => {
     assert.deepStrictEqual(F.maybeNumber(null), null)
+  });
+
+  it('countWholeDigits: returns the number of whole number digits of a number', () => {
+    assert.deepStrictEqual(F.countWholeDigits(123), 3)
+  });
+
+  it('countWholeDigits: parses negative numbers', () => {
+    assert.deepStrictEqual(F.countWholeDigits(-123), 3)
+  });
+
+  it('countWholeDigits: only count the whole-number digits', () => {
+    assert.deepStrictEqual(F.countWholeDigits(-123.1234567890), 3)
+  });
+
+  it('formatBytes: returns number as human readable file size', () => {
+    assert.deepStrictEqual(F.formatBytes(5)(123), "123 B")
+  });
+
+  it('formatBytes: returns number as human readable file size', () => {
+    assert.deepStrictEqual(F.formatBytes(5)(123.45), "123.45 B")
+  });
+
+  it('formatBytes: does not have trailing zeros', () => {
+    assert.deepStrictEqual(F.formatBytes(6)(123.4501), "123.45 B")
+  });
+
+  it('formatBytes: does not pad with zeros', () => {
+    assert.deepStrictEqual(F.formatBytes(10)(123.4501), "123.4501 B")
+  });
+
+  it('formatBytes: treats input as octets', () => {
+    assert.deepStrictEqual(F.formatBytes(4)(1024), "1 kB")
+  });
+
+  it('formatBytes: treats input as octets', () => {
+    assert.deepStrictEqual(F.formatBytes(4)(1024 * 1024 + 12345), "1.012 MB")
   });
 
   it('negate: inverts the boolean value', () => {

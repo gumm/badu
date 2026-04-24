@@ -1066,6 +1066,8 @@ const lcp = (...args) => {
 };
 
 
+
+
 //------------------------------------------------------------[ Object tools ]--
 /**
  * @param {!Object} l
@@ -1456,7 +1458,6 @@ const willParseAsFloatWithDecimals = val => {
  */
 const degreesToRadians = x => x / 180 * Math.PI;
 
-
 /**
  * Determine the sign of the zero
  * @param {!number} x
@@ -1497,6 +1498,16 @@ const pRound = precision => {
   const factor = Math.pow(10, precision);
   return number => Math.round(number * factor) / factor;
 };
+
+/**
+ * Count the number of digits in an integer
+ * @param {number} n
+ * @returns {number}
+ */
+const countWholeDigits = (n) => {
+  if (n === 0) return 1;
+  return Math.floor(Math.log10(Math.abs(n))) + 1;
+}
 
 /**
  * Given a string, returns a number if you can. Else return what was given.
@@ -2216,6 +2227,7 @@ export {
   shannon,
   englishNumber,
   extrapolate,
+  countWholeDigits,
   formatBytes,
   numToBinString,
   binStringToNum,
